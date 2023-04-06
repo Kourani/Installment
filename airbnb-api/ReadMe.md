@@ -2,7 +2,10 @@
 
 ## Database Schema Design
 
-`<insert database schema design here>`
+
+
+![image](https://user-images.githubusercontent.com/111401250/230512587-337a4d7c-7de2-4183-ba10-74be79eecb0a.png)
+
 
 ## API Documentation
 
@@ -842,8 +845,8 @@ Create and return a new image for a review specified by id.
 * Require Authentication: true
 * Require proper authorization: Review must belong to the current user
 * Request
-  * Method: PATCH
-  * URL: /reviews/:reviewsId
+  * Method: POST
+  * URL: /reviews/:reviewsId/Image
   * Headers:
     * Content-Type: application/json
   * Body:
