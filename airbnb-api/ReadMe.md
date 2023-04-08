@@ -4,7 +4,8 @@
 
 
 
-![image](https://user-images.githubusercontent.com/111401250/230512587-337a4d7c-7de2-4183-ba10-74be79eecb0a.png)
+![image](https://user-images.githubusercontent.com/111401250/230733870-94bf32c0-393b-46ff-95f0-4fdb0fec3aed.png)
+
 
 
 ## API Documentation
@@ -55,7 +56,7 @@ Returns the information about the current user that is logged in.
 * Require Authentication: true
 * Request
   * Method: GET
-  * URL: /users/:userId/information || /currentUser/information ?
+  * URL: /currentUser
   * Body: none
 
 * Successful Response when there is a logged in user
@@ -96,7 +97,7 @@ information.
 * Require Authentication: false
 * Request
   * Method: POST
-  * URL: /users/:userId/information
+  * URL: /users/logIn
   * Headers:
     * Content-Type: application/json
   * Body:none
@@ -299,7 +300,7 @@ Returns all the spots owned (created) by the current user.
 * Require Authentication: true
 * Request
   * Method: GET
-  * URL: /users/:userId/spots
+  * URL: /currentUser/spots
   * Body: none
 
 * Successful Response
@@ -653,7 +654,7 @@ Returns all the reviews written by the current user.
 * Require Authentication: true
 * Request
   * Method: GET
-  * URL: /users/:userId/reviews
+  * URL: /currentUser/reviews
   * Body: none
 
 * Successful Response
@@ -1011,7 +1012,7 @@ Return all the bookings that the current user has made.
 * Require Authentication: true
 * Request
   * Method: GET
-  * URL: /users/:userId/bookings
+  * URL: /currentUser/bookings
   * Body: none
 
 * Successful Response
