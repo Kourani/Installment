@@ -3,9 +3,6 @@
 const { Model, Validator } = require('sequelize');
 
 
-const {
-  Model
-} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -57,6 +54,6 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   });
-  
+
   return User;
 };
