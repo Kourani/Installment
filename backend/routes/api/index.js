@@ -2,10 +2,9 @@
 const router = require('express').Router();
 const sessionRouter = require('./session.js');
 const usersRouter = require('./users.js');
-const { restoreUser } = require("../../utils/auth.js");
+const { restoreUser } = require('../../utils/auth.js');
 
-
-// router.use(restoreUser);
+router.use(restoreUser);
 
 router.use('/session', sessionRouter);
 
@@ -46,9 +45,7 @@ router.get('/set-token-cookie', async (_req, res) => {
 // ...
 
 // GET /api/restore-user
-const { restoreUser } = require('../../utils/auth.js');
 
-router.use(restoreUser);
 
 router.get(
   '/restore-user',
