@@ -14,7 +14,9 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 router.get('/' , async (req,res) =>{
 
-    const all = await Spot.findAll()
+    const all = await Booking.findAll({
+        
+    })
     return all
 })
 
