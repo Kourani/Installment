@@ -12,12 +12,23 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 
-router.get('/' , async (req,res) =>{
+//get all bookings for a spot based on the spots Id 
+router.get('/:spotId' , async (req,res) =>{
 
     const all = await Booking.findAll({
-        
+
+
     })
     return all
+})
+
+//get all of the current users bookings
+router.get('/:userId', async(req,res)=>{
+    const allBookings = await Booking.findAll({
+        where:{userId: req.params.userId}
+    })
+
+    res.json(allBookings)
 })
 
 

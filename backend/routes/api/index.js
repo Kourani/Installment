@@ -15,13 +15,13 @@ router.use('/session', sessionRouter);
 
 router.use('/users', usersRouter);
 
-router.use('/spot', spotRouter);
+router.use('/spots', spotRouter);
 
-router.use('/booking', bookingRouter);
+router.use('/bookings', bookingRouter);
 
-router.use('/image', imageRouter);
+router.use('/images', imageRouter);
 
-router.use('/review', reviewRouter);
+router.use('/reviews', reviewRouter);
 
 router.post('/test', (req, res) => {
   res.json({ requestBody: req.body });
