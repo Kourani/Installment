@@ -11,11 +11,11 @@ module.exports = {
       },
       userId:{
         type:Sequelize.INTEGER,
-        allowNull:true
+        allowNull:false
       },
       spotId:{
         type:Sequelize.INTEGER,
-        allowNull:true
+        allowNull:false
       },
       startDate: {
         type: Sequelize.STRING,

@@ -77,11 +77,12 @@ router.post('/', async(req,res) =>{
 
 //delete a spot !!
 router.delete('/:spotId', async(req,res) =>{
-    let spotDelete = Spot.findAll({
+    let spotDelete = await Spot.findAll({
         where: {id: req.params.spotId},
     })
 
-    let indexx = spotDelete.findIndex(req.params.spotId)
+    console.log(spotDelete)
+    // let indexx = spotDelete.findIndex(req.params.spotId)
     let updatedSpots = spotDelete.splice(indexx, 1)
 
 
