@@ -9,6 +9,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      userId:{
+        type:Sequelize.INTEGER,
+        allowNull:true
+      },
+      spotId:{
+        type:Sequelize.INTEGER,
+        allowNull:true
+      },
       startDate: {
         type: Sequelize.STRING,
         allowNull:false
