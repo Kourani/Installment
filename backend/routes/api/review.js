@@ -16,25 +16,18 @@ const { handleValidationErrors } = require('../../utils/validation');
 router.get('/:spotId/review' , async (req,res) =>{
 
 
-    const all = await Review.findAll({
-        where:{spotId:req.params.spotId},
-        include:['id', 'userId', 'spotId', 'review', 'stars'],
-
-        include:[{
-            model:User,
-            attributes:['id', 'firstName', 'lastName']
-        }],
-    })
+    const all = await Review.findAll()
 
     res.json(all)
 })
 
 //get all the reviews
-router.get('/:userId/review',async(req,res) =>{
+router.get('/current',async(req,res) =>{
 
+    console.log(req.params.current)
     const allReviews = await Review.findAll({
         where:{
-            id:req.params.userId
+            id:req.params.current
         }
     })
 
