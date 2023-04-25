@@ -12,22 +12,7 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 
-//get all reviews by a spots id
-router.get('/:spotId/review' , async (req,res) =>{
 
-    const find = await Review.findByPk(req.params.spotId)
-
-    if(!find){
-        res.status(404).send('Spot does not exist')
-    }
-
-    const all = await Review.findAll({
-        where:{spotId:req.params.spotId},
-        attributes:['review']
-    })
-
-    res.json(all)
-})
 
 //get reviews of current user
 router.get('/current',async(req,res) =>{

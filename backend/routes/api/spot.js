@@ -4,7 +4,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Spot, User, Review, Image, Sequelize, sequelize } = require('../../db/models');
+const { Spot, User, Review, Booking, Image, Sequelize, sequelize } = require('../../db/models');
 
 const router = express.Router();
 
@@ -228,7 +228,6 @@ router.put('/:spotId',async(req,res) =>{
 
 
 //create a review for a spot based on spots id
-
 router.post('/:spotId/reviews', async(req,res)=>{
 
     let find = await Spot.findByPk(req.params.spotId)
@@ -254,7 +253,6 @@ router.post('/:spotId/reviews', async(req,res)=>{
 
 
 //get spots of current user
-
 router.get('/current', async(req, res) =>{
 
     let currentSpot = await Spot.findAll({
@@ -267,10 +265,9 @@ router.get('/current', async(req, res) =>{
 })
 
 //create an image for a spot
+router.post('/:id/images', async(req,res)=>{
 
-router.post('/:spotId/images', async(req,res)=>{
-
-    let find = await Spot.findByPk(req.params.spotId)
+    let find = await Spot.findByPk(req.params.id)
 
     if(!find){
         res.status(404).send('Spot does not exist')
@@ -282,13 +279,51 @@ router.post('/:spotId/images', async(req,res)=>{
         preview
     } = req.body
 
-    let imageCreate = await Image.create({
+    let createImage = await Image.create({
         id,
         url,
         preview
+    },
+    {
+      where:{spotId:req.params.id}
     })
 
-    res.json(imageCreate)
+    console.log(createImage)
+
+    res.json(createImage)
+})
+
+//get all bookings for a spot by spot Id
+router.get('/:spotId/bookings' , async (req,res) =>{
+
+  const find = await Booking.findByPk(req.params.spotId)
+
+  if(!find){
+      res.status(404).send('Spot does not exist')
+  }
+
+  const BookingSpot = await Booking.findAll({
+      where:{spotId:req.params.spotId}
+  })
+
+  res.json(BookingSpot)
+})
+
+//get all reviews by a spots id
+router.get('/:spotId/reviews' , async (req,res) =>{
+
+  const find = await Review.findByPk(req.params.spotId)
+
+  if(!find){
+      res.status(404).send('Spot does not exist')
+  }
+
+  const all = await Review.findAll({
+      where:{spotId:req.params.spotId},
+      attributes:['review']
+  })
+
+  res.json(all)
 })
 
 
