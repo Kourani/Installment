@@ -27,6 +27,13 @@ module.exports = (sequelize, DataTypes) => {
       Spot.hasMany(
         models.Review,
         {foreignKey:'spotId'}
+      ),
+
+      Spot.hasMany(
+        models.Image,
+        {foreignKey:'imagableId',
+         constraints:false}
+
       )
     }
   }
@@ -52,12 +59,12 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false
     },
 
-    latitude:{
+    lat:{
       type:DataTypes.DECIMAL,
       allowNull:false
     },
 
-    longitude:{
+    lng:{
       type:DataTypes.DECIMAL,
       allowNull:false
     },

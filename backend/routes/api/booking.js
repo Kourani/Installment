@@ -12,7 +12,7 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 
-//get all bookings for a spot based on the spots Id 
+//get all bookings for a spot based on the spots Id
 router.get('/:spotId' , async (req,res) =>{
 
     const all = await Booking.findAll({
@@ -29,6 +29,25 @@ router.get('/:userId', async(req,res)=>{
     })
 
     res.json(allBookings)
+})
+
+
+//delete a booking !!
+router.delete('/:id', async(req,res) =>{
+
+
+
+    let bookingDelete = await Booking.findByPk(req.params.id)
+
+    if(!bookingDelete)
+    {
+        res.status(404)
+    }
+
+    await bookingDelete.destroy()
+
+
+    res.json({message:'Successfully Deleted'})
 })
 
 

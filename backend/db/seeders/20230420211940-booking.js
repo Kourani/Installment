@@ -31,16 +31,23 @@ module.exports = {
     {
       startDate:'afhskafh',
       endDate:'aaaaaa',
+      userId:1,
+      spotId:1
 
     },
     {
-      startDate:'afhskafh',
-      endDate:'aaaaaa',
+      startDate:'afhskafh1',
+      endDate:'aaaaaa1',
+      userId:2,
+      spotId:3
+
 
     },
     {
-      startDate:'afhskafh',
-      endDate:'aaaaaa',
+      startDate:'afhskafh2',
+      endDate:'aaaaaa2',
+      userId:3,
+      spotId:2
 
     },
   ], {});
