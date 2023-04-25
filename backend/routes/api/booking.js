@@ -13,9 +13,10 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 
 //get all of the current users bookings
-router.get('/:userId', async(req,res)=>{
+router.get('/current', async(req,res)=>{
+    
     const allBookings = await Booking.findAll({
-        where:{userId: req.params.userId}
+        where:{userId: req.user.id}
     })
 
     res.json(allBookings)
@@ -39,7 +40,7 @@ router.delete('/:id', async(req,res) =>{
 })
 
 
-//edit a booking 
+//edit a booking
 router.put('/:id', async(req,res)=>{
 
     const {
@@ -64,6 +65,9 @@ router.put('/:id', async(req,res)=>{
 
     res.json(editBooking)
 })
+
+
+
 
 
 module.exports = router;

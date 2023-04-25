@@ -273,22 +273,14 @@ router.post('/:id/images', async(req,res)=>{
         res.status(404).send('Spot does not exist')
     }
 
-    const {
-        id,
-        url,
-        preview
-    } = req.body
+    const { id, url, preview } = req.body
 
     let createImage = await Image.create({
         id,
         url,
-        preview
-    },
-    {
-      where:{spotId:req.params.id}
+        preview,
+        imagableId:req.params.id
     })
-
-    console.log(createImage)
 
     res.json(createImage)
 })
@@ -324,6 +316,32 @@ router.get('/:spotId/reviews' , async (req,res) =>{
   })
 
   res.json(all)
+})
+
+
+//create a booking based on spot id
+
+router.post('/:id/bookings', async(req,res)=>{
+
+  let find = await Spot.findByPk(req.params.id)
+
+  if(!find){
+    res.status(404).send('Spot does not exist')
+  }
+
+  const {startDate, endDate} = req.body
+
+  let createBooking = await Booking.create({
+    startDate,
+    endDate,
+    spotId:req.params.id,
+    userId:req.user.id
+  },
+  {
+    where:{spotId:req.params.id}
+  })
+
+  res.json(createBooking)
 })
 
 

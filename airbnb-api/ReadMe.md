@@ -534,7 +534,7 @@ Updates and returns an existing spot.
     * Content-Type: application/json
   * Body:
 
-    ```json
+    ```jsonvalidateSpot 
     {
       "address": "123 Disney Lane",
       "city": "San Francisco",
