@@ -12,11 +12,11 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 
-router.get('/' , async (req,res) =>{
+// router.get('/' , async (req,res) =>{
 
-    const all = await Spot.findAll()
-    return all
-})
+//     const all = await Spot.findAll()
+//     return all
+// })
 
 
 module.exports = router;

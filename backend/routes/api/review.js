@@ -17,11 +17,9 @@ const { handleValidationErrors } = require('../../utils/validation');
 //get reviews of current user
 router.get('/current',async(req,res) =>{
 
-    console.log(req.params.current)
-
     const allReviews = await Review.findAll({
         where:{
-            id:req.params.current
+            userId:req.user.id
         }
     })
 

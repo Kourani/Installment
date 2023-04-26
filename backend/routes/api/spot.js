@@ -66,29 +66,61 @@ const validateSpot = [
     handleValidationErrors
   ];
 
-//get all spots
-router.get('' , async (req,res) =>{
 
-    const allSpots = await Spot.findAll(
-    {
-        include:
-        [
-            {
-                model:Review,
-                attributes:[
-                    [Sequelize.fn('AVG', sequelize.col('stars')), 'average rating']
-                ]
-            },
 
-            {
-                model:Image,
-                attributes: ['preview']
-            },
-        ]
-    })
+  //get all spots
+router.get('/' , async (req,res) =>{
 
-    return res.json(allSpots)
+  const allSpots = await Spot.findAll(
+  {
+      include:
+      [
+          {
+              model:Review,
+              attributes:[
+                  [Sequelize.fn('AVG', sequelize.col('stars')), 'average rating']
+              ]
+          },
+
+          {
+              model:Image,
+              attributes: ['preview']
+          },
+      ]
+  })
+
+  return res.json(allSpots)
 })
+
+
+//get spots of current user
+
+router.get('/current', async(req,res)=>{
+
+  let currentSpot = await Spot.findAll({
+    include:
+      [
+          {
+              model:Review,
+              attributes:[
+                  [Sequelize.fn('AVG', sequelize.col('stars')), 'average rating']
+              ]
+          },
+
+          {
+              model:Image,
+              attributes: ['preview']
+          },
+      ],
+
+      where:{userId:req.user.id}
+  })
+
+  res.json(currentSpot)
+})
+
+
+
 
 //get details for a spot from an id
 router.get('/:id' , async (req,res) =>{
@@ -251,19 +283,6 @@ router.post('/:spotId/reviews', async(req,res)=>{
     res.json(reviewCreate)
 })
 
-
-//get spots of current user
-router.get('/current', async(req, res) =>{
-
-    let currentSpot = await Spot.findAll({
-        where: id = req.user.id
-    })
-
-    console.log(currentSpot)
-
-    res.json(currentSpot)
-})
-
 //create an image for a spot
 router.post('/:id/images', async(req,res)=>{
 
@@ -336,12 +355,28 @@ router.post('/:id/bookings', async(req,res)=>{
     endDate,
     spotId:req.params.id,
     userId:req.user.id
-  },
-  {
-    where:{spotId:req.params.id}
   })
 
   res.json(createBooking)
+})
+
+
+
+
+//delete a spots image !!
+router.delete('/:spotId', async(req,res) =>{
+
+  let spotDelete = await Spot.findByPk(req.params.spotId)
+
+  if(!spotDelete)
+  {
+      res.status(404)
+  }
+
+  await spotDelete.destroy()
+
+
+  res.json({message:'Successfully Deleted'})
 })
 
 
