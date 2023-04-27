@@ -4,7 +4,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Review } = require('../../db/models');
+const { Review, User, Spot, Image } = require('../../db/models');
 
 const router = express.Router();
 
@@ -15,41 +15,68 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 
 //get reviews of current user
-router.get('/current',async(req,res) =>{
+router.get('/current',requireAuth, async(req,res) =>{
 
     const allReviews = await Review.findAll({
         where:{
             userId:req.user.id
+        },
+        include:[{
+            model:User,
+            attributes:['id', 'firstName', 'lastName']
+        },
+        {
+            model:Spot,
+            attributes:['id', 'userId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
+
+            include:[
+                {model:Image,
+                attributes:['preview']}
+            ]
+        },
+        {
+            model:Image,
         }
+    ]
     })
 
     res.json(allReviews)
 })
 
 //delete a review !!
-router.delete('/:id', async(req,res) =>{
+router.delete('/:id', requireAuth, async(req,res) =>{
 
+    let deleteReview = await Review.findByPk(req.params.id)
 
-
-    let reviewDelete = await Review.findByPk(req.params.id)
-
-    if(!reviewDelete)
+    if(!deleteReview)
     {
-        res.status(404)
+        res.status(404).send('Review does not exist')
+        return
     }
 
-    await reviewDelete.destroy()
+    if(deleteReview.userId === req.user.id)
+    {
+        await deleteReview.destroy()
+        res.json({message:'Successfully Deleted'})
+        return
+    }
 
 
-    res.json({message:'Successfully Deleted'})
+    console.log(deleteReview.userId, 'creator'),
+    console.log(req.user.id, 'current user')
+
+    res.send('You did not write this review')
+
+
+
 })
 
 //edit a review
 router.put('/:id', async(req,res)=>{
 
-    let find = await Review.findByPk(req.params.id)
+    let findReview = await Review.findByPk(req.params.id)
 
-    if(!find){
+    if(!findReview){
         res.status(404).send('review does not exist')
     }
 
@@ -58,18 +85,14 @@ router.put('/:id', async(req,res)=>{
         stars
     } = req.body
 
-    let reviewEdit = await Review.update({
+    await findReview.update({
         review,
         stars
-    },
-    {
-        where:{id:req.params.id}
-    }
-    )
+    })
 
-    let last = await Review.findByPk(reviewEdit[0])
+    console.log(findReview)
 
-    res.json(last)
+    res.json(findReview)
 })
 
 
