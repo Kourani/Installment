@@ -215,15 +215,6 @@ router.get('/:id' , async (req,res) =>{
 router.post('/', requireAuth, validateSpot, async(req,res) =>{
 
 
-  // if(!req.user){
-  //       const err = new Error('Authentication required');
-  //       err.title = 'Authentication required';
-  //       err.errors = { message: 'Authentication required' };
-  //       err.status = 401;
-
-  //     }
-
-
     const {address,
         city,
         state,
@@ -348,7 +339,7 @@ router.post('/:spotId/reviews', requireAuth, async(req,res)=>{
     }
 
   }
-  
+
     let createReview = await Review.create({
         userId: req.user.id,
         spotId:req.params.spotId,
@@ -381,19 +372,38 @@ router.post('/:id/images', async(req,res)=>{
 })
 
 //get all bookings for a spot by spot Id
-router.get('/:spotId/bookings' , requireAuth, async (req,res) =>{
+router.get('/:id/bookings' ,requireAuth, async (req,res) =>{
 
-  const find = await Booking.findByPk(req.params.spotId)
 
-  if(!find){
-      res.status(404).send('Spot does not exist')
-  }
+  const findSpot = await Spot.findByPk(req.params.id)
 
-  const BookingSpot = await Booking.findAll({
-      where:{spotId:req.params.spotId}
+  if(!findSpot){
+    res.status(404).send('Spot does not exist')
+    }
+
+    console.log(findSpot.userId, 'owner')
+    console.log(req.user.id, 'current')
+
+
+    if(findSpot.userId !== req.user.id)
+    {
+      const bookingInfo = await Booking.findAll({
+        where:{spotId:req.params.id},
+        attributes:['spotId', 'startDate', 'endDate']
+      })
+
+      res.json(bookingInfo)
+    }
+
+  const bookingSpot = await Booking.findAll({
+    where:{spotId:req.params.id},
+    include:[{
+      model:User,
+      attributes:['id', 'firstName', 'lastName']
+    }]
   })
 
-  res.json(BookingSpot)
+  res.json(bookingSpot)
 })
 
 //get all reviews by a spots id
@@ -426,20 +436,34 @@ router.get('/:spotId/reviews' , async (req,res) =>{
 
 router.post('/:id/bookings', requireAuth, async(req,res)=>{
 
-  let find = await Spot.findByPk(req.params.id)
-
-  if(!find){
-    res.status(404).send('Spot does not exist')
-  }
-
+  //gets the data ::
   const {startDate, endDate} = req.body
 
-  console.log(req.user.id, 'current user')
-  console.log(find.userId, 'owner')
+//returns an array of object of spots
+  let find = await Spot.findByPk(req.params.id)
+
+  //if the desired spot does not exist 404
+  if(!find){
+    res.status(404).send('Spot does not exist')
+    return
+  }
+
+
+  let findBooking = await Booking.findAll({
+    where:{spotId:req.params.id}
+  })
+
+    for(let i=0; i<findBooking.length; i++){
+
+      if(findBooking[i].startDate === startDate && findBooking[i].endDate === endDate){
+        res.status(403).send('Booking already exists for the spot on the selected dates')
+        return
+      }
+    }
 
   if(find.userId !== req.user.id)
   {
-    let createBooking = await Booking.create({
+    createBooking = await Booking.create({
       startDate,
       endDate,
       spotId:req.params.id,
@@ -448,6 +472,7 @@ router.post('/:id/bookings', requireAuth, async(req,res)=>{
     res.json(createBooking)
   }
 
+  res.send('Owner of the spot cannot create a booking')
 })
 
 
