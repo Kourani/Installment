@@ -139,9 +139,9 @@ router.get('/current', requireAuth, async(req,res)=>{
       [
           {
               model:Review,
-              attributes:[
-                  [Sequelize.fn('AVG', sequelize.col('stars')), 'average rating']
-              ]
+              // attributes:[
+              //     [Sequelize.fn('AVG', sequelize.col('stars')), 'average rating']
+              // ]
           },
 
           {
@@ -153,7 +153,18 @@ router.get('/current', requireAuth, async(req,res)=>{
       where:{userId:req.user.id}
   })
 
-  res.json(currentSpot)
+
+  console.log(req.user.id)
+  for(let i=0; i<currentSpot.length; i++)
+  {
+    if(currentSpot[i].userId === req.user.id)
+    {
+      res.json(currentSpot)
+    }
+  }
+
+  res.send('you are not the owner of this spot')
+
 })
 
 
@@ -264,13 +275,13 @@ router.delete('/:id', requireAuth, async(req,res) =>{
 })
 
 //edit a spot
-router.put('/:spotId',async(req,res) =>{
+router.put('/:spotId',requireAuth, async(req,res) =>{
 
-    let find = await Spot.findByPk(req.params.spotId)
+    let findSpot = await Spot.findByPk(req.params.spotId)
 
-    if(!find)
+    if(!findSpot)
     {
-        res.status(404).send('invalid spot')
+        res.status(404).send('Spot does not exist')
     }
 
     const { address,
@@ -283,57 +294,69 @@ router.put('/:spotId',async(req,res) =>{
         description,
         price } = req.body
 
-    let editSpot = await Spot.update({
-            address,
-            city,
-            state,
-            country,
-            lat,
-            lng,
-            name,
-            description,
-            price
-        },
+  if(findSpot.userId === req.user.id)
+  {
+    await findSpot.update({
+      address,
+      city,
+      state,
+      country,
+      lat,
+      lng,
+      name,
+      description,
+      price
+  })
 
-        {
-            where: {id: req.params.spotId}
-        })
+  res.json(findSpot)
+  }
 
+  res.json('you do not own this spot')
 
-        // let last
-
-        // for(let i=0; i<editSpot.length; i++){
-        //     last = await Spot.findByPk(i)
-        //     res.json(last)
-        // }
-
-        let last = await Spot.findByPk(editSpot[0])
-        res.json(last)
 })
 
 
 //create a review for a spot based on spots id
-router.post('/:spotId/reviews', async(req,res)=>{
+router.post('/:spotId/reviews', requireAuth, async(req,res)=>{
 
     let find = await Spot.findByPk(req.params.spotId)
     if(!find){
         res.status(404).send('Spot does not exist')
     }
 
-    const { review, stars} = req.body
+    const {review, stars} = req.body
 
-    let reviewCreate = await Review.create({
+
+    let findReview = await Review.findAll({
+      where:{spotId: req.params.spotId}
+    })
+
+  //does not allow the current user to create a second review for the same spot
+
+  // console.log(findReview.review)
+  // console.log(findReview.userId, 'userId')
+  // console.log(req.user.id)
+
+  // res.json(findReview)
+  for(let i=0; i<findReview.length; i++)
+  {
+    if(findReview[i].userId === req.user.id && findReview[i].review){
+
+      console.log('here')
+      res.status(403).send('you have already created a review for this spot')
+      return
+    }
+
+  }
+  
+    let createReview = await Review.create({
         userId: req.user.id,
         spotId:req.params.spotId,
         review,
         stars,
-        },
+        })
 
-        {
-        where:{id:req.params.spotId}
-    })
-
-    res.json(reviewCreate)
+    res.json(createReview)
 })
 
 //create an image for a spot
@@ -413,7 +436,7 @@ router.post('/:id/bookings', requireAuth, async(req,res)=>{
 
   console.log(req.user.id, 'current user')
   console.log(find.userId, 'owner')
-  
+
   if(find.userId !== req.user.id)
   {
     let createBooking = await Booking.create({

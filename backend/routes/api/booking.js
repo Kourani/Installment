@@ -93,7 +93,7 @@ router.delete('/:id', requireAuth, async(req,res) =>{
     }
 
       //if the year and month for booking and today are the same but the day is prior CANNOT delete
-    if(startDate[0] === todayDate[0] && startDate[1] === todayDate[1] && startDate[2] < todayDate)
+    if(startDate[0] === todayDate[0] && startDate[1] === todayDate[1] && startDate[2] < todayDate[2])
     {
         res.status(400).send('Cannot delete booking, Booking was set to start in a prior day of the month')
         return
@@ -125,35 +125,118 @@ router.delete('/:id', requireAuth, async(req,res) =>{
 
 
 //edit a booking
-router.put('/:id', async(req,res)=>{
+router.put('/:id', requireAuth, async(req,res)=>{
 
+    const {startDate, endDate}=req.body
 
     let findBooking = await Booking.findByPk(req.params.id)
 
-    const {
-        startDate,
-        endDate,
+    if(!findBooking){
+        res.status(404).send('Booking does not exist')
+        return
+    }
 
-    }=req.body
+        //sets the current date in the following format example '2023-1-25' with january being 0
+        let  currentTime = new Date()
+        const day = String(currentTime.getDate()).padStart(2, '0');
+        const  month = String(currentTime.getMonth() + 1).padStart(2, '0');
+        const year = currentTime.getFullYear();
 
-
-    console.log(findBooking)
-
-    // await findBooking.update({
-    //     startDate,
-    //     endDate,
-    //     userId: req.user.id
-
-    // })
+        currentTime = year + '-' + month + '-' + day;
 
 
-//     const jane = await User.create({ name: "Jane" });
-// jane.favoriteColor = "blue"
-// await jane.update({ name: "Ada" })
-// // The database now has "Ada" for name, but still has the default "green" for favorite color
-// await jane.save()
+        let arr = findBooking.endDate.split('-')
+        let arr2 = findBooking.startDate.split('-')
+        let curr = currentTime.split('-')
+        let end1 = endDate.split('-')
+        let start1 = startDate.split('-')
 
-    res.json(findBooking)
+        console.log(findBooking.endDate, 'aaa')
+        console.log(endDate, 'bbbbbb')
+
+
+        let today = []
+        let end = []
+        let start = []
+        let endRequest = []
+        let startRequest = []
+
+        for(let i=0; i<arr.length; i++){
+
+            let convert = parseInt(arr[i])
+            end.push(convert)
+
+            let convert2 = parseInt(arr2[i])
+            start.push(convert2)
+
+            let todaya = parseInt(curr[i])
+            today.push(todaya)
+
+            let end2 = parseInt(end1[i])
+            endRequest.push(end2)
+
+            let start2 = parseInt(start1[i])
+            startRequest.push(start2)
+        }
+
+        // console.log(end)
+        // console.log(today)
+        // console.log(startRequest)
+        // console.log(endRequest)
+
+    //if the year for booking is prior to todays year CANNOT edit booking
+    if(end[0] < today[0])
+    {
+        res.status(400).send('Cannot edit booking, Booking was set to end in a prior year')
+        return
+    }
+
+    //if the year for booking and today are the same but the month is prior CANNOT edit booking
+    if(end[0] === today[0] && end[1]<today[1])
+    {
+        res.status(400).send('Cannot edit booking, Booking was set to end in a prior month')
+        return
+    }
+
+      //if the year and month for booking and today are the same but the day is prior CANNOT edit booking
+    if(end[0] === today[0] && end[1] === today[1] && end[2] < today[2])
+    {
+        res.status(400).send('Cannot edit booking, Booking was set to end in a prior day of the month')
+        return
+    }
+
+
+    console.log(end)
+    console.log(endRequest)
+
+        //if
+        if(
+            end[0] === endRequest[0] &&
+            end[1] === endRequest[1] &&
+            end[2] === endRequest[2] &&
+            start[0] === startRequest[0] &&
+            start[1] === startRequest[1] &&
+            start[2] === startRequest[2]
+            )
+        {
+            res.status(403).send('Cannot edit booking, Booking already exists with those start and end dates')
+            return
+        }
+
+
+    if(findBooking.userId === req.user.id)
+    {
+        await findBooking.update({
+            startDate,
+            endDate
+        })
+
+
+    res.send(findBooking)
+    }
+
+
+    res.send('you did not create this booking')
 
 })
 

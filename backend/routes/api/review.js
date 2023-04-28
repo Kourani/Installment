@@ -72,7 +72,7 @@ router.delete('/:id', requireAuth, async(req,res) =>{
 })
 
 //edit a review
-router.put('/:id', async(req,res)=>{
+router.put('/:id', requireAuth, async(req,res)=>{
 
     let findReview = await Review.findByPk(req.params.id)
 
@@ -85,14 +85,21 @@ router.put('/:id', async(req,res)=>{
         stars
     } = req.body
 
-    await findReview.update({
-        review,
-        stars
-    })
+    if(findReview.userId === req.user.id) {
+        await findReview.update({
+            review,
+            stars
+        })
 
-    console.log(findReview)
+        res.json(findReview)
+    }
 
-    res.json(findReview)
+
+    // console.log(findReview)
+
+    res.send('you did not write this review')
+
+
 })
 
 
