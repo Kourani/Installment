@@ -44,7 +44,8 @@ module.exports = {
       },
       lng: {
         type: Sequelize.DECIMAL,
-        allowNull:false
+        allowNull:false,
+       
       },
       name: {
         type: Sequelize.STRING

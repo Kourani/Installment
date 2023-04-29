@@ -120,7 +120,7 @@ router.delete('/:id', requireAuth, async(req,res) =>{
         return
     }
 
-    res.send('You did not book this trip')
+    res.status(403).json({message:'Forbidden'})
 })
 
 
@@ -219,7 +219,7 @@ router.put('/:id', requireAuth, async(req,res)=>{
             start[2] === startRequest[2]
             )
         {
-            res.status(403).send('Cannot edit booking, Booking already exists with those start and end dates')
+            res.statusCode(403).json({message:'Forbidden', statusCode:403})
             return
         }
 
@@ -232,11 +232,11 @@ router.put('/:id', requireAuth, async(req,res)=>{
         })
 
 
-    res.send(findBooking)
+    res.json(findBooking)
     }
 
 
-    res.send('you did not create this booking')
+    res.statusCode(403).json({message:'Forbidden', statusCode:403})
 
 })
 

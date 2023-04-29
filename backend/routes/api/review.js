@@ -11,6 +11,22 @@ const router = express.Router();
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
+const validateReview = [
+
+    check('review')
+      .exists({ checkFalsy: true })
+      .isAlphanumeric('en-US',{ignore: ' '})
+      .notEmpty()
+      .withMessage('Please provide a valid review.'),
+
+    check('stars')
+      .exists({ checkFalsy: true })
+      .isNumeric()
+      .notEmpty()
+      .withMessage('Please provide a valid rating.'),
+
+    handleValidationErrors
+  ];
 
 
 
@@ -65,12 +81,13 @@ router.delete('/:id', requireAuth, async(req,res) =>{
     console.log(deleteReview.userId, 'creator'),
     console.log(req.user.id, 'current user')
 
-    res.send('You did not write this review')
+    // res.send('You did not write this review')
+    res.status(403).json({message:'Forbidden'})
 
 })
 
 //edit a review
-router.put('/:id', requireAuth, async(req,res)=>{
+router.put('/:id', requireAuth, validateReview, async(req,res)=>{
 
     let findReview = await Review.findByPk(req.params.id)
 
@@ -95,7 +112,8 @@ router.put('/:id', requireAuth, async(req,res)=>{
 
     // console.log(findReview)
 
-    res.send('you did not write this review')
+    // res.send('you did not write this review')
+    res.status(403).json({message:'Forbidden'})
 })
 
 //create an image for a review
@@ -111,7 +129,8 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
     }
 
     if(find.userId !== req.user.id){
-      res.send('you did not write this review')
+    //   res.send('you did not write this review')
+    res.status(403).json({message:'Forbidden'})
       return
     }
 
@@ -123,8 +142,14 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
         imagableType:'Review'
     })
 
+    let findCreatedImageReview = await Image.findAll({
+        where:{id:createImageReview.id},
+        attributes:{exclude:['preview','imagableId', 'imagableType', 'updatedAt', 'createdAt']}
+      })
 
-    res.json(createImageReview)
+
+
+    res.json(findCreatedImageReview)
 })
 
 

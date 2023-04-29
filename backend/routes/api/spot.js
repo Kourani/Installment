@@ -12,6 +12,7 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const spot = require('../../db/models/spot');
 
+// const { validationResult } = require('express-validator');
 
 const validateSpot = [
     // check('userId')
@@ -19,27 +20,39 @@ const validateSpot = [
     //     .isNumeric()
     //     .notEmpty()
     //     .withMessage('Please provide a valid userId.'),
-    check('address')
-      .exists({ checkFalsy: true })
-    //   .isAlpha()
-      .notEmpty()
-      .withMessage('Please provide a valid address.'),
+
     check('city')
       .exists({ checkFalsy: true })
-    //   .isAlpha()
+      .isAlpha('en-US',{ignore: ' '})
       .notEmpty()
       .withMessage('Please provide a valid city.'),
     check('state')
       .exists({ checkFalsy: true })
-    //   .isAlpha()
+      .isAlpha('en-US',{ignore: ' '})
       .notEmpty()
       .withMessage('Please provide a valid state.'),
     check('country')
       .exists({ checkFalsy: true })
-    //   .isAlpha()
+      .isAlpha('en-US',{ignore: ' '})
       .notEmpty()
       .withMessage('Please provide a valid country.'),
-    check('lat')
+    check('name')
+      .exists({ checkFalsy: true })
+      .isAlpha('en-US',{ignore: ' '})
+      .notEmpty()
+      .withMessage('Please provide a valid name.'),
+    check('description')
+      .exists({ checkFalsy: true })
+      .isAlpha('en-US',{ignore: ' '})
+      .notEmpty()
+      .withMessage('Please provide a valid description.'),
+
+      check('address')
+      .exists({ checkFalsy: true })
+      .isAlphanumeric('en-US',{ignore: ' '})
+      .notEmpty()
+      .withMessage('Please provide a valid address.'),
+      check('lat')
       .exists({ checkFalsy: true })
       .isNumeric()
       .notEmpty()
@@ -49,28 +62,114 @@ const validateSpot = [
       .isNumeric()
       .notEmpty()
       .withMessage('Please provide a valid longitude.'),
-    check('name')
-      .exists({ checkFalsy: true })
-    //   .isAlpha()
-      .notEmpty()
-      .withMessage('Please provide a valid name.'),
-    check('description')
-      .exists({ checkFalsy: true })
-    //   .isAlpha()
-      .notEmpty()
-      .withMessage('Please provide a valid description.'),
     check('price')
       .exists({ checkFalsy: true })
-      .isDecimal()
+      .isNumeric()
       .notEmpty()
       .withMessage('Please provide a valid price.'),
+
     handleValidationErrors
   ];
 
 
+const validateReview = [
+
+  check('review')
+    .exists({ checkFalsy: true })
+    .isAlphanumeric('en-US',{ignore: ' '})
+    .notEmpty()
+    .withMessage('Please provide a valid review.'),
+
+  check('stars')
+    .exists({ checkFalsy: true })
+    .isNumeric()
+    .notEmpty()
+    .withMessage('Please provide a valid rating.'),
+
+  handleValidationErrors
+];
+
+
+const validateQuery= [
+
+  check('page')
+    .exists({ checkFalsy: true })
+    .isNumeric()
+    .notEmpty()
+    .withMessage('Please provide a valid page.'),
+
+  check('size')
+    .exists({ checkFalsy: true })
+    .isNumeric()
+    .notEmpty()
+    .withMessage('Please provide a valid size.'),
+
+    check('minLat')
+    .optional()
+    // .exists({ checkFalsy: true })
+    .isNumeric()
+    // .notEmpty()
+    .withMessage('Please provide a valid Latitude.'),
+
+    check('maxLat')
+    .optional()
+    // .exists({ checkFalsy: true })
+    .isNumeric()
+    // .notEmpty()
+    .withMessage('Please provide a valid Latitude.'),
+
+    check('minLng')
+    .optional()
+    // .exists({ checkFalsy: true })
+    .isNumeric()
+    // .notEmpty()
+    .withMessage('Please provide a valid Longitude.'),
+
+    check('maxLng')
+    .optional()
+    // .exists({ checkFalsy: true })
+    .isNumeric()
+    // .notEmpty()
+    .withMessage('Please provide a valid Longitude.'),
+
+    check('minPrice')
+    .optional()
+    // .exists({ checkFalsy: true })
+    .isNumeric()
+    // .notEmpty()
+    .withMessage('Please provide a valid Price.'),
+
+    check('maxPrice')
+    .optional()
+    // .exists({ checkFalsy: true })
+    .isNumeric()
+    // .notEmpty()
+    .withMessage('Please provide a valid Price.'),
+
+
+  handleValidationErrors
+];
+
+
+
 
   //get all spots
-router.get('/' , async (req,res) =>{
+router.get('/', validateQuery, async (req,res) =>{
+
+  // await check('page').isNumeric().run(req);
+  // await check('size').isNumeric({ min: 6 }).run(req);
+  // await check('minLat').isNumeric().run(req);
+  // await check('maxLat').isNumeric({ min: 6 }).run(req);
+  // await check('minLng').isNumeric().run(req);
+  // await check('maxLng').isNumeric({ min: 6 }).run(req);
+  // await check('minPrice').isNumeric().run(req);
+  // await check('maxPrice').isNumeric({ min: 6 }).run(req);
+
+  // const result = validationResult(req);
+
+  // if (!result.isNumeric()) {
+  //   return res.status(400).json({ message: 'provide a valid number'});
+  // }
 
   const spotReviews = await Spot.findAll(
     {
@@ -154,7 +253,144 @@ router.get('/' , async (req,res) =>{
       plainFirst[h].averageRating = average[h]
     }
 
-    res.json(plainFirst);
+
+    let {
+      page,
+      size,
+      minLat,
+      maxLat,
+      minLng,
+      maxLng,
+      minPrice,
+      maxPrice} = req.query
+
+      console.log(page)
+      console.log(size)
+      console.log(minPrice)
+      console.log(maxPrice)
+      console.log(minLng)
+      console.log(maxLng)
+      console.log(minLat)
+      console.log(maxLat)
+
+
+
+
+
+      page = parseInt(page)
+      size = parseInt(size)
+
+      if(isNaN(page)) page=2
+      if(page<=0) page =2
+
+      if(isNaN(size)) size=25
+      if(size<=0) size =25
+
+       // variable = condition ? True : False
+      // size = size ? 10 ? 10 : size
+
+
+
+
+
+      // console.log(req.query)
+
+      for(let keys in req.query)
+      {
+
+        if(keys)
+        {
+          let minLng1 = parseInt(minLng)
+          let maxLng2 = parseInt(maxLng)
+
+          let minLat1 = parseInt(minLat)
+          let maxLat2 = parseInt(maxLat)
+
+          let minPrice1 = parseInt(minPrice)
+          let maxPrice2 = parseInt(maxPrice)
+
+          for(let i=0; i<plainFirst.length; i++){
+
+            // console.log(plainFirst[i].lat, 'lat')
+            // console.log(plainFirst[i].lng, 'lng')
+            // console.log(plainFirst[i].price, 'price')
+            // console.log(minLat, 'minLAT')
+            // console.log(minLng, 'minLNG')
+            // console.log(minPrice, 'minPRICE')
+            // console.log(maxLat, 'maxLAT')
+            // console.log(maxLng, 'maxLNG')
+            // console.log(maxPrice, 'maxPRICE')
+
+            let newLat = parseInt(plainFirst[i].lat)
+            let newLng = parseInt(plainFirst[i].lng)
+            let newPrice = parseInt(plainFirst[i].price)
+
+            // console.log(newLat)
+            // console.log(newLng)
+            // console.log(newPrice)
+
+            //first condition LAT ONLY
+            if (newLat >= minLat && newLat <=maxLat
+                || newLat>=minLat
+                || newLat<=maxLat
+              ){
+                res.json({
+                  plainFirst,
+                  page,
+                  size
+                })
+                return
+              }
+
+            //second condition LNG ONLY
+            if (newLng >= minLng && newLng<=maxLng
+                || newLng >= minLng
+                || newLng <=maxLng
+              ){
+                res.json({
+                  plainFirst,
+                  page,
+                  size
+                })
+                return
+            }
+
+            //third condition PRICE ONLY
+            if (newPrice >= minPrice && newPrice<=maxPrice
+              ||newPrice >= minPrice
+              ||newPrice <= maxPrice
+              ) {
+                res.json({
+                  plainFirst,
+                  page,
+                  size
+                })
+                return
+            }
+
+            if ( (newPrice >= minPrice && newPrice<=maxPrice ||newPrice >= minPrice
+              ||newPrice <= maxPrice) &&
+                 (newLng >= minLng && newLng<=maxLng || newLng >= minLng
+                  || newLng <=maxLng) &&
+                 (newLat >= minLat && newLat <=maxLat  || newLat>=minLat
+                  || newLat<=maxLat)
+              ) {
+                res.json({
+                  plainFirst,
+                  page,
+                  size
+                })
+                return
+            }
+
+          }
+
+        }
+      }
+
+
+
+    res.json('there is no exisiting spot with your search criteria');
 
 })
 
@@ -285,6 +521,7 @@ router.get('/current', requireAuth, async(req,res)=>{
   }
 
   res.send('you do not own any spots')
+  // res.status(403).json({message:'Forbidden'})
 
 })
 
@@ -333,7 +570,7 @@ router.get('/:id' , async (req,res) =>{
 
 
 //create a spot
-router.post('/', requireAuth, validateSpot, async(req,res) =>{
+router.post('/', requireAuth,  validateSpot, async(req,res) =>{
 
 
     const {address,
@@ -378,16 +615,20 @@ router.delete('/:id', requireAuth, async(req,res) =>{
         if(spotDelete.userId === req.user.id)
         {
           await spotDelete.destroy()
-          res.json({message:'Successfully Deleted'})
+          res.json({
+            message:'Successfully Deleted',
+            statusCode:'200'
+          })
           return
         }
 
-        res.send('you are not the owner of this Spot')
+        // res.send('you are not the owner of this Spot')
+        res.status(403).json({message:'Forbidden'})
 
 })
 
 //edit a spot
-router.put('/:spotId',requireAuth, async(req,res) =>{
+router.put('/:spotId',requireAuth, validateSpot, async(req,res) =>{
 
     let findSpot = await Spot.findByPk(req.params.spotId)
 
@@ -423,13 +664,14 @@ router.put('/:spotId',requireAuth, async(req,res) =>{
   res.json(findSpot)
   }
 
-  res.json('you do not own this spot')
+  // res.json('you do not own this spot')
+  res.status(403).json({message:'Forbidden'})
 
 })
 
 
 //create a review for a spot based on spots id
-router.post('/:spotId/reviews', requireAuth, async(req,res)=>{
+router.post('/:spotId/reviews', requireAuth, validateReview, async(req,res)=>{
 
     let find = await Spot.findByPk(req.params.spotId)
     if(!find){
@@ -455,7 +697,8 @@ router.post('/:spotId/reviews', requireAuth, async(req,res)=>{
     if(findReview[i].userId === req.user.id && findReview[i].review){
 
       console.log('here')
-      res.status(403).send('you have already created a review for this spot')
+      // res.status(403).send('you have already created a review for this spot')
+      res.status(403).json({message:'Forbidden'})
       return
     }
 
@@ -484,7 +727,8 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
     }
 
     if(find.userId !== req.user.id){
-      res.send('you are not the owner of the spot')
+      // res.send('you are not the owner of the spot')
+      res.status(403).json({message:'Forbidden'})
       return
     }
 
@@ -496,12 +740,21 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
         imagableType:'Spot'
     }, {
       attributes:{
-        exclude:['imagableId']
+        exclude:['imagableId', 'imagableType', 'updatedAt', 'createdAt']
       }
     })
 
+    console.log(createImage.id, 'idcreate')
 
-    res.json(createImage)
+    let findCreatedImage = await Image.findAll({
+      where:{id:createImage.id},
+      attributes:{exclude:['imagableId', 'imagableType', 'updatedAt', 'createdAt']}
+    })
+
+    // console.log(createImage)
+
+
+    res.json(findCreatedImage)
 })
 
 //get all bookings for a spot by spot Id
@@ -589,7 +842,8 @@ router.post('/:id/bookings', requireAuth, async(req,res)=>{
     for(let i=0; i<findBooking.length; i++){
 
       if(findBooking[i].startDate === startDate && findBooking[i].endDate === endDate){
-        res.status(403).send('Booking already exists for the spot on the selected dates')
+        // res.status(403).send('Booking already exists for the spot on the selected dates')
+        res.status(403).json({message:'Forbidden'})
         return
       }
     }
@@ -605,7 +859,8 @@ router.post('/:id/bookings', requireAuth, async(req,res)=>{
     res.json(createBooking)
   }
 
-  res.send('Owner of the spot cannot create a booking')
+  // res.send('Owner of the spot cannot create a booking')
+  res.status(403).json({message:'Forbidden', status:403})
 })
 
 

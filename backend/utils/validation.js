@@ -9,6 +9,14 @@ const handleValidationErrors = (req, _res, next) => {
   if (!validationErrors.isEmpty()) {
     const errors = {};
 
+    // if(!validationErrors.isNumeric()){
+    //   errors = {}
+    // }
+
+    // if(!validationErrors.isDecimal()){
+    //   errors={}
+    // }
+
 
     // console.log(validationErrors)
 

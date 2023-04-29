@@ -47,7 +47,8 @@ router.delete('/spot-images/:id', requireAuth, async(req,res)=>{
 
     }
 
-    res.send('you are not the owner of this Spot')
+    // res.send('you are not the owner of this Spot')
+    res.status(403).json({message:'Forbidden'})
 
 })
 
@@ -82,7 +83,8 @@ router.delete('/review-images/:id', requireAuth, async(req,res)=>{
 
     }
 
-    res.send('you did not write this review')
+    // res.send('you did not write this review')
+    res.status(403).json({message:'Forbidden'})
 
 })
 
