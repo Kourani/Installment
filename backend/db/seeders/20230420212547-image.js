@@ -1,7 +1,5 @@
 'use strict';
 
-
-
 const bcrypt = require("bcryptjs");
 
 let options = {};
