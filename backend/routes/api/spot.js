@@ -72,61 +72,90 @@ const validateSpot = [
   //get all spots
 router.get('/' , async (req,res) =>{
 
-  const allSpots = await Spot.findAll(
-  {
-    // group:['id'],
-      include:
-      [
+  const spotReviews = await Spot.findAll(
+    {
+      // group:['id'],
+        include:
+        [
+            {
+                model:Review,
+                attributes:['spotId','stars']
+            },
+        ]
+    })
 
-          // {
-          //   model:Image,
-          //   attributes: ['preview']
-          // },
+    // res.json(spotReviews)
 
+    console.log(spotReviews.length, 'spots') //# of spots
+    console.log(spotReviews[0].Reviews.length, 'reviews')
+
+    let undy = []
+
+    for(let i=0; i<spotReviews.length; i++){
+      undy.push(spotReviews[i].Reviews)
+    }
+
+
+    // res.json(undy)
+
+    let twos = []
+
+    for(let a=0; a<spotReviews.length; a++){
+
+      twos.push(spotReviews[a].Reviews.length)
+
+    }
+
+
+    let average = []
+
+    for(let z = 0; z<undy.length; z++){
+
+      if(Array.isArray(undy[z]) && undy[z].length>0)
+      {
+        console.log('99999999')
+        if(undy[z].length === twos[z]){
+          // console.log(undy[z].length)
+          // console.log(twos[z].length)
+          console.log('1111111111')
+          let sum = 0
+          for(let y=0; y<undy[z].length; y++){
+            console.log('aaaaaaa')
+
+            sum = sum + undy[z][y].stars
+            console.log(sum)
+            // average.push(sum/twos[z])
+
+          }
+          average.push(sum/twos[z])
+        }
+      }
+    }
+
+    console.log(average.length)
+    console.log(average)
+
+
+    //finds all the spots includes the images preview
+    const allSpots = await Spot.findAll({
+        include:[
           {
-              model:Review,
-              group:['spotId'],
-              attributes:[
-                  [Sequelize.fn('AVG', sequelize.col('stars')), 'average rating'],
-              ],
-          },
+            model:Image,
+            attributes:['preview']
+          }
+        ]
+      })
 
+    //you cannot add to the object until you get the PLAIN OBJECTS !!
+    const plainFirst = allSpots.map(x => x.get({ plain: true }))
 
-      ]
-  })
+    //adds the averageRating key value pair into the object
+    for(let h=0; h<average.length; h++){
+      plainFirst[h].averageRating = average[h]
+    }
 
+    res.json(plainFirst);
 
-  // for(let i=0; i<allSpots.length; i++)
-  // {
-  //   for(let keys in allSpots)
-  //   {
-  //     const averageReview = await Review.findAll({
-  //       group:['spotId'],
-  //       attributes:[
-  //         [Sequelize.fn('AVG', sequelize.col('stars')), 'average rating'],
-  //       ]
-  //     })
-
-  //     console.log(averageReview)
-
-  //     // let allSpots[keys] = averageReview
-  //   }
-  // }
-  // let average = allSpots.getReview()
-
-
-  // return res.json(allSpots)
-
-  // const averageReview = await Review.findAll({
-  //         group:['spotId'],
-  //         attributes:[
-  //           [Sequelize.fn('AVG', sequelize.col('stars')), 'average rating'],
-  //         ]
-  //       })
-
-
-
-        res.json(allSpots)
 })
 
 
@@ -134,36 +163,130 @@ router.get('/' , async (req,res) =>{
 
 router.get('/current', requireAuth, async(req,res)=>{
 
-  let currentSpot = await Spot.findAll({
-    include:
-      [
-          {
-              model:Review,
-              // attributes:[
-              //     [Sequelize.fn('AVG', sequelize.col('stars')), 'average rating']
-              // ]
-          },
-
-          {
-              model:Image,
-              attributes: ['preview']
-          },
-      ],
-
-      where:{userId:req.user.id}
-  })
+  //AVERAGE
+  const spotReviews = await Spot.findAll(
+    {
+      // group:['id'],
+        include:
+        [
+            {
+                model:Review,
+                attributes:['spotId','stars']
+            },
+        ],
+        where:{userId:req.user.id}
+    })
 
 
-  console.log(req.user.id)
+
+    // res.json(spotReviews)
+
+
+
+
+    //creates an empty array
+    let undy = []
+    let twos = []
+
+    //pushes each review arraies of reviews into undy array
+    //creates an array where # of elements = # of spots, and the value of each element is the # of reviews for that spot
+
+    console.log(spotReviews.length, '# of spots') //# of spots
+    console.log(spotReviews[0].Reviews.length, '# of reviews per spot')
+
+
+    for(let i=0; i<spotReviews.length; i++){
+      // console.log(spotReviews, 'ssssssssssssssss')
+      console.log(spotReviews[i].Reviews.length, 'reviews in order')
+      if(spotReviews[i].Reviews.length>0)
+      {
+        undy.push(spotReviews[i].Reviews)
+        twos.push(spotReviews[i].Reviews.length)
+      }
+    }
+
+    // res.json(undy)
+
+    console.log(twos, 'twos')
+    // res.json(twos)
+
+
+    let average = []
+
+    if(undy.length>0){
+      for(let z = 0; z<undy.length; z++){
+        if(Array.isArray(undy[z]) && undy[z].length>0)
+        {
+          console.log('99999999')
+          if(undy[z].length === twos[z]){
+            // console.log(undy[z].length)
+            // console.log(twos[z].length)
+            console.log('1111111111')
+            let sum = 0
+            for(let y=0; y<undy[z].length; y++){
+              console.log('aaaaaaa')
+
+              sum = sum + undy[z][y].stars
+              console.log(sum)
+              // average.push(sum/twos[z])
+
+            }
+            average.push(sum/twos[z])
+          }
+        }
+      }
+    }
+
+
+    console.log(average)
+    // res.json(average)
+
+    let currentSpot = await Spot.findAll({
+      include:
+        [
+            // {
+            //     model:Review,
+            //     // attributes:[
+            //     //     [Sequelize.fn('AVG', sequelize.col('stars')), 'average rating']
+            //     // ]
+            // },
+            {
+                model:Image,
+                attributes: ['preview']
+            },
+        ],
+
+        where:{userId:req.user.id}
+    })
+
+    // res.json(currentSpot)
+
+  // console.log(req.user.id)
   for(let i=0; i<currentSpot.length; i++)
   {
     if(currentSpot[i].userId === req.user.id)
     {
-      res.json(currentSpot)
+      // res.json(currentSpot)
+
+       //you cannot add to the object until you get the PLAIN OBJECTS !!
+        const plainFirst = currentSpot.map(x => x.get({ plain: true }))
+
+        // res.json(plainFirst)
+        //adds the averageRating key value pair into the object
+        console.log(average.length)
+        // res.json(average.length)
+        if(average.length>0){
+          for(let h=0; h<average.length; h++){
+            plainFirst[h].averageRating = average[h]
+          }
+        }
+        res.json(plainFirst);
     }
+
+
   }
 
-  res.send('you are not the owner of this spot')
+  // res.send('you are not the owner of this spot')
 
 })
 
