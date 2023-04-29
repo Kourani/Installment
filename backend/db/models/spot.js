@@ -32,7 +32,10 @@ module.exports = (sequelize, DataTypes) => {
       Spot.hasMany(
         models.Image,
         {foreignKey:'imagableId',
-         constraints:false}
+         constraints:false,
+        scope:{
+          imagableType:'Spot'
+        }}
 
       )
     }

@@ -19,7 +19,7 @@ router.use('/spots', spotRouter);
 
 router.use('/bookings', bookingRouter);
 
-router.use('/images', imageRouter);
+router.use('', imageRouter);
 
 router.use('/reviews', reviewRouter);
 

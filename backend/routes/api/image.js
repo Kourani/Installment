@@ -4,19 +4,89 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Image } = require('../../db/models');
+const { Image, Spot, Review, User } = require('../../db/models');
 
 const router = express.Router();
+// const app = express()
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 
-// router.get('/' , async (req,res) =>{
+//delete a spot image
+router.delete('/spot-images/:id', requireAuth, async(req,res)=>{
 
-//     const all = await Spot.findAll()
-//     return all
-// })
+    let imageSpot = await Image.findByPk(req.params.id)
 
+    if(!imageSpot)
+    {
+        return res.status(404).send('Spot does not exist')
+    }
+
+    console.log(imageSpot.imagableType, 'type')
+    console.log(imageSpot.imagableId, 'id')
+
+
+    // res.json(imageSpot)
+
+    if(imageSpot.imagableType === 'Spot')
+    {
+        const findSpot = await Spot.findAll({
+            where:{id:imageSpot.imagableId}
+        })
+
+        console.log(findSpot[0].userId, 'owner')
+        console.log(req.user.id, 'current')
+
+        if(findSpot[0].userId === req.user.id)
+        {
+            await imageSpot.destroy()
+            res.json({message:'Successfully Deleted'})
+            return
+        }
+
+    }
+
+    res.send('you are not the owner of this Spot')
+
+})
+
+
+//delete a review image
+router.delete('/review-images/:id', requireAuth, async(req,res)=>{
+
+    let imageReview = await Image.findByPk(req.params.id)
+
+    if(!imageReview)
+    {
+        return res.status(404).send('Spot does not exist')
+    }
+
+    console.log(imageReview.imagableType, 'type')
+    console.log(imageReview.imagableId, 'id')
+
+    if(imageReview.imagableType === 'Review')
+    {
+        const findReview = await Review.findAll({
+            where:{id:imageReview.imagableId}
+        })
+
+        console.log(findReview[0].userId)
+
+        if(findReview[0].userId === req.user.id)
+        {
+            await imageReview.destroy()
+            res.json({message:'Successfully Deleted'})
+            return
+        }
+
+    }
+
+    res.send('you did not write this review')
+
+})
+
+
+// app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 module.exports = router;

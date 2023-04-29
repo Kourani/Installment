@@ -67,8 +67,6 @@ router.delete('/:id', requireAuth, async(req,res) =>{
 
     res.send('You did not write this review')
 
-
-
 })
 
 //edit a review
@@ -98,8 +96,35 @@ router.put('/:id', requireAuth, async(req,res)=>{
     // console.log(findReview)
 
     res.send('you did not write this review')
+})
+
+//create an image for a review
+router.post('/:id/images', requireAuth, async(req,res)=>{
+
+    const { id, url, preview } = req.body
+
+    let find = await Review.findByPk(req.params.id)
+
+    if(!find){
+        res.status(404).send('Review does not exist')
+        return
+    }
+
+    if(find.userId !== req.user.id){
+      res.send('you did not write this review')
+      return
+    }
+
+    let createImageReview = await Image.create({
+        id,
+        url,
+        preview,
+        imagableId:req.params.id,
+        imagableType:'Review'
+    })
 
 
+    res.json(createImageReview)
 })
 
 

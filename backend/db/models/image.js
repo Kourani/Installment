@@ -11,9 +11,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      Image.belongsTo(
+        models.Review,{
+          foreignKey:'id',
+          constraints:false
+        }
+      )
       Image.belongsTo(
         models.Spot,
-        {foreignKey:'imagableId',
+        {foreignKey:'id',
           constraints:false}
       )
     }

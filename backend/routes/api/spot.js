@@ -160,7 +160,6 @@ router.get('/' , async (req,res) =>{
 
 
 //get spots of current user
-
 router.get('/current', requireAuth, async(req,res)=>{
 
   //AVERAGE
@@ -181,9 +180,6 @@ router.get('/current', requireAuth, async(req,res)=>{
 
     // res.json(spotReviews)
 
-
-
-
     //creates an empty array
     let undy = []
     let twos = []
@@ -191,8 +187,8 @@ router.get('/current', requireAuth, async(req,res)=>{
     //pushes each review arraies of reviews into undy array
     //creates an array where # of elements = # of spots, and the value of each element is the # of reviews for that spot
 
-    console.log(spotReviews.length, '# of spots') //# of spots
-    console.log(spotReviews[0].Reviews.length, '# of reviews per spot')
+    // console.log(spotReviews.length, '# of spots') //# of spots
+    // console.log(spotReviews[0].Reviews.length, '# of reviews per spot')
 
 
     for(let i=0; i<spotReviews.length; i++){
@@ -283,10 +279,12 @@ router.get('/current', requireAuth, async(req,res)=>{
         res.json(plainFirst);
     }
 
+    // res.send('you are not the owner of the spot')
+
 
   }
 
-  // res.send('you are not the owner of this spot')
+  res.send('you do not own any spots')
 
 })
 
@@ -474,22 +472,34 @@ router.post('/:spotId/reviews', requireAuth, async(req,res)=>{
 })
 
 //create an image for a spot
-router.post('/:id/images', async(req,res)=>{
+router.post('/:id/images', requireAuth, async(req,res)=>{
+
+    const { id, url, preview } = req.body
 
     let find = await Spot.findByPk(req.params.id)
 
     if(!find){
         res.status(404).send('Spot does not exist')
+        return
     }
 
-    const { id, url, preview } = req.body
+    if(find.userId !== req.user.id){
+      res.send('you are not the owner of the spot')
+      return
+    }
 
     let createImage = await Image.create({
         id,
         url,
         preview,
-        imagableId:req.params.id
+        imagableId:req.params.id,
+        imagableType:'Spot'
+    }, {
+      attributes:{
+        exclude:['imagableId']
+      }
     })
+
 
     res.json(createImage)
 })
@@ -626,15 +636,6 @@ router.post('/:id/bookings', requireAuth, async(req,res)=>{
 //   // console.log(req.user.id)
 
 // })
-
-
-
-
-
-
-
-
-
 
 
 

@@ -27,21 +27,21 @@ module.exports = {
     {
       url:'afhskafh',
       preview:true,
-      imagableType:'aaaaa',
+      imagableType:'Spot',
       imagableId:1
 
     },
     {
       url:'afhskafh',
       preview:true,
-      imagableType:'aaaaa',
+      imagableType:'Review',
       imagableId:2
 
     },
     {
       url:'afhskafh',
       preview:true,
-      imagableType:'aaaaa',
+      imagableType:'Spot',
       imagableId:3
 
     },

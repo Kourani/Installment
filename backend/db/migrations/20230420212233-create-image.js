@@ -20,7 +20,8 @@ module.exports = {
         type:Sequelize.BOOLEAN
       },
       imagableType:{
-        type:Sequelize.STRING
+        type:Sequelize.STRING,
+        allowNull:false
       },
       createdAt: {
         allowNull: false,
