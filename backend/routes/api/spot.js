@@ -154,7 +154,7 @@ const validateQuery= [
 
 
   //get all spots
-router.get('/', validate, async (req,res) =>{
+router.get('/', validateQuery, async (req,res) =>{
 
   // await check('page').isNumeric().run(req);
   // await check('size').isNumeric({ min: 6 }).run(req);
