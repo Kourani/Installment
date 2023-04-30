@@ -71,7 +71,7 @@ module.exports = {
 
       for(let spotIdx = 0; spotIdx < spots.length; spotIdx++ ){
         const spot = spots[spotIdx]
-        await Spot.create({...spot, userId: user.id})
+        await Spot.create({...spot, ownerId: user.id})
       }
     }
 
@@ -86,7 +86,7 @@ module.exports = {
 
       for(let spotIdx = 0; spotIdx < spots.length; spotIdx++ ){
         const spot = spots[spotIdx]
-        await Spot.create({...spot, userId: user.id})
+        await Spot.create({...spot, ownerId: user.id})
       }
     }
   }

@@ -35,10 +35,10 @@ router.delete('/spot-images/:id', requireAuth, async(req,res)=>{
             where:{id:imageSpot.imagableId}
         })
 
-        console.log(findSpot[0].userId, 'owner')
+        console.log(findSpot[0].ownerId, 'owner')
         console.log(req.user.id, 'current')
 
-        if(findSpot[0].userId === req.user.id)
+        if(findSpot[0].ownerId === req.user.id)
         {
             await imageSpot.destroy()
             res.json({message:'Successfully Deleted', status:200})
@@ -48,7 +48,7 @@ router.delete('/spot-images/:id', requireAuth, async(req,res)=>{
     }
 
     // res.send('you are not the owner of this Spot')
-    res.status(403).json({message:'Forbidden'})
+    res.status(403).json({message:'Forbidden', status:403})
 
 })
 
@@ -84,7 +84,7 @@ router.delete('/review-images/:id', requireAuth, async(req,res)=>{
     }
 
     // res.send('you did not write this review')
-    res.status(403).json({message:'Forbidden'})
+    res.status(403).json({message:'Forbidden',status:403})
 
 })
 

@@ -25,48 +25,48 @@ const validateSpot = [
       .exists({ checkFalsy: true })
       .isAlpha('en-US',{ignore: ' '})
       .notEmpty()
-      .withMessage('Please provide a valid city.'),
+      .withMessage( "City is required"),
     check('state')
       .exists({ checkFalsy: true })
       .isAlpha('en-US',{ignore: ' '})
       .notEmpty()
-      .withMessage('Please provide a valid state.'),
+      .withMessage("State is required"),
     check('country')
       .exists({ checkFalsy: true })
       .isAlpha('en-US',{ignore: ' '})
       .notEmpty()
-      .withMessage('Please provide a valid country.'),
+      .withMessage("Country is required"),
     check('name')
       .exists({ checkFalsy: true })
       .isAlpha('en-US',{ignore: ' '})
       .notEmpty()
-      .withMessage('Please provide a valid name.'),
+      .withMessage("Name must be less than 50 characters"),
     check('description')
       .exists({ checkFalsy: true })
       .isAlpha('en-US',{ignore: ' '})
       .notEmpty()
-      .withMessage('Please provide a valid description.'),
+      .withMessage("Description is required"),
 
       check('address')
       .exists({ checkFalsy: true })
       .isAlphanumeric('en-US',{ignore: ' '})
       .notEmpty()
-      .withMessage('Please provide a valid address.'),
+      .withMessage( "Street address is required"),
       check('lat')
       .exists({ checkFalsy: true })
       .isNumeric()
       .notEmpty()
-      .withMessage('Please provide a valid latitude.'),
+      .withMessage("Latitude is not valid"),
     check('lng')
       .exists({ checkFalsy: true })
       .isNumeric()
       .notEmpty()
-      .withMessage('Please provide a valid longitude.'),
+      .withMessage("Longitude is not valid"),
     check('price')
       .exists({ checkFalsy: true })
       .isNumeric()
       .notEmpty()
-      .withMessage('Please provide a valid price.'),
+      .withMessage( "Price per day is required"),
 
     handleValidationErrors
   ];
@@ -575,7 +575,8 @@ router.get('/:id' , async (req,res) =>{
 router.post('/', requireAuth,  validateSpot, async(req,res) =>{
 
 
-    const {address,
+    const {
+        address,
         city,
         state,
         country,
@@ -586,6 +587,7 @@ router.post('/', requireAuth,  validateSpot, async(req,res) =>{
         price} = req.body
 
     let newSpot = await Spot.create({
+        ownerId:req.user.id,
         address,
         city,
         state,
@@ -595,10 +597,10 @@ router.post('/', requireAuth,  validateSpot, async(req,res) =>{
         name,
         description,
         price,
-        userId:req.user.id
+
     })
 
-    res.json(newSpot)
+    res.status(201).json(newSpot)
 
 
 })
@@ -614,18 +616,18 @@ router.delete('/:id', requireAuth, async(req,res) =>{
         return res.status(404).json({message:"Spot couldn't be found", status:404})
     }
 
-        if(spotDelete.userId === req.user.id)
+        if(spotDelete.ownerId === req.user.id)
         {
           await spotDelete.destroy()
           res.json({
             message:'Successfully Deleted',
-            statusCode:'200'
+            status:200
           })
           return
         }
 
         // res.send('you are not the owner of this Spot')
-        res.status(403).json({message:'Forbidden'})
+        res.status(403).json({message:'Forbidden', status:403})
 
 })
 
@@ -649,7 +651,7 @@ router.put('/:spotId',requireAuth, validateSpot, async(req,res) =>{
         description,
         price } = req.body
 
-  if(findSpot.userId === req.user.id)
+  if(findSpot.ownerId === req.user.id)
   {
     await findSpot.update({
       address,
@@ -667,7 +669,7 @@ router.put('/:spotId',requireAuth, validateSpot, async(req,res) =>{
   }
 
   // res.json('you do not own this spot')
-  res.status(403).json({message:'Forbidden'})
+  res.status(403).json({message:'Forbidden', status:403})
 
 })
 
@@ -728,9 +730,9 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
         return
     }
 
-    if(find.userId !== req.user.id){
+    if(find.ownerId !== req.user.id){
       // res.send('you are not the owner of the spot')
-      res.status(403).json({message:'Forbidden'})
+      res.status(403).json({message:'Forbidden', status:403})
       return
     }
 
@@ -756,7 +758,7 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
     // console.log(createImage)
 
 
-    res.json(findCreatedImage)
+    res.json(findCreatedImage[0])
 })
 
 //get all bookings for a spot by spot Id
@@ -769,18 +771,20 @@ router.get('/:id/bookings' ,requireAuth, async (req,res) =>{
     res.status(404).json({message:"Spot couldn't be found", status:404})
     }
 
-    console.log(findSpot.userId, 'owner')
+    console.log(findSpot.ownerId, 'owner')
     console.log(req.user.id, 'current')
 
 
-    if(findSpot.userId !== req.user.id)
+
+    if(findSpot.ownerId !== req.user.id)
     {
       const bookingInfo = await Booking.findAll({
         where:{spotId:req.params.id},
         attributes:['spotId', 'startDate', 'endDate']
       })
 
-      res.json(bookingInfo)
+      let finalObj={Bookings:bookingInfo}
+      res.json(finalObj)
     }
 
   const bookingSpot = await Booking.findAll({
@@ -791,7 +795,8 @@ router.get('/:id/bookings' ,requireAuth, async (req,res) =>{
     }]
   })
 
-  res.json(bookingSpot)
+  let finalObj2={Bookings:bookingSpot}
+  res.json(finalObj2)
 })
 
 //get all reviews by a spots id
@@ -845,7 +850,7 @@ router.post('/:id/bookings', requireAuth, async(req,res)=>{
 
       if(findBooking[i].startDate === startDate && findBooking[i].endDate === endDate){
         // res.status(403).send('Booking already exists for the spot on the selected dates')
-        res.status(403).json({message:'Forbidden'})
+        res.status(403).json({message:'Forbidden', status:403})
         return
       }
     }
@@ -853,10 +858,10 @@ router.post('/:id/bookings', requireAuth, async(req,res)=>{
   if(find.userId !== req.user.id)
   {
     createBooking = await Booking.create({
+      spotId:req.params.id,
+      userId:req.user.id,
       startDate,
       endDate,
-      spotId:req.params.id,
-      userId:req.user.id
     })
     res.json(createBooking)
   }

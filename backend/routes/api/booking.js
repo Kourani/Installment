@@ -20,7 +20,7 @@ router.get('/current', requireAuth, async(req,res)=>{
         include:[
             {
                 model:Spot,
-                attributes:['id', 'userId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
+                attributes:['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
 
                 include:[{
                     model:Image,
@@ -30,7 +30,9 @@ router.get('/current', requireAuth, async(req,res)=>{
         ]
     })
 
-    res.json(allBookings)
+    let finalObj = {Bookings:allBookings}
+
+    res.json(finalObj)
 })
 
 
@@ -81,21 +83,21 @@ router.delete('/:id', requireAuth, async(req,res) =>{
     //if the year for booking is prior to todays year CANNOT delete
     if(startDate[0] < todayDate[0])
     {
-        res.status(400).send('Cannot delete booking, Booking was set to start in a prior year')
+        res.status(403).json({message:"Bookings that have been started can't be deleted", status:403})
         return
     }
 
     //if the year for booking and today are the same but the month is prior CANNOT delete
     if(startDate[0] === todayDate[0] && startDate[1]<todayDate[1])
     {
-        res.status(400).send('Cannot delete booking, Booking was set to start in a prior month')
+        res.status(403).json({message:"Bookings that have been started can't be deleted", status:403})
         return
     }
 
       //if the year and month for booking and today are the same but the day is prior CANNOT delete
     if(startDate[0] === todayDate[0] && startDate[1] === todayDate[1] && startDate[2] < todayDate[2])
     {
-        res.status(400).send('Cannot delete booking, Booking was set to start in a prior day of the month')
+        res.status(403).json({message:"Bookings that have been started can't be deleted", status:403})
         return
     }
 
@@ -120,7 +122,7 @@ router.delete('/:id', requireAuth, async(req,res) =>{
         return
     }
 
-    res.status(403).json({message:'Forbidden'})
+    res.status(403).json({message:'Forbidden', status:403})
 })
 
 
@@ -236,7 +238,7 @@ router.put('/:id', requireAuth, async(req,res)=>{
     }
 
 
-    res.statusCode(403).json({message:'Forbidden', statusCode:403})
+    res.status(403).json({message:'Forbidden', status:403})
 
 })
 
