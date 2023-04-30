@@ -73,18 +73,17 @@ const validateSpot = [
 
 
 const validateReview = [
-
   check('review')
-    .exists({ checkFalsy: true })
+    // .exists({ checkFalsy: true })
     .isAlphanumeric('en-US',{ignore: ' '})
     .notEmpty()
-    .withMessage('Please provide a valid review.'),
+    .withMessage("Review text is required"),
 
   check('stars')
-    .exists({ checkFalsy: true })
+    // .exists({ checkFalsy: true })
     .isNumeric()
     .notEmpty()
-    .withMessage('Please provide a valid rating.'),
+    .withMessage( "Stars must be an integer from 1 to 5"),
 
   handleValidationErrors
 ];
@@ -675,11 +674,11 @@ router.put('/:spotId',requireAuth, validateSpot, async(req,res) =>{
 
 
 //create a review for a spot based on spots id
-router.post('/:spotId/reviews', requireAuth, validateReview, async(req,res)=>{
+router.post('/:spotId/reviews', requireAuth,  async(req,res)=>{
 
     let find = await Spot.findByPk(req.params.spotId)
     if(!find){
-        res.status(404).send('Spot does not exist')
+        res.status(404).send({message:"Spot couldn't be found", status:404})
     }
 
     const {review, stars} = req.body
@@ -702,7 +701,7 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async(req,res)=>{
 
       console.log('here')
       // res.status(403).send('you have already created a review for this spot')
-      res.status(403).json({message:'Forbidden'})
+      res.status(403).json({message:"User already has a review for this spot", status:403})
       return
     }
 

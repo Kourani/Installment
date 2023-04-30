@@ -14,16 +14,16 @@ const { handleValidationErrors } = require('../../utils/validation');
 const validateReview = [
 
     check('review')
-      .exists({ checkFalsy: true })
+    //   .exists({ checkFalsy: true })
       .isAlphanumeric('en-US',{ignore: ' '})
       .notEmpty()
-      .withMessage('Please provide a valid review.'),
+      .withMessage( "Review text is required"),
 
     check('stars')
-      .exists({ checkFalsy: true })
+    //   .exists({ checkFalsy: true })
       .isNumeric()
       .notEmpty()
-      .withMessage('Please provide a valid rating.'),
+      .withMessage( "Stars must be an integer from 1 to 5"),
 
     handleValidationErrors
   ];
@@ -43,7 +43,7 @@ router.get('/current',requireAuth, async(req,res) =>{
         },
         {
             model:Spot,
-            attributes:['id', 'userId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
+            attributes:['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
 
             include:[
                 {model:Image,
@@ -82,17 +82,17 @@ router.delete('/:id', requireAuth, async(req,res) =>{
     console.log(req.user.id, 'current user')
 
     // res.send('You did not write this review')
-    res.status(403).json({message:'Forbidden'})
+    res.status(403).json({message:'Forbidden', status:403})
 
 })
 
 //edit a review
-router.put('/:id', requireAuth, validateReview, async(req,res)=>{
+router.put('/:id', requireAuth, async(req,res)=>{
 
     let findReview = await Review.findByPk(req.params.id)
 
     if(!findReview){
-        res.status(404).send('review does not exist')
+        res.status(404).json({message:"Review couldn't be found", status:404})
     }
 
     const {
@@ -102,18 +102,20 @@ router.put('/:id', requireAuth, validateReview, async(req,res)=>{
 
     if(findReview.userId === req.user.id) {
         await findReview.update({
+
             review,
             stars
         })
 
         res.json(findReview)
+        return
     }
 
 
     // console.log(findReview)
 
     // res.send('you did not write this review')
-    res.status(403).json({message:'Forbidden'})
+    res.status(403).json({message:'Forbidden', status:403})
 })
 
 //create an image for a review
