@@ -512,6 +512,7 @@ router.get('/current', requireAuth, async(req,res)=>{
             plainFirst[h].averageRating = average[h]
           }
         }
+
         res.json(plainFirst);
     }
 
@@ -520,8 +521,9 @@ router.get('/current', requireAuth, async(req,res)=>{
 
   }
 
+   // res.status(403).json({message:'Forbidden'})
   res.send('you do not own any spots')
-  // res.status(403).json({message:'Forbidden'})
+
 
 })
 
@@ -535,7 +537,7 @@ router.get('/:id' , async (req,res) =>{
     const find = await Spot.findByPk(req.params.id)
 
     if(!find){
-        res.status(404).send('Spot does not exist')
+        res.status(404).json({message:"Spot couldn't be found", status:404})
     }
 
     const all = await Spot.findAll({
@@ -609,7 +611,7 @@ router.delete('/:id', requireAuth, async(req,res) =>{
 
     if(!spotDelete)
     {
-        return res.status(404).send('Spot does not exist')
+        return res.status(404).json({message:"Spot couldn't be found", status:404})
     }
 
         if(spotDelete.userId === req.user.id)
@@ -634,7 +636,7 @@ router.put('/:spotId',requireAuth, validateSpot, async(req,res) =>{
 
     if(!findSpot)
     {
-        res.status(404).send('Spot does not exist')
+        res.status(404).json({message:"Spot couldn't be found", status:404})
     }
 
     const { address,
@@ -722,7 +724,7 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
     let find = await Spot.findByPk(req.params.id)
 
     if(!find){
-        res.status(404).send('Spot does not exist')
+        res.status(404).json({message:"Spot couldn't be found", status:404})
         return
     }
 
@@ -764,7 +766,7 @@ router.get('/:id/bookings' ,requireAuth, async (req,res) =>{
   const findSpot = await Spot.findByPk(req.params.id)
 
   if(!findSpot){
-    res.status(404).send('Spot does not exist')
+    res.status(404).json({message:"Spot couldn't be found", status:404})
     }
 
     console.log(findSpot.userId, 'owner')
@@ -798,7 +800,7 @@ router.get('/:spotId/reviews' , async (req,res) =>{
   const find = await Review.findByPk(req.params.spotId)
 
   if(!find){
-      res.status(404).send('Spot does not exist')
+      res.status(404).json({message:"Spot couldn't be found", status:404})
   }
 
   const all = await Review.findAll({
@@ -830,7 +832,7 @@ router.post('/:id/bookings', requireAuth, async(req,res)=>{
 
   //if the desired spot does not exist 404
   if(!find){
-    res.status(404).send('Spot does not exist')
+    res.status(404).json({message:"Spot couldn't be found", status:404})
     return
   }
 

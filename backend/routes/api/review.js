@@ -66,14 +66,14 @@ router.delete('/:id', requireAuth, async(req,res) =>{
 
     if(!deleteReview)
     {
-        res.status(404).send('Review does not exist')
+        res.status(404).json({message:"Review couldn't be found", status:404})
         return
     }
 
     if(deleteReview.userId === req.user.id)
     {
         await deleteReview.destroy()
-        res.json({message:'Successfully Deleted'})
+        res.json({message:'Successfully Deleted', status:200})
         return
     }
 
@@ -124,7 +124,7 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
     let find = await Review.findByPk(req.params.id)
 
     if(!find){
-        res.status(404).send('Review does not exist')
+        res.status(404).json({message:"Review couldn't be found", status:404})
         return
     }
 

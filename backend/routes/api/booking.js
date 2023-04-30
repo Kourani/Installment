@@ -43,7 +43,7 @@ router.delete('/:id', requireAuth, async(req,res) =>{
     //if the booking does not exist
     if(!deleteBooking)
     {
-        res.status(404).send('Booking does not exist')
+        res.status(404).json({message:"Booking couldn't be found", status:404})
         return
     }
 
@@ -104,7 +104,7 @@ router.delete('/:id', requireAuth, async(req,res) =>{
     if(deleteBooking.userId === req.user.id)
     {
         await deleteBooking.destroy()
-        res.json({message:'Successfully Deleted'})
+        res.json({message:'Successfully Deleted', status:200})
         return
     }
 
@@ -132,7 +132,7 @@ router.put('/:id', requireAuth, async(req,res)=>{
     let findBooking = await Booking.findByPk(req.params.id)
 
     if(!findBooking){
-        res.status(404).send('Booking does not exist')
+        res.status(404).json({message:"Booking couldn't be found", status:404})
         return
     }
 
