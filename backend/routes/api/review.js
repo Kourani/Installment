@@ -58,6 +58,7 @@ router.get('/current',requireAuth, async(req,res) =>{
         },
         {
             model:Image, as: 'ReveiwImages',
+            attributes:['id', 'url']
         }
     ]
     })
