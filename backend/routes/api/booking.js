@@ -33,7 +33,7 @@ const validateBooking= [
 
       check('endDate').custom((value, { req }) => {
         if(new Date(value) <= new Date(req.body.startDate)) {
-            throw new Error ( "endDate cannot be on or before startDate");
+            throw new Error ("endDate cannot come before startDate");
         }
         return true
     }),
@@ -246,10 +246,10 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
             startRequest.push(start2)
         }
 
-        // console.log(end)
-        // console.log(today)
-        // console.log(startRequest)
-        // console.log(endRequest)
+        console.log(end)
+        console.log(today)
+        console.log(startRequest)
+        console.log(endRequest)
 
     //if the year for booking is prior to todays year CANNOT edit booking
     if(end[0] < today[0])
@@ -273,23 +273,66 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
     }
 
 
-    console.log(end)
-    console.log(endRequest)
+    console.log(end, 'endddd')
+    console.log(endRequest, 'req')
 
-        if
-        if(
-            end[0] === endRequest[0] &&
-            end[1] === endRequest[1] &&
-            end[2] === endRequest[2] &&
-            start[0] === startRequest[0] &&
-            start[1] === startRequest[1] &&
-            start[2] === startRequest[2]
-            )
+        // if(
+        //     end[0] === endRequest[0] &&
+        //     end[1] === endRequest[1] &&
+        //     end[2] === endRequest[2] &&
+        //     start[0] === startRequest[0] &&
+        //     start[1] === startRequest[1] &&
+        //     start[2] === startRequest[2]
+        //     )
+        // {
+        //     // res.status(403).json({message:'Forbidden', status:403})
+        //     // return
+        // }
+
+
+
+        // if(endRequest[0] < start[0] < endRequest[0])
+        // {
+        //     res.status(403).json({message: "Start date conflicts with an existing booking"})
+        // }
+
+        // if(startRequest[0] === start[0] && startRequest[1] < start[1] < endRequest[1])
+        // {
+        //     res.status(403).json({message: "Start date conflicts with an existing booking"})
+        // }
+
+        // if(startRequest[0] === start[0] && startRequest[1] === start[1] && startRequest[2] < start[2] < endRequest[2])
+        // {
+        //     res.status(403).json({message: "Start date conflicts with an existing booking"})
+        // }
+
+
+        console.log(findBooking.spotId)
+        if(findBooking.spotId && findBooking.startDate && findBooking.endDate)
         {
-            // res.status(403).json({message:'Forbidden', status:403})
-            // return
-        }
+            // console.log((findBooking.startDate))
+            // console.log(startDate, 'rrrr')
+            if(findBooking.startDate === startDate || findBooking.endDate === endDate){
 
+                if(startRequest[0] < start[0] < endRequest[0])
+                {
+                    res.status(403).json({message: "Start date conflicts with an existing booking" , status:403, error:"Sorry, this spot is already booked for the specified dates"})
+                    return
+                }
+
+                if(startRequest[0] === start[0] && startRequest[1] < start[1] < endRequest[1])
+                {
+                    res.status(403).json({message: "Start date conflicts with an existing booking", status:403, error:"Sorry, this spot is already booked for the specified dates"})
+                    return
+                }
+
+                if(startRequest[0] === start[0] && startRequest[1] === start[1] && startRequest[2] < start[2] < endRequest[2])
+                {
+                    res.status(403).json({message: "Start date conflicts with an existing booking", status:403, error:"Sorry, this spot is already booked for the specified dates"})
+                    return
+                }
+            }
+        }
 
     //only the owner of the booking can update the booking
     if(findBooking.userId === req.user.id)
@@ -300,6 +343,7 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
         })
 
     res.json(findBooking)
+    return
     }
 
 
