@@ -14,6 +14,8 @@ const spot = require('../../db/models/spot');
 
 // const { validationResult } = require('express-validator');
 
+const { Op } = require("sequelize");
+
 const validateSpot = [
     // check('userId')
     //     .exists({ checkFalsy: true })
@@ -39,6 +41,8 @@ const validateSpot = [
     check('name')
       .exists({ checkFalsy: true })
       .isAlpha('en-US',{ignore: ' '})
+      .isLength({min:undefined, max:50})
+      .withMessage("Name must be less than 50 characters")
       .notEmpty()
       .withMessage("Name must be less than 50 characters"),
     check('description')
@@ -75,15 +79,45 @@ const validateSpot = [
 const validateReview = [
   check('review')
     // .exists({ checkFalsy: true })
-    .isAlphanumeric('en-US',{ignore: ' '})
+    // .isAlphanumeric('en-US',{ignore: ' '})
     .notEmpty()
     .withMessage("Review text is required"),
 
   check('stars')
     // .exists({ checkFalsy: true })
-    .isNumeric()
-    .notEmpty()
+    // .isNumeric()
+    // .notEmpty()
+    .isInt({min:1, max:5})
     .withMessage( "Stars must be an integer from 1 to 5"),
+
+  handleValidationErrors
+];
+
+const validateBooking= [
+
+  check('startDate')
+    // .exists({ checkFalsy: true })
+    // .isNumeric()
+    // .notEmpty()
+    .isDate()
+    .withMessage( "St"),
+
+    check('endDate')
+    // .exists({ checkFalsy: true })
+    // .isNumeric()
+    // .notEmpty()
+    .isDate()
+    // .isAfter('startDate',{comparsionDate:'startDate'})
+    // .equals('startDate')
+    .withMessage( "Stars must be an integer from 1 to 5"),
+
+    check('endDate').custom((value, { req }) => {
+      if(new Date(value) <= new Date(req.body.startDate)) {
+          throw new Error ( "endDate cannot be on or before startDate");
+      }
+      return true
+  }),
+
 
   handleValidationErrors
 ];
@@ -170,6 +204,8 @@ router.get('/', validateQuery, async (req,res) =>{
   //   return res.status(400).json({ message: 'provide a valid number'});
   // }
 
+
+
   const spotReviews = await Spot.findAll(
     {
       // group:['id'],
@@ -233,26 +269,6 @@ router.get('/', validateQuery, async (req,res) =>{
     console.log(average.length)
     console.log(average)
 
-
-    //finds all the spots includes the images preview
-    const allSpots = await Spot.findAll({
-        include:[
-          {
-            model:Image,
-            attributes:['preview']
-          }
-        ]
-      })
-
-    //you cannot add to the object until you get the PLAIN OBJECTS !!
-    const plainFirst = allSpots.map(x => x.get({ plain: true }))
-
-    //adds the averageRating key value pair into the object
-    for(let h=0; h<average.length; h++){
-      plainFirst[h].averageRating = average[h]
-    }
-
-
     let {
       page,
       size,
@@ -263,133 +279,201 @@ router.get('/', validateQuery, async (req,res) =>{
       minPrice,
       maxPrice} = req.query
 
-      console.log(page)
-      console.log(size)
-      console.log(minPrice)
-      console.log(maxPrice)
-      console.log(minLng)
-      console.log(maxLng)
-      console.log(minLat)
-      console.log(maxLat)
-
-
-
-
-
-      page = parseInt(page)
-      size = parseInt(size)
-
-      if(isNaN(page)) page=2
-      if(page<=0) page =2
-
-      if(isNaN(size)) size=25
-      if(size<=0) size =25
-
-       // variable = condition ? True : False
-      // size = size ? 10 ? 10 : size
-
-
-
-
-
-      // console.log(req.query)
-
-      for(let keys in req.query)
-      {
-
-        if(keys)
-        {
-          let minLng1 = parseInt(minLng)
-          let maxLng2 = parseInt(maxLng)
-
-          let minLat1 = parseInt(minLat)
-          let maxLat2 = parseInt(maxLat)
-
-          let minPrice1 = parseInt(minPrice)
-          let maxPrice2 = parseInt(maxPrice)
-
-          for(let i=0; i<plainFirst.length; i++){
-
-            // console.log(plainFirst[i].lat, 'lat')
-            // console.log(plainFirst[i].lng, 'lng')
-            // console.log(plainFirst[i].price, 'price')
-            // console.log(minLat, 'minLAT')
-            // console.log(minLng, 'minLNG')
-            // console.log(minPrice, 'minPRICE')
-            // console.log(maxLat, 'maxLAT')
-            // console.log(maxLng, 'maxLNG')
-            // console.log(maxPrice, 'maxPRICE')
-
-            let newLat = parseInt(plainFirst[i].lat)
-            let newLng = parseInt(plainFirst[i].lng)
-            let newPrice = parseInt(plainFirst[i].price)
-
-            // console.log(newLat)
-            // console.log(newLng)
-            // console.log(newPrice)
-
-            //first condition LAT ONLY
-            if (newLat >= minLat && newLat <=maxLat
-                || newLat>=minLat
-                || newLat<=maxLat
-              ){
-                res.json({
-                  plainFirst,
-                  page,
-                  size
-                })
-                return
-              }
-
-            //second condition LNG ONLY
-            if (newLng >= minLng && newLng<=maxLng
-                || newLng >= minLng
-                || newLng <=maxLng
-              ){
-                res.json({
-                  plainFirst,
-                  page,
-                  size
-                })
-                return
-            }
-
-            //third condition PRICE ONLY
-            if (newPrice >= minPrice && newPrice<=maxPrice
-              ||newPrice >= minPrice
-              ||newPrice <= maxPrice
-              ) {
-                res.json({
-                  plainFirst,
-                  page,
-                  size
-                })
-                return
-            }
-
-            if ( (newPrice >= minPrice && newPrice<=maxPrice ||newPrice >= minPrice
-              ||newPrice <= maxPrice) &&
-                 (newLng >= minLng && newLng<=maxLng || newLng >= minLng
-                  || newLng <=maxLng) &&
-                 (newLat >= minLat && newLat <=maxLat  || newLat>=minLat
-                  || newLat<=maxLat)
-              ) {
-                res.json({
-                  plainFirst,
-                  page,
-                  size
-                })
-                return
-            }
-
+    const testing = await Spot.findAll({
+      where:{
+        price:{
+            [Op.between]:[minPrice,maxPrice],
+            [Op.between]:[minLat,maxLat],
+            [Op.between]:[minLng,maxLng],
           }
 
+      }
+    })
+
+    // res.json(testing)
+
+
+    //finds all the spots includes the images preview
+    const allSpots = await Spot.findAll({
+      attributes:[
+                    'id', 'ownerId',
+                    'address', 'city',
+                    'state', 'country',
+                    'lat', 'lng', 'name',
+                    'description','price',
+                    'createdAt', 'updatedAt'],
+
+      // where:{
+      //   price:{[Op.between]:[minPrice, maxPrice]},
+      //   lat:{[Op.between]:[minLat, maxLat]},
+      //   lng:{[Op.between]:[minLng, maxLng]}
+      // },
+
+
+        // include:[
+        //   {
+        //     model:Image,
+        //     attributes:['url']
+        //   }
+        // ]
+      })
+
+      // res.json(allSpots)
+
+
+
+      const findImages = await Image.findAll()
+
+      // res.json(findImages)
+
+    //you cannot add to the object until you get the PLAIN OBJECTS !!
+    const plainFirst = allSpots.map(x => x.get({ plain: true }))
+
+    for(let d=0; d<plainFirst.length; d++){
+      for(let e=0; e<findImages.length; e++){
+        console.log(d,e)
+        if(plainFirst[d].id === findImages[e].imagableId)
+        {
+          plainFirst[d].previewImage = findImages[e].url
         }
       }
+    }
+    //adds the averageRating key value pair into the object
+    for(let h=0; h<average.length; h++){
+      plainFirst[h].averageRating = average[h]
+    }
+
+
+    let objCreate = {Spots:plainFirst}
+    res.json(objCreate)
+
+    //   console.log(page)
+    //   console.log(size)
+    //   console.log(minPrice)
+    //   console.log(maxPrice)
+    //   console.log(minLng)
+    //   console.log(maxLng)
+    //   console.log(minLat)
+    //   console.log(maxLat)
 
 
 
-    res.json('there is no exisiting spot with your search criteria');
+
+
+    //   page = parseInt(page)
+    //   size = parseInt(size)
+
+    //   if(isNaN(page)) page=2
+    //   if(page<=0) page =2
+
+    //   if(isNaN(size)) size=25
+    //   if(size<=0) size =25
+
+    //    // variable = condition ? True : False
+    //   // size = size ? 10 ? 10 : size
+
+
+
+
+
+    //   // console.log(req.query)
+
+    //   for(let keys in req.query)
+    //   {
+
+    //     if(keys)
+    //     {
+    //       let minLng1 = parseInt(minLng)
+    //       let maxLng2 = parseInt(maxLng)
+
+    //       let minLat1 = parseInt(minLat)
+    //       let maxLat2 = parseInt(maxLat)
+
+    //       let minPrice1 = parseInt(minPrice)
+    //       let maxPrice2 = parseInt(maxPrice)
+
+    //       for(let i=0; i<plainFirst.length; i++){
+
+    //         // console.log(plainFirst[i].lat, 'lat')
+    //         // console.log(plainFirst[i].lng, 'lng')
+    //         // console.log(plainFirst[i].price, 'price')
+    //         // console.log(minLat, 'minLAT')
+    //         // console.log(minLng, 'minLNG')
+    //         // console.log(minPrice, 'minPRICE')
+    //         // console.log(maxLat, 'maxLAT')
+    //         // console.log(maxLng, 'maxLNG')
+    //         // console.log(maxPrice, 'maxPRICE')
+
+    //         let newLat = parseInt(plainFirst[i].lat)
+    //         let newLng = parseInt(plainFirst[i].lng)
+    //         let newPrice = parseInt(plainFirst[i].price)
+
+    //         // console.log(newLat)
+    //         // console.log(newLng)
+    //         // console.log(newPrice)
+
+    //         //first condition LAT ONLY
+    //         if (newLat >= minLat && newLat <=maxLat
+    //             || newLat>=minLat
+    //             || newLat<=maxLat
+    //           ){
+    //             res.json({
+    //               plainFirst,
+    //               page,
+    //               size
+    //             })
+    //             return
+    //           }
+
+    //         //second condition LNG ONLY
+    //         if (newLng >= minLng && newLng<=maxLng
+    //             || newLng >= minLng
+    //             || newLng <=maxLng
+    //           ){
+    //             res.json({
+    //               plainFirst,
+    //               page,
+    //               size
+    //             })
+    //             return
+    //         }
+
+    //         //third condition PRICE ONLY
+    //         if (newPrice >= minPrice && newPrice<=maxPrice
+    //           ||newPrice >= minPrice
+    //           ||newPrice <= maxPrice
+    //           ) {
+    //             res.json({
+    //               plainFirst,
+    //               page,
+    //               size
+    //             })
+    //             return
+    //         }
+
+    //         if ( (newPrice >= minPrice && newPrice<=maxPrice ||newPrice >= minPrice
+    //           ||newPrice <= maxPrice) &&
+    //              (newLng >= minLng && newLng<=maxLng || newLng >= minLng
+    //               || newLng <=maxLng) &&
+    //              (newLat >= minLat && newLat <=maxLat  || newLat>=minLat
+    //               || newLat<=maxLat)
+    //           ) {
+    //             res.json({
+    //               plainFirst,
+    //               page,
+    //               size
+    //             })
+    //             return
+    //         }
+
+    //       }
+
+    //     }
+    //   }
+
+
+
+    // res.json('there is no exisiting spot with your search criteria');
 
 })
 
@@ -408,7 +492,7 @@ router.get('/current', requireAuth, async(req,res)=>{
                 attributes:['spotId','stars']
             },
         ],
-        where:{userId:req.user.id}
+        where:{ownerId:req.user.id}
     })
 
 
@@ -473,38 +557,50 @@ router.get('/current', requireAuth, async(req,res)=>{
     // res.json(average)
 
     let currentSpot = await Spot.findAll({
-      include:
-        [
-            // {
-            //     model:Review,
-            //     // attributes:[
-            //     //     [Sequelize.fn('AVG', sequelize.col('stars')), 'average rating']
-            //     // ]
-            // },
-            {
-                model:Image,
-                attributes: ['preview']
-            },
-        ],
 
-        where:{userId:req.user.id}
+      attributes:[
+        'id', 'ownerId', 'address',
+        'city', 'state', 'country',
+        'lat', 'lng', 'name', 'description',
+        'price', 'createdAt', 'updatedAt'
+      ],
+        where:{ownerId:req.user.id}
     })
+
+    let findImage = await Image.findAll({
+      where:{imagableType:'Spot'}
+    })
+
+
+
+
 
     // res.json(currentSpot)
 
   // console.log(req.user.id)
   for(let i=0; i<currentSpot.length; i++)
   {
-    if(currentSpot[i].userId === req.user.id)
+    if(currentSpot[i].ownerId === req.user.id)
     {
       // res.json(currentSpot)
 
        //you cannot add to the object until you get the PLAIN OBJECTS !!
         const plainFirst = currentSpot.map(x => x.get({ plain: true }))
 
+
+        // res.json(findImage)
+
+        console.log(findImage[0].imagableId,'gggggggggggg')
+        for(let i=0; i<plainFirst.length; i++){
+          for(let s=0; s<findImage.length; s++){
+            if(plainFirst[i].id===findImage[s].imagableId){
+              plainFirst[i].previewImage=findImage[s].url
+            }
+          }
+        }
         // res.json(plainFirst)
         //adds the averageRating key value pair into the object
-        console.log(average.length)
+        console.log(average.length,'average array')
         // res.json(average.length)
         if(average.length>0){
           for(let h=0; h<average.length; h++){
@@ -539,33 +635,101 @@ router.get('/:id' , async (req,res) =>{
         res.status(404).json({message:"Spot couldn't be found", status:404})
     }
 
+    const allReviews = await Review.findAll({
+      where:{
+        spotId:req.params.id
+      },
+      attributes:{
+        include:[
+            [Sequelize.fn('COUNT', sequelize.col('review')), 'num'],
+            [Sequelize.fn('AVG', sequelize.col('stars')), 'avg']
+        ]
+    }
+    })
+
+    console.log(allReviews[0].id,'iiiiiii')
+    console.log(allReviews[0].review,'yyyyy')
+    console.log(allReviews[0].stars,'sssssss')
+    console.log(allReviews[0].num,'yyyyy')
+
+
+    const second = allReviews.map(x => x.get({ plain: true }))
+
+    // console.log(plainFirstt[0].num,'pppppppppppppppppppppppppppppp')
+    // res.json(allReviews)
+
     const all = await Spot.findAll({
         where:{
             id:req.params.id
         },
+        attributes:[
+          'id', 'ownerId', 'address',
+          'city', 'state', 'country',
+          'lat', 'lng', 'name', 'description',
+          'price', 'createdAt', 'updatedAt'
+        ],
         // attributes:{
         //     include:[
         //         [Sequelize.fn('COUNT', sequelize.col('review')), 'numReviews'],
         //         [Sequelize.fn('AVG', sequelize.col('stars')), 'avgRating']
         //     ]
         // },
-        include:[
-            {
-                model:Review,
-                attributes:[
-                    [Sequelize.fn('COUNT', sequelize.col('review')), 'number of reviews'],
-                    [Sequelize.fn('AVG', sequelize.col('stars')), 'average rating']
-                ]
-            },
+        // include:[
+            // {
+            //     model:Review,
+            //     attributes:[
+            //         [Sequelize.fn('COUNT', sequelize.col('review')), 'number of reviews'],
+            //         [Sequelize.fn('AVG', sequelize.col('stars')), 'average rating']
+            //     ]
+            // },
 
-            {model:Image,
-            attributes: ['id','url','preview']},
+        //     {model:Image,
+        //     attributes: ['id','url','preview']},
 
-            {model:User,
-            attributes:['id', 'firstName', 'lastName'] }
-        ],
+        //     {model:User,
+        //     attributes:['id', 'firstName', 'lastName'] }
+        // ],
     })
-    return res.json(all)
+
+    const plainFirst = all.map(x => x.get({ plain: true }))
+
+    // res.json(plainFirst)
+
+    console.log(allReviews[0].spotId)
+    console.log(req.params.id)
+    console.log(plainFirst[0].id)
+    // res.json(allReviews)
+
+    if(second[0].spotId === parseInt(req.params.id)){
+      console.log('here')
+      console.log(allReviews[0].numReviews, '####RR')
+      console.log(allReviews[0].avgStarRating, 'RRRRr')
+      plainFirst[0].numReviews = second[0].num
+      plainFirst[0].avgStarRating = second[0].avg
+    }
+
+    const lastly = await Spot.findAll({
+      where:{
+        id:req.params.id
+      },
+      include:[
+        {model:Image,
+          attributes: ['id','url','preview']},
+
+          {model:User,
+          attributes:['id', 'firstName', 'lastName'] }
+      ],
+      })
+
+
+      // res.json(lastly)
+      if(plainFirst[0].id === lastly[0].id){
+        plainFirst[0].SpotImages = lastly[0].Images
+        plainFirst[0].Owner = lastly[0].User
+      }
+
+    res.json(plainFirst)
+
 })
 
 
@@ -640,7 +804,8 @@ router.put('/:spotId',requireAuth, validateSpot, async(req,res) =>{
         res.status(404).json({message:"Spot couldn't be found", status:404})
     }
 
-    const { address,
+    const {
+        address,
         city,
         state,
         country,
@@ -664,7 +829,18 @@ router.put('/:spotId',requireAuth, validateSpot, async(req,res) =>{
       price
   })
 
-  res.json(findSpot)
+  // res.json(findSpot)
+
+  const alas = await Spot.findAll({
+    where:{id:req.params.spotId},
+    attributes:[
+      'id', 'ownerId', 'address','city',
+      'state', 'country', 'lat',
+      'lng', 'description', 'price',
+      'createdAt', 'updatedAt'
+    ]
+  })
+  res.json(alas[0])
   }
 
   // res.json('you do not own this spot')
@@ -674,7 +850,7 @@ router.put('/:spotId',requireAuth, validateSpot, async(req,res) =>{
 
 
 //create a review for a spot based on spots id
-router.post('/:spotId/reviews', requireAuth,  async(req,res)=>{
+router.post('/:spotId/reviews', requireAuth, validateReview, async(req,res)=>{
 
     let find = await Spot.findByPk(req.params.spotId)
     if(!find){
@@ -714,7 +890,7 @@ router.post('/:spotId/reviews', requireAuth,  async(req,res)=>{
         stars,
         })
 
-    res.json(createReview)
+    res.status(201).json(createReview)
 })
 
 //create an image for a spot
@@ -791,7 +967,7 @@ router.get('/:id/bookings' ,requireAuth, async (req,res) =>{
     include:[{
       model:User,
       attributes:['id', 'firstName', 'lastName']
-    }]
+    }],
   })
 
   let finalObj2={Bookings:bookingSpot}
@@ -826,7 +1002,7 @@ router.get('/:spotId/reviews' , async (req,res) =>{
 
 //create a booking based on spot id
 
-router.post('/:id/bookings', requireAuth, async(req,res)=>{
+router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
 
   //gets the data ::
   const {startDate, endDate} = req.body
@@ -847,9 +1023,13 @@ router.post('/:id/bookings', requireAuth, async(req,res)=>{
 
     for(let i=0; i<findBooking.length; i++){
 
+      // if(findBooking[i].endDate === findBooking[i].startDate){
+      //   res.status(400).json({message:"Validation error", status:400, errors:"endDate cannot be on or before startDate"})
+      // }
+
       if(findBooking[i].startDate === startDate && findBooking[i].endDate === endDate){
         // res.status(403).send('Booking already exists for the spot on the selected dates')
-        res.status(403).json({message:'Forbidden', status:403})
+        res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", status:403})
         return
       }
     }

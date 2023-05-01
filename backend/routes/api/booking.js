@@ -12,23 +12,88 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
 
+
+const validateBooking= [
+
+    check('startDate')
+      // .exists({ checkFalsy: true })
+      // .isNumeric()
+      // .notEmpty()
+      .isDate()
+      .withMessage( "St"),
+
+      check('endDate')
+      // .exists({ checkFalsy: true })
+      // .isNumeric()
+      // .notEmpty()
+      .isDate()
+      // .isAfter('startDate',{comparsionDate:'startDate'})
+      // .equals('startDate')
+      .withMessage( "Stars must be an integer from 1 to 5"),
+
+      check('endDate').custom((value, { req }) => {
+        if(new Date(value) <= new Date(req.body.startDate)) {
+            throw new Error ( "endDate cannot be on or before startDate");
+        }
+        return true
+    }),
+
+
+    handleValidationErrors
+  ];
+
 //get all of the current users bookings
 router.get('/current', requireAuth, async(req,res)=>{
 
     const allBookings = await Booking.findAll({
         where:{userId: req.user.id},
-        include:[
-            {
-                model:Spot,
-                attributes:['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
+        attributes:['id', 'spotId']
+        // include:[
+        //     {
+        //         model:Spot,
+        //         attributes:['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
 
-                include:[{
-                    model:Image,
-                    attributes:['preview']
-                }]
-            },
+        //         include:[{
+        //             model:Image,
+        //             attributes:['preview']
+        //         }]
+        //     },
+        // ]
+    })
+
+    const BookingSpot = await Spot.findAll({
+        where:{ownerId:req.user.id},
+        attributes:[
+            'id', 'ownerId', 'address',
+            'city', 'state', 'country', 'lat',
+            'lng', 'name', 'price'
         ]
     })
+
+    const BookingSpotImage = await Spot.findAll({
+        where:{ownerId:req.user.id},
+        include:[{
+            model:Image,
+        }]
+    })
+
+    const plainFirst = BookingSpot.map(x => x.get({ plain: true }))
+
+    // res.json(BookingSpotImage)
+    // res.json(plainFirst)
+
+    for(let i=0; i<plainFirst.length; i++){
+        for(let c=0; c<BookingSpotImage.length; c++){
+            if(plainFirst[i].id === BookingSpotImage[c].id)
+            {
+                plainFirst[i].previewImage=BookingSpotImage[c].url
+            }
+        }
+    }
+
+
+    // res.json(plainFirst)
+
 
     let finalObj = {Bookings:allBookings}
 
@@ -127,7 +192,7 @@ router.delete('/:id', requireAuth, async(req,res) =>{
 
 
 //edit a booking
-router.put('/:id', requireAuth, async(req,res)=>{
+router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
 
     const {startDate, endDate}=req.body
 
@@ -189,7 +254,7 @@ router.put('/:id', requireAuth, async(req,res)=>{
     //if the year for booking is prior to todays year CANNOT edit booking
     if(end[0] < today[0])
     {
-        res.status(400).send('Cannot edit booking, Booking was set to end in a prior year')
+        res.status(403).json({message:"Past bookings can't be modified", status:403})
         return
     }
 
@@ -211,7 +276,7 @@ router.put('/:id', requireAuth, async(req,res)=>{
     console.log(end)
     console.log(endRequest)
 
-        //if
+        if
         if(
             end[0] === endRequest[0] &&
             end[1] === endRequest[1] &&
@@ -221,18 +286,18 @@ router.put('/:id', requireAuth, async(req,res)=>{
             start[2] === startRequest[2]
             )
         {
-            res.statusCode(403).json({message:'Forbidden', statusCode:403})
-            return
+            // res.status(403).json({message:'Forbidden', status:403})
+            // return
         }
 
 
+    //only the owner of the booking can update the booking
     if(findBooking.userId === req.user.id)
     {
         await findBooking.update({
             startDate,
             endDate
         })
-
 
     res.json(findBooking)
     }

@@ -15,14 +15,15 @@ const validateReview = [
 
     check('review')
     //   .exists({ checkFalsy: true })
-      .isAlphanumeric('en-US',{ignore: ' '})
+    //   .isAlphanumeric('en-US',{ignore: ' '})
       .notEmpty()
       .withMessage( "Review text is required"),
 
     check('stars')
     //   .exists({ checkFalsy: true })
-      .isNumeric()
-      .notEmpty()
+    //   .isNumeric()
+    //   .notEmpty()
+      .isInt({min:1, max:5})
       .withMessage( "Stars must be an integer from 1 to 5"),
 
     handleValidationErrors
@@ -87,7 +88,7 @@ router.delete('/:id', requireAuth, async(req,res) =>{
 })
 
 //edit a review
-router.put('/:id', requireAuth, async(req,res)=>{
+router.put('/:id', requireAuth, validateReview, async(req,res)=>{
 
     let findReview = await Review.findByPk(req.params.id)
 
@@ -107,7 +108,15 @@ router.put('/:id', requireAuth, async(req,res)=>{
             stars
         })
 
-        res.json(findReview)
+        const orderR = await Review.findAll({
+            where:{id:req.params.id},
+            attributes:[
+                'id', 'userId', 'spotId',
+                'review', 'stars', 'createdAt', 'updatedAt'
+            ]
+        })
+
+        res.json(orderR[0])
         return
     }
 
@@ -132,7 +141,7 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
 
     if(find.userId !== req.user.id){
     //   res.send('you did not write this review')
-    res.status(403).json({message:'Forbidden'})
+    res.status(403).json({message:'Forbidden', status:403})
       return
     }
 
@@ -149,9 +158,20 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
         attributes:{exclude:['preview','imagableId', 'imagableType', 'updatedAt', 'createdAt']}
       })
 
+    let ImageCount = await Review.findAll({
+        where:{id:req.params.id},
+        include:[{
+            model:Image,
+        }]
+    })
 
+    console.log(ImageCount[0].Images.length)
 
-    res.json(findCreatedImageReview)
+    if(ImageCount[0].Images.length > 10){
+        res.status(403).json({message:"Maximum number of images for this resource was reached"})
+    }
+
+    res.json(findCreatedImageReview[0])
 })
 
 
