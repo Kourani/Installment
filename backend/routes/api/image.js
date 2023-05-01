@@ -58,6 +58,8 @@ router.delete('/review-images/:id', requireAuth, async(req,res)=>{
 
     let imageReview = await Image.findByPk(req.params.id)
 
+    // console.log(imageReview)
+
     if(!imageReview)
     {
         return res.status(404).json({message:"Review Image couldn't be found", status:404})
@@ -71,6 +73,8 @@ router.delete('/review-images/:id', requireAuth, async(req,res)=>{
         const findReview = await Review.findAll({
             where:{id:imageReview.imagableId}
         })
+
+        // res.json(findReview)
 
         console.log(findReview[0].userId)
 

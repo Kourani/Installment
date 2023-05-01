@@ -38,6 +38,11 @@ router.get('/current',requireAuth, async(req,res) =>{
         where:{
             userId:req.user.id
         },
+        attributes:[
+            'id', 'userId', 'spotId',
+            'review', 'stars', 'createdAt',
+            'updatedAt'
+        ],
         include:[{
             model:User,
             attributes:['id', 'firstName', 'lastName']
@@ -56,6 +61,57 @@ router.get('/current',requireAuth, async(req,res) =>{
         }
     ]
     })
+
+    // res.json(allReviews)
+
+    // let findSpots = await Spot.findAll({
+    //     where:{ownerId:req.user.id}
+    // })
+    // res.json(findSpots)
+
+    // const plainFirst = allReviews.map(x => x.get({ plain: true }))
+    // console.log(allReviews[0].id)
+
+    // let findImageReviews = await Image.findAll({
+    //     where:{imagableType:'Review'}
+    // })
+
+    // res.json(findImageReviews)
+
+    // let findImages = await Image.findAll({
+    //     where:{imagableType:'Spot'}
+    // })
+
+    // console.log(findImages.length)
+    // console.log(findSpots.length)
+
+
+
+// const plainFirst = findSpots.map(x => x.get({ plain: true }))
+
+//     for(let i=0; i<findImages.length; i++){
+//         for(let a=0; a<findSpots.length; a++){
+//             console.log(findImages[i].imagableId, findSpots[a].id,)
+//             // console.log(findSpots[a].id, 'hhhhhhhhhh')
+//             if(findImages[i].imagableId === findSpots[a].id){
+//                 console.log('here')
+//                 plainFirst[a].previewImage = findImages[i].url
+//             }
+//         }
+//     }
+
+
+// const plainFirstR = allReviews.map(x => x.get({ plain: true }))
+
+// for(let i=0; i<allReviews.length; i++){
+//     for(let z=0; z<plainFirst.length; z++){
+//         if(plainFirstR[i].spotId === plainFirst[z].id){
+//             plainFirstR[i].Spot = plainFirst
+//         }
+//     }
+// }
+
+
 
     res.json(allReviews)
 })
@@ -169,7 +225,7 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
     console.log(ImageCount[0].Images.length)
 
     if(ImageCount[0].Images.length > 10){
-        res.status(403).json({message:"Maximum number of images for this resource was reached"})
+        res.status(403).json({message:"Maximum number of images for this resource was reached",status:403})
     }
 
     res.json(findCreatedImageReview[0])

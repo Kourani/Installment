@@ -39,8 +39,8 @@ const validateSpot = [
       .notEmpty()
       .withMessage("Country is required"),
     check('name')
-      .exists({ checkFalsy: true })
-      .isAlpha('en-US',{ignore: ' '})
+      // .exists({ checkFalsy: true })
+      // .isAlpha('en-US',{ignore: ' '})
       .isLength({min:undefined, max:50})
       .withMessage("Name must be less than 50 characters")
       .notEmpty()
@@ -71,6 +71,13 @@ const validateSpot = [
       .isNumeric()
       .notEmpty()
       .withMessage( "Price per day is required"),
+
+      // check('street').custom((value, { req }) => {
+      //   if(!req.body.address && !req.body.city && !req.body.state && !req.body.country && !req.body.lat && !req.body.lng && !req.body.name && !req.body.description && !req.body.price) {
+      //       throw new Error ("Street address is required, City is required, State is required, Country is required, Latitude is not valid, Longitude is not valid, Name must be less than 50 characters, Description is required, Price per day is required");
+      //   }
+      // }),
+
 
     handleValidationErrors
   ];
@@ -189,23 +196,221 @@ const validateQuery= [
   //get all spots
 router.get('/', validateQuery, async (req,res) =>{
 
-  // await check('page').isNumeric().run(req);
-  // await check('size').isNumeric({ min: 6 }).run(req);
-  // await check('minLat').isNumeric().run(req);
-  // await check('maxLat').isNumeric({ min: 6 }).run(req);
-  // await check('minLng').isNumeric().run(req);
-  // await check('maxLng').isNumeric({ min: 6 }).run(req);
-  // await check('minPrice').isNumeric().run(req);
-  // await check('maxPrice').isNumeric({ min: 6 }).run(req);
+  let {
+    page,
+    size,
+    minLat,
+    maxLat,
+    minLng,
+    maxLng,
+    minPrice,
+    maxPrice} = req.query
 
-  // const result = validationResult(req);
+  let array = []
 
-  // if (!result.isNumeric()) {
-  //   return res.status(400).json({ message: 'provide a valid number'});
-  // }
+  if(minPrice, maxPrice, minLat, maxLat, minLng, maxLng){
+
+            const testing = await Spot.findAll({
+              where:{
+                price:{
+                    [Op.between]:[minPrice,maxPrice],
+                    [Op.between]:[minLat,maxLat],
+                    [Op.between]:[minLng,maxLng],
+                  }
+
+              },
+              attributes:[
+                'id', 'ownerId',
+                'address', 'city',
+                'state', 'country',
+                'lat', 'lng', 'name',
+                'description','price',
+                'createdAt', 'updatedAt'],
+            })
+
+            array = [...testing]
+          }
+        else {
+
+          if(maxLat && minLat){
+
+            let spotLat = await Spot.findAll({
+              where:{
+                lat:{
+                [Op.between]:[minLat,maxLat]}
+              },
+              attributes:[
+                'id', 'ownerId',
+                'address', 'city',
+                'state', 'country',
+                'lat', 'lng', 'name',
+                'description','price',
+                'createdAt', 'updatedAt'],
+            })
+
+            array = [...spotLat]
+
+          }else if(!minLat){
+
+            let spotMinLat = await Spot.findAll({
+              where:{
+                lat:{
+                [Op.lte]:[maxLat]}
+              },
+              attributes:[
+                'id', 'ownerId',
+                'address', 'city',
+                'state', 'country',
+                'lat', 'lng', 'name',
+                'description','price',
+                'createdAt', 'updatedAt'],
+            })
+
+            array = [...spotMinLat]
+
+          }else if(!maxLat){
+
+            let spotMaxLat = await Spot.findAll({
+              where:{
+                lat:{
+                [Op.gte]:[minLat]}
+              },
+              attributes:[
+                'id', 'ownerId',
+                'address', 'city',
+                'state', 'country',
+                'lat', 'lng', 'name',
+                'description','price',
+                'createdAt', 'updatedAt'],
+            })
+
+            array = [...spotMaxLat]
+
+          }
+
+          if(minLng && maxLng){
+
+            spotLng = await Spot.findAll({
+              where:{
+                lng:{
+                  [Op.between]:[minLng,maxLng]},
+                },
+                attributes:[
+                  'id', 'ownerId',
+                  'address', 'city',
+                  'state', 'country',
+                  'lat', 'lng', 'name',
+                  'description','price',
+                  'createdAt', 'updatedAt'],
+            })
+
+            let array = [...spotLng]
+
+          }else if(!minLng){
+
+            let spotMinLng = await Spot.findAll({
+              where:{
+                lng:{
+                  [Op.lte]:[maxLng]},
+                },
+                attributes:[
+                  'id', 'ownerId',
+                  'address', 'city',
+                  'state', 'country',
+                  'lat', 'lng', 'name',
+                  'description','price',
+                  'createdAt', 'updatedAt'],
+            })
+
+            array = [...spotMinLng]
+
+
+          }else if(!maxLng){
+            let spotMaxLng = await Spot.findAll({
+              where:{
+                lng:{
+                  [Op.gte]:[minLng]},
+                },
+                attributes:[
+                  'id', 'ownerId',
+                  'address', 'city',
+                  'state', 'country',
+                  'lat', 'lng', 'name',
+                  'description','price',
+                  'createdAt', 'updatedAt'],
+            })
+
+            array = [... spotMaxLng]
+
+          }
+
+          if(minPrice && maxPrice){
+
+            let spotPrice = await Spot.findAll({
+              where:{
+                price:{
+                  [Op.between]:[minPrice,maxPrice]},
+                },
+                attributes:[
+                  'id', 'ownerId',
+                  'address', 'city',
+                  'state', 'country',
+                  'lat', 'lng', 'name',
+                  'description','price',
+                  'createdAt', 'updatedAt'],
+              })
+
+            array = [...spotPrice]
+
+          }else if(!minPrice){
+
+            let spotMinPrice = await Spot.findAll({
+              where:{
+                price:{
+                  [Op.lte]:[maxPrice]},
+                },
+                attributes:[
+                  'id', 'ownerId',
+                  'address', 'city',
+                  'state', 'country',
+                  'lat', 'lng', 'name',
+                  'description','price',
+                  'createdAt', 'updatedAt'],
+            })
+
+            array = [... spotMinPrice]
+
+          }else if(!maxPrice){
+
+            let spotMaxPrice = await Spot.findAll({
+              where:{
+                price:{
+                  [Op.gte]:[minPrice]},
+                },
+                attributes:[
+                  'id', 'ownerId',
+                  'address', 'city',
+                  'state', 'country',
+                  'lat', 'lng', 'name',
+                  'description','price',
+                  'createdAt', 'updatedAt'],
+            })
+
+            array = [spotMaxPrice]
+
+          }
+        }
 
 
 
+
+
+
+  // res.json(array) // this gives me all the spots that have the queries
+
+
+
+  //finds all the spots with reviews attributes spotId and stars
   const spotReviews = await Spot.findAll(
     {
       // group:['id'],
@@ -223,6 +428,7 @@ router.get('/', validateQuery, async (req,res) =>{
     console.log(spotReviews.length, 'spots') //# of spots
     console.log(spotReviews[0].Reviews.length, 'reviews')
 
+    //creates a review array of objects
     let undy = []
 
     for(let i=0; i<spotReviews.length; i++){
@@ -232,6 +438,7 @@ router.get('/', validateQuery, async (req,res) =>{
 
     // res.json(undy)
 
+    //an array of lengths
     let twos = []
 
     for(let a=0; a<spotReviews.length; a++){
@@ -241,6 +448,7 @@ router.get('/', validateQuery, async (req,res) =>{
     }
 
 
+    //an array of the average rating
     let average = []
 
     for(let z = 0; z<undy.length; z++){
@@ -269,31 +477,12 @@ router.get('/', validateQuery, async (req,res) =>{
     console.log(average.length)
     console.log(average)
 
-    let {
-      page,
-      size,
-      minLat,
-      maxLat,
-      minLng,
-      maxLng,
-      minPrice,
-      maxPrice} = req.query
-
-    const testing = await Spot.findAll({
-      where:{
-        price:{
-            [Op.between]:[minPrice,maxPrice],
-            [Op.between]:[minLat,maxLat],
-            [Op.between]:[minLng,maxLng],
-          }
-
-      }
-    })
-
-    // res.json(testing)
 
 
-    //finds all the spots includes the images preview
+
+
+
+    //finds all the spots with select attributes
     const allSpots = await Spot.findAll({
       attributes:[
                     'id', 'ownerId',
@@ -322,12 +511,19 @@ router.get('/', validateQuery, async (req,res) =>{
 
 
 
+      //finds all the images
       const findImages = await Image.findAll()
 
       // res.json(findImages)
 
     //you cannot add to the object until you get the PLAIN OBJECTS !!
-    const plainFirst = allSpots.map(x => x.get({ plain: true }))
+    const plainFirst = array.map(x => x.get({ plain: true }))
+
+    //adds the averageRating key value pair into the object
+    for(let h=0; h<average.length; h++){
+      plainFirst[h].avgRating = average[h]
+    }
+
 
     for(let d=0; d<plainFirst.length; d++){
       for(let e=0; e<findImages.length; e++){
@@ -338,142 +534,10 @@ router.get('/', validateQuery, async (req,res) =>{
         }
       }
     }
-    //adds the averageRating key value pair into the object
-    for(let h=0; h<average.length; h++){
-      plainFirst[h].averageRating = average[h]
-    }
-
 
     let objCreate = {Spots:plainFirst}
     res.json(objCreate)
 
-    //   console.log(page)
-    //   console.log(size)
-    //   console.log(minPrice)
-    //   console.log(maxPrice)
-    //   console.log(minLng)
-    //   console.log(maxLng)
-    //   console.log(minLat)
-    //   console.log(maxLat)
-
-
-
-
-
-    //   page = parseInt(page)
-    //   size = parseInt(size)
-
-    //   if(isNaN(page)) page=2
-    //   if(page<=0) page =2
-
-    //   if(isNaN(size)) size=25
-    //   if(size<=0) size =25
-
-    //    // variable = condition ? True : False
-    //   // size = size ? 10 ? 10 : size
-
-
-
-
-
-    //   // console.log(req.query)
-
-    //   for(let keys in req.query)
-    //   {
-
-    //     if(keys)
-    //     {
-    //       let minLng1 = parseInt(minLng)
-    //       let maxLng2 = parseInt(maxLng)
-
-    //       let minLat1 = parseInt(minLat)
-    //       let maxLat2 = parseInt(maxLat)
-
-    //       let minPrice1 = parseInt(minPrice)
-    //       let maxPrice2 = parseInt(maxPrice)
-
-    //       for(let i=0; i<plainFirst.length; i++){
-
-    //         // console.log(plainFirst[i].lat, 'lat')
-    //         // console.log(plainFirst[i].lng, 'lng')
-    //         // console.log(plainFirst[i].price, 'price')
-    //         // console.log(minLat, 'minLAT')
-    //         // console.log(minLng, 'minLNG')
-    //         // console.log(minPrice, 'minPRICE')
-    //         // console.log(maxLat, 'maxLAT')
-    //         // console.log(maxLng, 'maxLNG')
-    //         // console.log(maxPrice, 'maxPRICE')
-
-    //         let newLat = parseInt(plainFirst[i].lat)
-    //         let newLng = parseInt(plainFirst[i].lng)
-    //         let newPrice = parseInt(plainFirst[i].price)
-
-    //         // console.log(newLat)
-    //         // console.log(newLng)
-    //         // console.log(newPrice)
-
-    //         //first condition LAT ONLY
-    //         if (newLat >= minLat && newLat <=maxLat
-    //             || newLat>=minLat
-    //             || newLat<=maxLat
-    //           ){
-    //             res.json({
-    //               plainFirst,
-    //               page,
-    //               size
-    //             })
-    //             return
-    //           }
-
-    //         //second condition LNG ONLY
-    //         if (newLng >= minLng && newLng<=maxLng
-    //             || newLng >= minLng
-    //             || newLng <=maxLng
-    //           ){
-    //             res.json({
-    //               plainFirst,
-    //               page,
-    //               size
-    //             })
-    //             return
-    //         }
-
-    //         //third condition PRICE ONLY
-    //         if (newPrice >= minPrice && newPrice<=maxPrice
-    //           ||newPrice >= minPrice
-    //           ||newPrice <= maxPrice
-    //           ) {
-    //             res.json({
-    //               plainFirst,
-    //               page,
-    //               size
-    //             })
-    //             return
-    //         }
-
-    //         if ( (newPrice >= minPrice && newPrice<=maxPrice ||newPrice >= minPrice
-    //           ||newPrice <= maxPrice) &&
-    //              (newLng >= minLng && newLng<=maxLng || newLng >= minLng
-    //               || newLng <=maxLng) &&
-    //              (newLat >= minLat && newLat <=maxLat  || newLat>=minLat
-    //               || newLat<=maxLat)
-    //           ) {
-    //             res.json({
-    //               plainFirst,
-    //               page,
-    //               size
-    //             })
-    //             return
-    //         }
-
-    //       }
-
-    //     }
-    //   }
-
-
-
-    // res.json('there is no exisiting spot with your search criteria');
 
 })
 
@@ -591,6 +655,13 @@ router.get('/current', requireAuth, async(req,res)=>{
         // res.json(findImage)
 
         console.log(findImage[0].imagableId,'gggggggggggg')
+
+        if(average.length>0){
+          for(let h=0; h<average.length; h++){
+            plainFirst[h].avgRating = average[h]
+          }
+        }
+
         for(let i=0; i<plainFirst.length; i++){
           for(let s=0; s<findImage.length; s++){
             if(plainFirst[i].id===findImage[s].imagableId){
@@ -602,11 +673,6 @@ router.get('/current', requireAuth, async(req,res)=>{
         //adds the averageRating key value pair into the object
         console.log(average.length,'average array')
         // res.json(average.length)
-        if(average.length>0){
-          for(let h=0; h<average.length; h++){
-            plainFirst[h].averageRating = average[h]
-          }
-        }
 
         res.json(plainFirst)
         return
@@ -972,6 +1038,15 @@ router.get('/:id/bookings' ,requireAuth, async (req,res) =>{
       model:User,
       attributes:['id', 'firstName', 'lastName']
     }],
+
+    attributes:{include:[
+      "id",
+    "spotId",
+    "userId",
+    "startDate",
+    "endDate",
+    "createdAt",
+    "updatedAt"]}
   })
 
   let finalObj2={Bookings:bookingSpot}
@@ -994,13 +1069,34 @@ router.get('/:spotId/reviews' , async (req,res) =>{
           model:User,
           attributes:['id', 'firstName', 'lastName']
         },
-        {
-          model:Image
-        }
+        // {
+        //   model:Image
+        // }
       ]
   })
 
-  res.json(all)
+  // res.json(all)
+
+  let findImageR = await Image.findAll({
+    where:{imagableType:'Review'},
+    attributes:['id', 'url', 'imagableId']
+  })
+
+  const plainFirst = all.map(x => x.get({ plain: true }))
+
+
+  for(let i=0; i<all.length; i++){
+    for(let d=0; d<findImageR.length; d++){
+      console.log(plainFirst[i].id, findImageR[d].imagableId)
+      if(plainFirst[i].id === findImageR[d].imagableId){
+        // res.json(findImageR)
+        // delete findImageR[d].preview
+        plainFirst[i].ReviewImages = findImageR
+      }
+    }
+  }
+
+  res.json(plainFirst)
   return
 })
 
@@ -1026,18 +1122,59 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
     where:{spotId:req.params.id}
   })
 
+    let Datee = startDate.split('-')
+    console.log(Datee)
+
+    let end = endDate.split('-')
+    console.log(end, 'end')
+
     for(let i=0; i<findBooking.length; i++){
 
       // if(findBooking[i].endDate === findBooking[i].startDate){
       //   res.status(400).json({message:"Validation error", status:400, errors:"endDate cannot be on or before startDate"})
       // }
 
+      let insidee = findBooking[i].startDate.split('-')
+      console.log(insidee, 'startttt')
+
+      let inside = findBooking[i].endDate.split('-')
+      console.log(inside, 'startttt')
+
+      let insideDateI = parseInt(insidee[i])
+      let insideEndI=parseInt(inside)
+
+      let DateI = parseInt(Datee[i])
+      let endI = parseInt(end[i])
+
+        if(insideDateI<DateI && DateI<insideEndI){
+          console.log(insideDateI, 'insideDateI')
+          console.log(DateI, 'DateI'),
+          console.log(insideEndI, 'insideEndI')
+
+          res.status(403).json({message: "Sorry, this spot is already booked for the specified dates", errors: ["Start date conflicts with an existing booking"], status:403})
+          return
+        }
+
+        if(insideDateI<endI && endI<insideEndI){
+          console.log(insideDateI, 'insideDateIeeeeeeee')
+          console.log(DateI, 'DateIeeeeeeeeee'),
+          console.log(endI, 'endIeeeeeeeeee'),
+          console.log(insideEndI, 'insideEndIeeeeeeeee')
+
+          res.status(403).json({message: "Sorry, this spot is already booked for the specified dates", errors: ["End date conflicts with an existing booking"],status:403})
+          return
+        }
+
       if(findBooking[i].startDate === startDate && findBooking[i].endDate === endDate){
         // res.status(403).send('Booking already exists for the spot on the selected dates')
-        res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", status:403})
+        res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", errors: [
+          "Start date conflicts with an existing booking",
+          "End date conflicts with an existing booking"
+        ], status:403})
         return
       }
     }
+
 
   if(find.userId !== req.user.id)
   {
