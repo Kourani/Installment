@@ -53,7 +53,7 @@ router.get('/current',requireAuth, async(req,res) =>{
 
             include:[
                 {model:Image,
-                attributes:['preview']}
+                attributes:['url']}
             ]
         },
         {
