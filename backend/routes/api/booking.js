@@ -28,9 +28,8 @@ const validateBooking= [
 //get all of the current users bookings
 router.get('/current', requireAuth, async(req,res)=>{
 
-    const allBookings = await Booking.findAll({
+    let allBookings = await Booking.findAll({
         where:{userId: req.user.id},
-        attributes:['id', 'spotId']
         // include:[
         //     {
         //         model:Spot,
@@ -44,6 +43,7 @@ router.get('/current', requireAuth, async(req,res)=>{
         // ]
     })
 
+    //finding ALL the current user SPOTS
     const BookingSpot = await Spot.findAll({
         where:{ownerId:req.user.id},
         attributes:[
@@ -53,11 +53,16 @@ router.get('/current', requireAuth, async(req,res)=>{
         ]
     })
 
-    const BookingSpotImage = await Spot.findAll({
-        where:{ownerId:req.user.id},
-        include:[{
-            model:Image,
-        }]
+    //finding ALL the current user SPOTS with IMAGES
+    // const BookingSpotImage = await Spot.findAll({
+    //     where:{ownerId:req.user.id},
+    //     include:[{
+    //         model:Image,
+    //     }]
+    // })
+
+    const BookingSpotImage = await Image.findAll({
+        where:{imagableType:"Spot"},
     })
 
     const plainFirst = BookingSpot.map(x => x.get({ plain: true }))
@@ -67,20 +72,36 @@ router.get('/current', requireAuth, async(req,res)=>{
 
     for(let i=0; i<plainFirst.length; i++){
         for(let c=0; c<BookingSpotImage.length; c++){
-            if(plainFirst[i].id === BookingSpotImage[c].id)
+            if(plainFirst[i].id === BookingSpotImage[c].imagableId)
             {
                 plainFirst[i].previewImage=BookingSpotImage[c].url
             }
         }
     }
 
+    const plainFirstBookings= allBookings.map(x => x.get({ plain: true }))
 
-    // res.json(plainFirst)
+    for(let z=0; z<plainFirstBookings.length; z++){
+
+        for(let i=0; i<plainFirst.length; i++){
+
+            console.log(z,i)
+
+            if(plainFirst[i].id === plainFirstBookings[z].spotId)
+            {
+                plainFirstBookings[z].Spot = plainFirst[i]
+            }
+        }
+
+    }
 
 
-    let finalObj = {Bookings:allBookings}
+    res.json(plainFirstBookings)
 
-    res.json(finalObj)
+
+    // let finalObj = {Bookings:allBookings}
+
+    // res.json(finalObj)
 })
 
 
