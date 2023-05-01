@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
 
       Image.belongsTo(
-        models.Review,{
+        models.Review,
+        {
           foreignKey:'id',
           constraints:false
         }

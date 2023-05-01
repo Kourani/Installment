@@ -22,8 +22,6 @@ const handleValidationErrors = (req, _res, next) => {
     err.status = 400;
     err.errors = { message:errors.undefined, status:400};
 
-
-
     delete err.stack
 
     next(err);
