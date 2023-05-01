@@ -76,10 +76,17 @@ const requireAuth = function (req, _res, next) {
 
     const err = new Error('Authentication required');
     err.title = 'Authentication required';
+    err.message = 'Authentication required';
     err.errors = { message: 'Authentication required' , status:401};
     err.status = 401;
+    // err.stack = 'delete'
+    delete err.stack
+    // console.log(err.stack, 'hereeeeeeeee')
+    // Error.captureStackTrace(err, requireAuth)
     return next(err);
   }
+
+
 
   // backend/utils/auth.js
 // ...

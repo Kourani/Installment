@@ -94,6 +94,7 @@ router.put('/:id', requireAuth, validateReview, async(req,res)=>{
 
     if(!findReview){
         res.status(404).json({message:"Review couldn't be found", status:404})
+        return
     }
 
     const {
@@ -116,8 +117,8 @@ router.put('/:id', requireAuth, validateReview, async(req,res)=>{
             ]
         })
 
-        res.json(orderR[0])
-        return
+        return res.json(orderR[0])
+
     }
 
 

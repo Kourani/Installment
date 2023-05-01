@@ -608,7 +608,8 @@ router.get('/current', requireAuth, async(req,res)=>{
           }
         }
 
-        res.json(plainFirst);
+        res.json(plainFirst)
+        return
     }
 
     // res.send('you are not the owner of the spot')
@@ -633,6 +634,7 @@ router.get('/:id' , async (req,res) =>{
 
     if(!find){
         res.status(404).json({message:"Spot couldn't be found", status:404})
+        return
     }
 
     const allReviews = await Review.findAll({
@@ -802,6 +804,7 @@ router.put('/:spotId',requireAuth, validateSpot, async(req,res) =>{
     if(!findSpot)
     {
         res.status(404).json({message:"Spot couldn't be found", status:404})
+        return
     }
 
     const {
@@ -944,6 +947,7 @@ router.get('/:id/bookings' ,requireAuth, async (req,res) =>{
 
   if(!findSpot){
     res.status(404).json({message:"Spot couldn't be found", status:404})
+    return
     }
 
     console.log(findSpot.ownerId, 'owner')
@@ -980,7 +984,7 @@ router.get('/:spotId/reviews' , async (req,res) =>{
   const find = await Review.findByPk(req.params.spotId)
 
   if(!find){
-      res.status(404).json({message:"Spot couldn't be found", status:404})
+      return res.status(404).json({message:"Spot couldn't be found", status:404})
   }
 
   const all = await Review.findAll({
@@ -997,6 +1001,7 @@ router.get('/:spotId/reviews' , async (req,res) =>{
   })
 
   res.json(all)
+  return
 })
 
 
