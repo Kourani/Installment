@@ -57,13 +57,14 @@ router.get('/current',requireAuth, async(req,res) =>{
             ]
         },
         {
-            model:Image, as: 'ReveiwImages',
+            model:Image, as: 'ReviewImages',
             attributes:['id', 'url']
         }
     ]
     })
 
-    res.json(allReviews)
+    let object = {Reviews:allReviews}
+    res.json(object)
 })
 
 //delete a review !!
@@ -168,13 +169,14 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
     let ImageCount = await Review.findAll({
         where:{id:req.params.id},
         include:[{
-            model:Image,
+            model:Image, as: 'ReviewImages',
         }]
     })
 
-    console.log(ImageCount[0].Images.length)
+    // res.json(ImageCount)
+    console.log(ImageCount[0].ReviewImages.length)
 
-    if(ImageCount[0].Images.length > 10){
+    if(ImageCount[0].ReviewImages.length > 10){
         res.status(403).json({message:"Maximum number of images for this resource was reached",status:403})
     }
 

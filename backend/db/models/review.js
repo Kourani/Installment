@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
         models.Image,
 
         {
-          as: 'ReveiwImages',
+          as: 'ReviewImages',
         foreignKey:'imagableId',
          constraints:false,
          scope:{

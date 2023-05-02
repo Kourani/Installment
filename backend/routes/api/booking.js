@@ -96,7 +96,8 @@ router.get('/current', requireAuth, async(req,res)=>{
     }
 
 
-    res.json(plainFirstBookings)
+    let object = {Bookings:plainFirstBookings}
+    res.json(object)
 
 
     // let finalObj = {Bookings:allBookings}

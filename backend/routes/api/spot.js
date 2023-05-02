@@ -56,6 +56,7 @@ const validateSpot = [
       .isAlphanumeric('en-US',{ignore: ' '})
       .notEmpty()
       .withMessage( "Street address is required"),
+
       check('lat')
       .exists({ checkFalsy: true })
       .isNumeric()
@@ -68,7 +69,7 @@ const validateSpot = [
       .withMessage("Longitude is not valid"),
     check('price')
       .exists({ checkFalsy: true })
-      .isNumeric()
+      .isDecimal()
       .notEmpty()
       .withMessage( "Price per day is required"),
 
@@ -148,14 +149,12 @@ const validateQuery= [
 
     check('minLat')
     .optional()
-    // .exists({ checkFalsy: true })
     .isNumeric()
-    // .notEmpty()
     .withMessage('Please provide a valid Latitude.'),
 
     check('maxLat')
     .optional()
-    // .exists({ checkFalsy: true })
+    // .exists({ checkFalsy: false })
     .isNumeric()
     // .notEmpty()
     .withMessage('Please provide a valid Latitude.'),
@@ -196,7 +195,7 @@ const validateQuery= [
 
 
   //get all spots
-router.get('/', validateQuery, async (req,res) =>{
+router.get('/',  validateQuery, async (req,res) =>{
 
       let {
         page,
@@ -262,42 +261,44 @@ router.get('/', validateQuery, async (req,res) =>{
             array = [...spotLat]
             // return res.json({array,page,size})
 
-          }else if(!minLat){
+          }else {
+            if(!minLat){
 
-            let spotMinLat = await Spot.findAll({
-              where:{
-                lat:{
-                [Op.lte]:[maxLat]}
-              },
-              attributes:[
-                'id', 'ownerId',
-                'address', 'city',
-                'state', 'country',
-                'lat', 'lng', 'name',
-                'description','price',
-                'createdAt', 'updatedAt'],
-            })
+              let spotMinLat = await Spot.findAll({
+                where:{
+                  lat:{
+                  [Op.lte]:[maxLat]}
+                },
+                attributes:[
+                  'id', 'ownerId',
+                  'address', 'city',
+                  'state', 'country',
+                  'lat', 'lng', 'name',
+                  'description','price',
+                  'createdAt', 'updatedAt'],
+              })
 
-            array = [...spotMinLat]
+              array = [...spotMinLat]
 
-          }else if(!maxLat){
+            }else if(!maxLat){
 
-            let spotMaxLat = await Spot.findAll({
-              where:{
-                lat:{
-                [Op.gte]:[minLat]}
-              },
-              attributes:[
-                'id', 'ownerId',
-                'address', 'city',
-                'state', 'country',
-                'lat', 'lng', 'name',
-                'description','price',
-                'createdAt', 'updatedAt'],
-            })
+              let spotMaxLat = await Spot.findAll({
+                where:{
+                  lat:{
+                  [Op.gte]:[minLat]}
+                },
+                attributes:[
+                  'id', 'ownerId',
+                  'address', 'city',
+                  'state', 'country',
+                  'lat', 'lng', 'name',
+                  'description','price',
+                  'createdAt', 'updatedAt'],
+              })
 
-            array = [...spotMaxLat]
+              array = [...spotMaxLat]
 
+            }
           }
 
           if(minLng && maxLng){
@@ -318,42 +319,45 @@ router.get('/', validateQuery, async (req,res) =>{
 
             array = [...spotLng]
 
-          }else if(!minLng){
+          }else{
 
-            let spotMinLng = await Spot.findAll({
-              where:{
-                lng:{
-                  [Op.lte]:[maxLng]},
-                },
-                attributes:[
-                  'id', 'ownerId',
-                  'address', 'city',
-                  'state', 'country',
-                  'lat', 'lng', 'name',
-                  'description','price',
-                  'createdAt', 'updatedAt'],
-            })
+            if(!minLng){
 
-            array = [...spotMinLng]
+              let spotMinLng = await Spot.findAll({
+                where:{
+                  lng:{
+                    [Op.lte]:[maxLng]},
+                  },
+                  attributes:[
+                    'id', 'ownerId',
+                    'address', 'city',
+                    'state', 'country',
+                    'lat', 'lng', 'name',
+                    'description','price',
+                    'createdAt', 'updatedAt'],
+              })
+
+              array = [...spotMinLng]
 
 
-          }else if(!maxLng){
-            let spotMaxLng = await Spot.findAll({
-              where:{
-                lng:{
-                  [Op.gte]:[minLng]},
-                },
-                attributes:[
-                  'id', 'ownerId',
-                  'address', 'city',
-                  'state', 'country',
-                  'lat', 'lng', 'name',
-                  'description','price',
-                  'createdAt', 'updatedAt'],
-            })
+            }else if(!maxLng){
+              let spotMaxLng = await Spot.findAll({
+                where:{
+                  lng:{
+                    [Op.gte]:[minLng]},
+                  },
+                  attributes:[
+                    'id', 'ownerId',
+                    'address', 'city',
+                    'state', 'country',
+                    'lat', 'lng', 'name',
+                    'description','price',
+                    'createdAt', 'updatedAt'],
+              })
 
-            array = [... spotMaxLng]
+              array = [... spotMaxLng]
 
+            }
           }
 
           if(minPrice && maxPrice){
@@ -374,46 +378,50 @@ router.get('/', validateQuery, async (req,res) =>{
 
             array = [...spotPrice]
 
-          }else if(!minPrice){
+          }else {
 
-            let spotMinPrice = await Spot.findAll({
-              where:{
-                price:{
-                  [Op.lte]:[maxPrice]},
-                },
-                attributes:[
-                  'id', 'ownerId',
-                  'address', 'city',
-                  'state', 'country',
-                  'lat', 'lng', 'name',
-                  'description','price',
-                  'createdAt', 'updatedAt'],
-            })
+            if(!minPrice){
 
-            array = [... spotMinPrice]
+              let spotMinPrice = await Spot.findAll({
+                where:{
+                  price:{
+                    [Op.lte]:[maxPrice]},
+                  },
+                  attributes:[
+                    'id', 'ownerId',
+                    'address', 'city',
+                    'state', 'country',
+                    'lat', 'lng', 'name',
+                    'description','price',
+                    'createdAt', 'updatedAt'],
+              })
 
-          }else if(!maxPrice){
+              array = [... spotMinPrice]
 
-            let spotMaxPrice = await Spot.findAll({
-              where:{
-                price:{
-                  [Op.gte]:[minPrice]},
-                },
-                attributes:[
-                  'id', 'ownerId',
-                  'address', 'city',
-                  'state', 'country',
-                  'lat', 'lng', 'name',
-                  'description','price',
-                  'createdAt', 'updatedAt'],
-            })
+            }else if(!maxPrice){
 
-            array = [spotMaxPrice]
+              let spotMaxPrice = await Spot.findAll({
+                where:{
+                  price:{
+                    [Op.gte]:[minPrice]},
+                  },
+                  attributes:[
+                    'id', 'ownerId',
+                    'address', 'city',
+                    'state', 'country',
+                    'lat', 'lng', 'name',
+                    'description','price',
+                    'createdAt', 'updatedAt'],
+              })
 
+              array = [spotMaxPrice]
+
+            }
+
+            // res.json(array,page,size)
           }
 
-          // res.json(array,page,size)
-        }
+          }
 
 
   // res.json(array) // this gives me all the spots that have the queries
@@ -720,6 +728,7 @@ router.get('/:id' , async (req,res) =>{
       where:{
         spotId:req.params.id
       },
+      group: ['id'],
       attributes:{
         include:[
             [Sequelize.fn('COUNT', sequelize.col('review')), 'num'],
@@ -937,6 +946,7 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async(req,res)=>{
     let find = await Spot.findByPk(req.params.spotId)
     if(!find){
         res.status(404).send({message:"Spot couldn't be found", status:404})
+        return
     }
 
     const {review, stars} = req.body
@@ -973,6 +983,7 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async(req,res)=>{
         })
 
     res.status(201).json(createReview)
+    return
 })
 
 //create an image for a spot
@@ -1109,7 +1120,8 @@ router.get('/:spotId/reviews' , async (req,res) =>{
     }
   }
 
-  res.json(plainFirst)
+  let object = {Reveiws:plainFirst}
+  res.json(object)
   return
 })
 
