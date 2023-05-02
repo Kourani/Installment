@@ -136,12 +136,14 @@ const validateQuery= [
     .exists({ checkFalsy: true })
     .isNumeric()
     .notEmpty()
+    .isInt(({min:0, max:10}))
     .withMessage('Please provide a valid page.'),
 
   check('size')
     .exists({ checkFalsy: true })
     .isNumeric()
     .notEmpty()
+    .isInt(({min:0, max:20}))
     .withMessage('Please provide a valid size.'),
 
     check('minLat')
@@ -196,29 +198,38 @@ const validateQuery= [
   //get all spots
 router.get('/', validateQuery, async (req,res) =>{
 
-  let {
-    page,
-    size,
-    minLat,
-    maxLat,
-    minLng,
-    maxLng,
-    minPrice,
-    maxPrice} = req.query
+      let {
+        page,
+        size,
+        minLat,
+        maxLat,
+        minLng,
+        maxLng,
+        minPrice,
+        maxPrice} = req.query
+
+    page = parseInt(page);
+    size = parseInt(size);
+
+    if (isNaN(page)) page =0
+    if(page<0) page=0
+
+    if(isNaN(size)) size =20
+    if(size<0) size=20
 
   let array = []
 
   if(minPrice, maxPrice, minLat, maxLat, minLng, maxLng){
 
-            const testing = await Spot.findAll({
+            let testing = await Spot.findAll({
               where:{
                 price:{
                     [Op.between]:[minPrice,maxPrice],
                     [Op.between]:[minLat,maxLat],
                     [Op.between]:[minLng,maxLng],
                   }
-
               },
+
               attributes:[
                 'id', 'ownerId',
                 'address', 'city',
@@ -249,6 +260,7 @@ router.get('/', validateQuery, async (req,res) =>{
             })
 
             array = [...spotLat]
+            // return res.json({array,page,size})
 
           }else if(!minLat){
 
@@ -304,7 +316,7 @@ router.get('/', validateQuery, async (req,res) =>{
                   'createdAt', 'updatedAt'],
             })
 
-            let array = [...spotLng]
+            array = [...spotLng]
 
           }else if(!minLng){
 
@@ -399,15 +411,12 @@ router.get('/', validateQuery, async (req,res) =>{
             array = [spotMaxPrice]
 
           }
+
+          // res.json(array,page,size)
         }
 
 
-
-
-
-
   // res.json(array) // this gives me all the spots that have the queries
-
 
 
   //finds all the spots with reviews attributes spotId and stars
@@ -535,6 +544,7 @@ router.get('/', validateQuery, async (req,res) =>{
       }
     }
 
+    plainFirst.push(page,size)
     let objCreate = {Spots:plainFirst}
     res.json(objCreate)
 

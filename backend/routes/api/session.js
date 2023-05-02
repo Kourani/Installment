@@ -31,6 +31,7 @@ const validateLogin = [
         }
         else if(!req.body.credential && req.body.password) {
           throw new Error ('Please provide a valid email or username.');
+
       }
       else if(req.body.credential && !req.body.password) {
         throw new Error ('Please provide a password.');
@@ -59,13 +60,14 @@ router.post('/',validateLogin, async (req, res, next) => {
       });
 
       if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
-        // const err = new Error('Login failed');
-        // err.status = 401;
-        // err.title = 'Login failed';
-        // err.errors = { credential: 'The provided credentials were invalid.' };
-        // return next(err);
-        res.status(401).json({message:'Invalid credentials', status:401})
-        return
+        const err = new Error('Login failed');
+        err.status = 401;
+        err.title = 'Login failed';
+        err.errors = {message: 'Invalid credentials' ,status:401};
+        delete err.stack
+        return next(err);
+        // res.status(401).json({message:'Invalid credentials', status:401})
+        // return
       }
 
 
@@ -148,6 +150,7 @@ router.post(
         err.status = 401;
         err.title = 'Login failed';
         err.errors = { credential: 'The provided credentials were invalid.' };
+        // delete err.stack
         return next(err);
       }
 
