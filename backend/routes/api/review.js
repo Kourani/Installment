@@ -34,63 +34,113 @@ const validateReview = [
 //get reviews of current user
 router.get('/current',requireAuth, async(req,res) =>{
 
-    const allReviews = await Review.findAll({
-        where:{
-            userId:req.user.id
-        },
-        attributes:[
-            'id', 'userId', 'spotId',
-            'review', 'stars', 'createdAt',
-            'updatedAt'
-        ],
-        include:[{
-            model:User,
-            attributes:['id', 'firstName', 'lastName']
-        },
-        {
-            model:Spot,
-            attributes:['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
+        //finds ALL the CURRENT user REVIEWS includes the USER date and the IMAGE data
+        const allReviews = await Review.findAll({
+            where:{
+                userId:req.user.id
+                },
 
-            include:[
-                {model:Image,
-                attributes:['url']}
-            ]
-        },
-        {
-            model:Image, as: 'ReviewImages',
-            attributes:['id', 'url']
+                attributes:[
+                    'id', 'userId', 'spotId',
+                    'review', 'stars', 'createdAt',
+                    'updatedAt'
+                    ],
+
+                    include:[{
+                        model:User,
+                        attributes:['id', 'firstName', 'lastName']
+                    },
+                            // {
+                            //     model:Spot,
+                            //     attributes:['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
+
+                            //     include:[
+                            //         {model:Image,
+                            //         attributes:['url']}
+                            //     ]
+                            // },
+                    {
+                        model:Image, as: 'ReviewImages',
+                        attributes:['id', 'url']
+                    }
+                    ]
+                    })
+
+        //find ALL the SPOTS
+        const allSpots = await Spot.findAll()
+
+        //find ALL the IMAGES that belong to a SPOT
+        const allImages = await Image.findAll({
+            where:{imagableType:'Spot'}
+        })
+
+
+        console.log(allSpots.length)
+        console.log(allImages.length)
+
+        const plainFirst = allSpots.map(x => x.get({ plain: true }))
+
+        const plainFirstR = allReviews.map(x => x.get({ plain: true }))
+
+        //adds an the image url to the spots
+        for(let i=0; i<allSpots.length; i++){
+            for(let z=0; z<allImages.length; z++){
+                if(plainFirst[i].id === allImages[z].imagableId){
+                    plainFirst[i].previewImage = allImages[z].url
+                }
+            }
+            if(!plainFirst[i].previewImage){
+                plainFirst[i].previewImage= null
+            }
         }
-    ]
-    })
 
-    let object = {Reviews:allReviews}
-    res.json(object)
-})
+        console.log(plainFirst.length, 'sssss')
+        console.log(plainFirstR.length, 'rrrr')
+
+        for(let i=0; i<plainFirstR.length; i++){
+            for(let z=0; z<plainFirst.length; z++){
+                console.log(plainFirst[z].id, 'spot', plainFirstR[z].spotId, 'reveiw')
+
+                if(plainFirst[z].id===plainFirstR[i].spotId){
+                    plainFirstR[i].Spot = plainFirst[i]
+                }
+            }
+        }
+
+
+
+
+
+
+
+        let object = {Reviews:plainFirstR}
+        res.json(object)
+        })
 
 //delete a review !!
 router.delete('/:id', requireAuth, async(req,res) =>{
 
-    let deleteReview = await Review.findByPk(req.params.id)
+        let deleteReview = await Review.findByPk(req.params.id)
 
-    if(!deleteReview)
-    {
-        res.status(404).json({message:"Review couldn't be found", status:404})
-        return
-    }
+            if(!deleteReview)
+            {
+                res.status(404).json({message:"Review couldn't be found", status:404})
+                return
+            }
 
-    if(deleteReview.userId === req.user.id)
-    {
-        await deleteReview.destroy()
-        res.json({message:'Successfully Deleted', status:200})
-        return
-    }
+            if(deleteReview.userId === req.user.id)
+                {
+                    await deleteReview.destroy()
+                    res.json({message:'Successfully Deleted', status:200})
+                    return
+                }
 
 
-    console.log(deleteReview.userId, 'creator'),
-    console.log(req.user.id, 'current user')
+                console.log(deleteReview.userId, 'creator'),
+                console.log(req.user.id, 'current user')
 
-    // res.send('You did not write this review')
-    res.status(403).json({message:'Forbidden', status:403})
+                // res.send('You did not write this review')
+                res.status(403).json({message:'Forbidden', status:403})
 
 })
 
