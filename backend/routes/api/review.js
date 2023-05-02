@@ -32,7 +32,7 @@ const validateReview = [
 
 
 //get reviews of current user
-router.get('/current',requireAuth, async(req,res) =>{
+router.get('/current', requireAuth, async(req,res) =>{
 
         //finds ALL the CURRENT user REVIEWS includes the USER date and the IMAGE data
         const allReviews = await Review.findAll({
@@ -97,22 +97,26 @@ router.get('/current',requireAuth, async(req,res) =>{
         console.log(plainFirst.length, 'sssss')
         console.log(plainFirstR.length, 'rrrr')
 
-        for(let i=0; i<plainFirstR.length; i++){
-            for(let z=0; z<plainFirst.length; z++){
-                console.log(plainFirst[z].id, 'spot', plainFirstR[z].spotId, 'reveiw')
+        // res.json(plainFirstR)
 
-                if(plainFirst[z].id===plainFirstR[i].spotId){
-                    plainFirstR[i].Spot = plainFirst[i]
+        for(let i=0; i<plainFirst.length; i++){
+            for(let z=0; z<plainFirstR.length; z++){
+                console.log(plainFirst[i].id, 'spot', plainFirstR[z].spotId, 'reveiw')
+                if(plainFirst[i].id===plainFirstR[z].spotId){
+                    plainFirstR[z].Spot = plainFirst[i]
                 }
             }
+
         }
 
 
-
-
-
-
-
+        for(let h=0; h<plainFirstR.length; h++){
+            if(!plainFirstR[h].Spot){
+                // console.log(!plainFirstR[h].Spot)
+                plainFirstR[h].Spot=[]
+            }
+        }
+        
         let object = {Reviews:plainFirstR}
         res.json(object)
         })

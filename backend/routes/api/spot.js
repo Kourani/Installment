@@ -5519,11 +5519,14 @@ router.put('/:spotId',requireAuth, validateSpot, async(req,res) =>{
       'createdAt', 'updatedAt'
     ]
   })
+
   res.json(alas[0])
+  return
   }
 
-  // res.json('you do not own this spot')
+
   res.status(403).json({message:'Forbidden', status:403})
+  return
 
 })
 
@@ -5694,23 +5697,45 @@ router.get('/:spotId/reviews' , async (req,res) =>{
     attributes:['id', 'url', 'imagableId']
   })
 
+  let findImageRI = await Image.findAll({
+    where:{imagableType:'Review'},
+    attributes:['id', 'url']
+  })
+
+
   const plainFirst = all.map(x => x.get({ plain: true }))
 
 
-  for(let i=0; i<all.length; i++){
-    for(let d=0; d<findImageR.length; d++){
-      console.log(plainFirst[i].id, findImageR[d].imagableId)
-      if(plainFirst[i].id === findImageR[d].imagableId){
-        // res.json(findImageR)
-        // delete findImageR[d].preview
-        plainFirst[i].ReviewImages = findImageR
+  for(let t=0; t<findImageRI.length; t++){
+    for(let a=0; a<findImageRI.length; a++)
+    {
+      if(findImageR[t].id === findImageRI[a].id){
+
+        for(let i=0; i<all.length; i++){
+          for(let d=0; d<findImageR.length; d++){
+
+            console.log(plainFirst[i].id, findImageR[d].imagableId)
+            if(plainFirst[i].id === findImageR[d].imagableId){
+              // res.json(findImageR)
+              // delete findImageR[d].preview
+              plainFirst[i].ReviewImages = findImageRI
+            }
+          }
+        }
+
+          for(j=0; j<plainFirst.length; j++){
+            if(!plainFirst[j].ReviewImages){
+              plainFirst[j].ReviewImages=[]
+            }
+          }
       }
     }
+
   }
 
-  let object = {Reveiws:plainFirst}
-  res.json(object)
-  return
+      let object = {Reveiws:plainFirst}
+      res.json(object)
+      return
 })
 
 

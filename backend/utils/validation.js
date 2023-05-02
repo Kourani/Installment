@@ -28,10 +28,9 @@ const handleValidationErrors = (req, _res, next) => {
     err.errors = { message:errors.undefined, status:400};
 
     // Error.captureStackTrace(err, handleValidationErrors)
-    // delete Error.stack
+    err.stack=null
+    delete err.stack
     next(err);
-
-
 
   }
   next();

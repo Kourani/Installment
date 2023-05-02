@@ -5,6 +5,7 @@ const {Model, Validator} = require('sequelize');
 
 
 module.exports = (sequelize, DataTypes) => {
+
   class Spot extends Model {
     /**
      * Helper method for defining associations.
@@ -104,10 +105,18 @@ module.exports = (sequelize, DataTypes) => {
     price:{
       type:DataTypes.DECIMAL,
       allowNull:false
-    }
+    },
+    // deletedAt: {
+    //   type: Sequelize.DATE,
+    //   allowNull: false
+    // }
+
   }, {
     sequelize,
     modelName: 'Spot',
+    // paranoid:true,
+    // deletedAt:'SoftDelete',
+    // timestamps:true,
   });
   return Spot;
 };

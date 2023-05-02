@@ -7,6 +7,8 @@ if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;  // define your schema in options object
 }
 
+// const {Sequelize} = require("sequelize")
+
 const {User, Spot} = require('../models')
 
 

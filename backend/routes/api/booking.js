@@ -43,15 +43,17 @@ router.get('/current', requireAuth, async(req,res)=>{
         // ]
     })
 
-    //finding ALL the current user SPOTS
+    //finding ALL the SPOTS
     const BookingSpot = await Spot.findAll({
-        where:{ownerId:req.user.id},
+        // where:{ownerId:req.user.id},
         attributes:[
             'id', 'ownerId', 'address',
             'city', 'state', 'country', 'lat',
             'lng', 'name', 'price'
         ]
     })
+
+    // res.json(BookingSpot)
 
     //finding ALL the current user SPOTS with IMAGES
     // const BookingSpotImage = await Spot.findAll({
@@ -68,7 +70,7 @@ router.get('/current', requireAuth, async(req,res)=>{
     const plainFirst = BookingSpot.map(x => x.get({ plain: true }))
 
     // res.json(BookingSpotImage)
-    // res.json(plainFirst)
+
 
     for(let i=0; i<plainFirst.length; i++){
         for(let c=0; c<BookingSpotImage.length; c++){
@@ -79,30 +81,44 @@ router.get('/current', requireAuth, async(req,res)=>{
         }
     }
 
-    const plainFirstBookings= allBookings.map(x => x.get({ plain: true }))
+    let pf = allBookings.map(x => x.get({ plain: true }))
 
-    for(let z=0; z<plainFirstBookings.length; z++){
+    console.log(plainFirst.length, 'SpotImage')
+    console.log(pf.length, 'bookings')
 
-        for(let i=0; i<plainFirst.length; i++){
 
-            console.log(z,i)
-
-            if(plainFirst[i].id === plainFirstBookings[z].spotId)
-            {
-                plainFirstBookings[z].Spot = plainFirst[i]
-            }
+    for(let i=0; i<plainFirst.length; i++){
+        if(!plainFirst[i].previewImage)
+        {
+            plainFirst[i].previewImage=null
         }
-
     }
 
+    // res.json(pf)
 
-    let object = {Bookings:plainFirstBookings}
+    for(let index = 0; index<pf.length; index++){
+        for(let indexx=0; indexx<plainFirst.length; indexx++){
+            // console.log(index, indexx)
+
+            // console.log(pf[index].spotId, 'pf')
+            console.log(plainFirst[indexx].id, 'ssssssss')
+            if(pf[index].spotId === plainFirst[indexx].id)
+            {
+                pf[index].Spot = plainFirst[indexx]
+            }
+        }
+    }
+
+    for(let i=0; i<pf.length; i++){
+        if(!pf[i].Spot){
+            // 'Spot that was booked is currently not available'
+            pf[i].Spot=[]
+        }
+    }
+
+    let object = {Bookings:pf}
     res.json(object)
-
-
-    // let finalObj = {Bookings:allBookings}
-
-    // res.json(finalObj)
+    return
 })
 
 
