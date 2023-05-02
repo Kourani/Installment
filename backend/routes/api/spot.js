@@ -5822,7 +5822,9 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
       startDate,
       endDate,
     })
+
     res.json(createBooking)
+    return
   }
 
   // res.send('Owner of the spot cannot create a booking')
