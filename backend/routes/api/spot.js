@@ -544,7 +544,7 @@ router.get('/', validateQuery, async (req,res) =>{
       }
     }
 
-    plainFirst.push(page,size)
+    plainFirst.push(`page:${page}`, `size:${size}`)
     let objCreate = {Spots:plainFirst}
     res.json(objCreate)
 
