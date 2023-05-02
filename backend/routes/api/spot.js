@@ -548,6 +548,8 @@ router.get('/', validateQuery, async (req,res) =>{
     let objCreate = {Spots:plainFirst, page:page, size:size}
     res.json(objCreate)
 
+    // console.log(objCreate)
+
 
 })
 
@@ -684,7 +686,8 @@ router.get('/current', requireAuth, async(req,res)=>{
         console.log(average.length,'average array')
         // res.json(average.length)
 
-        res.json(plainFirst)
+        let plainFirst1 ={Spots:plainFirst}
+        res.json(plainFirst1)
         return
     }
 
