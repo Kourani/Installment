@@ -731,7 +731,26 @@ const validateQuery= [
              if(isNaN(size)) size =20
              if(size<0) size=20
 
-        //all the queries do NOT exist
+             if(minPrice || maxPrice ||minLng ||maxLng ||minLat ||maxLat){
+
+              minLng = parseInt(minLng)
+              maxLng = parseInt(maxLng)
+
+              minPrice = parseInt(minPrice)
+              maxPrice = parseInt(maxPrice)
+
+              minLat = parseInt(minLat)
+              maxLat = parseInt(maxLat)
+             }
+
+
+             console.log(req.query)
+             console.log(maxLat, minLat, maxLng, minLng, minPrice, maxPrice)
+
+
+            // 666666666666666666666666666666666666666666666
+
+        //all the queries do NOT exist all
         if(!minLat && !minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -860,6 +879,8 @@ const validateQuery= [
         res.json(object)
         return
         }
+
+          //2222222222222222222222222222222222222222222222222222
 
         //only minPrice and maxPrice
         if(!minLat && !minLng && minPrice && maxPrice && !maxLng && !maxLat){
@@ -1874,6 +1895,9 @@ const validateQuery= [
           return
           }
 
+
+              //1111111111111111111111111111111111111111111
+
           //minPrice ONLY
           if(!minLat && !minLng && minPrice && !maxPrice && !maxLng && !maxLat){
 
@@ -1939,8 +1963,8 @@ const validateQuery= [
           return
           }
 
-        //maxPrice ONLY
-        if(!minLat && !minLng && !minPrice && maxPrice && !maxLng && !maxLat){
+             //maxPrice ONLY
+             if(!minLat && !minLng && !minPrice && maxPrice && !maxLng && !maxLat){
 
               //finds all the spots
             const allSpots = await Spot.findAll({
@@ -2002,7 +2026,8 @@ const validateQuery= [
             let object = {Spots:insertableSpots, page:page, size:size}
             res.json(object)
             return
-        }
+            }
+
 
         //minLat ONLY
         if(minLat && !minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
