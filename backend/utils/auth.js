@@ -80,8 +80,8 @@ const requireAuth = function (req, _res, next) {
     err.errors = { message: 'Authentication required' , status:401};
     err.status = 401;
     // err.stack = 'delete'
-    err.stack=null
-    delete err.stack
+    // err.stack=null
+    // delete err.stack
     // console.log(err.stack, 'hereeeeeeeee')
     // Error.captureStackTrace(err, requireAuth)
     return next(err);

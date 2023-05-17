@@ -10,7 +10,7 @@ const router = express.Router();
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
-const spot = require('../../db/models/spot');
+
 
 // const { validationResult } = require('express-validator');
 
@@ -127,14 +127,16 @@ const validateBooking= [
 const validateQuery= [
 
   check('page')
-    .exists({ checkFalsy: true })
+    // .exists({ checkFalsy: true })
+    .optional()
     .isNumeric()
     .notEmpty()
     .isInt(({min:0, max:10}))
     .withMessage('Please provide a valid page.'),
 
   check('size')
-    .exists({ checkFalsy: true })
+    // .exists({ checkFalsy: true })
+    .optional()
     .isNumeric()
     .notEmpty()
     .isInt(({min:0, max:20}))
@@ -185,531 +187,9 @@ const validateQuery= [
 ];
 
 
+  router.get('/', validateQuery, async(req,res)=>{
 
-
-      //   //get all spots
-      // router.get('/', validateQuery, async (req,res) =>{
-
-      //     //destructing of the incoming queries !
-      //       let {
-      //         page,
-      //         size,
-      //         minLat,
-      //         maxLat,
-      //         minLng,
-      //         maxLng,
-      //         minPrice,
-      //         maxPrice} = req.query
-
-          // //converts page and size input to a number data type
-          // page = parseInt(page);
-          // size = parseInt(size);
-
-          // //sets the page and size to default values
-          // if (isNaN(page)) page =0
-          // if(page<0) page=0
-
-          // if(isNaN(size)) size =20
-          // if(size<0) size=20
-
-      //   //creates an empty array
-      //   let array = []
-
-      //   if(!minPrice, !maxPrice, !minLat, !maxLat, !minLng, !maxLng){
-
-      //     let testing = await Spot.findAll({
-      //       where:{
-      //         price:{
-      //             [Op.between]:[minPrice,maxPrice],
-      //             [Op.between]:[minLat,maxLat],
-      //             [Op.between]:[minLng,maxLng],
-      //           }
-      //       },
-
-      //       attributes:[
-      //         'id', 'ownerId',
-      //         'address', 'city',
-      //         'state', 'country',
-      //         'lat', 'lng', 'name',
-      //         'description','price',
-      //         'createdAt', 'updatedAt'],
-      //     })
-
-      //       // res.json(array) // this gives me all the spots that have the queries
-
-      // array = [...testing]
-
-      // //finds all the spots with reviews attributes spotId and stars
-      // const spotReviews = await Spot.findAll(
-      // {
-      // // group:['id'],
-      // include:
-      // [
-      //     {
-      //         model:Review,
-      //         attributes:['spotId','stars']
-      //     },
-      // ]
-      // })
-
-      // // res.json(spotReviews)
-
-      // console.log(spotReviews.length, 'spots') //# of spots
-      // console.log(spotReviews[0].Reviews.length, 'reviews')
-
-      // //creates a review array of objects
-      // let undy = []
-
-      // for(let i=0; i<spotReviews.length; i++){
-      // undy.push(spotReviews[i].Reviews)
-      // }
-
-
-      // // res.json(undy)
-
-      // //an array of lengths
-      // let twos = []
-
-      // for(let a=0; a<spotReviews.length; a++){
-
-      // twos.push(spotReviews[a].Reviews.length)
-
-      // }
-
-
-      // //an array of the average rating
-      // let average = []
-
-      // for(let z = 0; z<undy.length; z++){
-
-      // if(Array.isArray(undy[z]) && undy[z].length>0)
-      // {
-      // console.log('99999999')
-      // if(undy[z].length === twos[z]){
-      //   // console.log(undy[z].length)
-      //   // console.log(twos[z].length)
-      //   console.log('1111111111')
-      //   let sum = 0
-      //   for(let y=0; y<undy[z].length; y++){
-      //     console.log('aaaaaaa')
-
-      //     sum = sum + undy[z][y].stars
-      //     console.log(sum)
-      //     // average.push(sum/twos[z])
-
-      //   }
-      //   average.push(sum/twos[z])
-      // }
-      // }
-      // }
-
-
-      // //finds all the spots with select attributes
-      // const allSpots = await Spot.findAll({
-      // attributes:[
-      //             'id', 'ownerId',
-      //             'address', 'city',
-      //             'state', 'country',
-      //             'lat', 'lng', 'name',
-      //             'description','price',
-      //             'createdAt', 'updatedAt'],
-
-      // // where:{
-      // //   price:{[Op.between]:[minPrice, maxPrice]},
-      // //   lat:{[Op.between]:[minLat, maxLat]},
-      // //   lng:{[Op.between]:[minLng, maxLng]}
-      // // },
-
-
-      // // include:[
-      // //   {
-      // //     model:Image,
-      // //     attributes:['url']
-      // //   }
-      // // ]
-      // })
-
-      // // res.json(allSpots)
-
-
-
-      // //finds all the images
-      // const findImages = await Image.findAll()
-
-      // // res.json(findImages)
-
-      // //you cannot add to the object until you get the PLAIN OBJECTS !!
-      // const plainFirst = array.map(x => x.get({ plain: true }))
-
-      // // adds the averageRating key value pair into the object
-      // if(array.length>0){
-      // for(let h=0; h<average.length; h++){
-      // plainFirst[h].avgRating = average[h]
-      // }
-      // }
-
-
-
-      // for(let d=0; d<plainFirst.length; d++){
-      // for(let e=0; e<findImages.length; e++){
-      // console.log(d,e)
-      // if(plainFirst[d].id === findImages[e].imagableId)
-      // {
-      //   plainFirst[d].previewImage = findImages[e].url
-      // }
-      // }
-      // }
-
-      // // plainFirst.push(`page:${page}`, `size:${size}`)
-      // let objCreate = {Spots:plainFirst, page:page, size:size}
-      // res.json(objCreate)
-      // return
-
-      // // console.log(objCreate)
-      //   }
-
-      //   if(minPrice, maxPrice, minLat, maxLat, minLng, maxLng){
-
-      //             let testing = await Spot.findAll({
-      //               where:{
-      //                 price:{
-      //                     [Op.between]:[minPrice,maxPrice],
-      //                     [Op.between]:[minLat,maxLat],
-      //                     [Op.between]:[minLng,maxLng],
-      //                   }
-      //               },
-
-      //               attributes:[
-      //                 'id', 'ownerId',
-      //                 'address', 'city',
-      //                 'state', 'country',
-      //                 'lat', 'lng', 'name',
-      //                 'description','price',
-      //                 'createdAt', 'updatedAt'],
-      //             })
-
-      //               // res.json(array) // this gives me all the spots that have the queries
-
-      //     array = [...testing]
-
-      //   //finds all the spots with reviews attributes spotId and stars
-      //   const spotReviews = await Spot.findAll(
-      //     {
-      //       // group:['id'],
-      //         include:
-      //         [
-      //             {
-      //                 model:Review,
-      //                 attributes:['spotId','stars']
-      //             },
-      //         ]
-      //     })
-
-      //     // res.json(spotReviews)
-
-      //     console.log(spotReviews.length, 'spots') //# of spots
-      //     console.log(spotReviews[0].Reviews.length, 'reviews')
-
-      //     //creates a review array of objects
-      //     let undy = []
-
-      //     for(let i=0; i<spotReviews.length; i++){
-      //       undy.push(spotReviews[i].Reviews)
-      //     }
-
-
-      //     // res.json(undy)
-
-      //     //an array of lengths
-      //     let twos = []
-
-      //     for(let a=0; a<spotReviews.length; a++){
-
-      //       twos.push(spotReviews[a].Reviews.length)
-
-      //     }
-
-
-      //     //an array of the average rating
-      //     let average = []
-
-      //     for(let z = 0; z<undy.length; z++){
-
-      //       if(Array.isArray(undy[z]) && undy[z].length>0)
-      //       {
-      //         console.log('99999999')
-      //         if(undy[z].length === twos[z]){
-      //           // console.log(undy[z].length)
-      //           // console.log(twos[z].length)
-      //           console.log('1111111111')
-      //           let sum = 0
-      //           for(let y=0; y<undy[z].length; y++){
-      //             console.log('aaaaaaa')
-
-      //             sum = sum + undy[z][y].stars
-      //             console.log(sum)
-      //             // average.push(sum/twos[z])
-
-      //           }
-      //           average.push(sum/twos[z])
-      //         }
-      //       }
-      //     }
-
-
-      //     //finds all the spots with select attributes
-      //     const allSpots = await Spot.findAll({
-      //       attributes:[
-      //                     'id', 'ownerId',
-      //                     'address', 'city',
-      //                     'state', 'country',
-      //                     'lat', 'lng', 'name',
-      //                     'description','price',
-      //                     'createdAt', 'updatedAt'],
-
-      //       // where:{
-      //       //   price:{[Op.between]:[minPrice, maxPrice]},
-      //       //   lat:{[Op.between]:[minLat, maxLat]},
-      //       //   lng:{[Op.between]:[minLng, maxLng]}
-      //       // },
-
-
-      //         // include:[
-      //         //   {
-      //         //     model:Image,
-      //         //     attributes:['url']
-      //         //   }
-      //         // ]
-      //       })
-
-      //       // res.json(allSpots)
-
-
-
-      //       //finds all the images
-      //       const findImages = await Image.findAll()
-
-      //       // res.json(findImages)
-
-      //     //you cannot add to the object until you get the PLAIN OBJECTS !!
-          // const plainFirst = array.map(x => x.get({ plain: true }))
-
-      //     // adds the averageRating key value pair into the object
-      //     if(array.length>0){
-      //       for(let h=0; h<average.length; h++){
-      //         plainFirst[h].avgRating = average[h]
-      //       }
-      //     }
-
-
-
-      //     for(let d=0; d<plainFirst.length; d++){
-      //       for(let e=0; e<findImages.length; e++){
-      //         console.log(d,e)
-      //         if(plainFirst[d].id === findImages[e].imagableId)
-      //         {
-      //           plainFirst[d].previewImage = findImages[e].url
-      //         }
-      //       }
-      //     }
-
-      //     // plainFirst.push(`page:${page}`, `size:${size}`)
-      //     let objCreate = {Spots:plainFirst, page:page, size:size}
-      //     res.json(objCreate)
-      //     return
-
-      //     // console.log(objCreate)
-
-      //           }
-      //         else {
-
-      //           if(maxLat && minLat){
-
-      //             let spotLat = await Spot.findAll({
-      //               where:{
-      //                 lat:{
-      //                 [Op.between]:[minLat,maxLat]}
-      //               },
-      //               attributes:[
-      //                 'id', 'ownerId',
-      //                 'address', 'city',
-      //                 'state', 'country',
-      //                 'lat', 'lng', 'name',
-      //                 'description','price',
-      //                 'createdAt', 'updatedAt'],
-      //             })
-
-      //             array = [...spotLat]
-      //             // return res.json({array,page,size})
-
-      //           }else {
-      //             if(!minLat){
-
-      //               let spotMinLat = await Spot.findAll({
-      //                 where:{
-      //                   lat:{
-      //                   [Op.lte]:[maxLat]}
-      //                 },
-      //                 attributes:[
-      //                   'id', 'ownerId',
-      //                   'address', 'city',
-      //                   'state', 'country',
-      //                   'lat', 'lng', 'name',
-      //                   'description','price',
-      //                   'createdAt', 'updatedAt'],
-      //               })
-
-      //               array = [...spotMinLat]
-
-      //             }else if(!maxLat){
-
-      //               let spotMaxLat = await Spot.findAll({
-      //                 where:{
-      //                   lat:{
-      //                   [Op.gte]:[minLat]}
-      //                 },
-      //                 attributes:[
-      //                   'id', 'ownerId',
-      //                   'address', 'city',
-      //                   'state', 'country',
-      //                   'lat', 'lng', 'name',
-      //                   'description','price',
-      //                   'createdAt', 'updatedAt'],
-      //               })
-
-      //               array = [...spotMaxLat]
-
-      //             }
-      //           }
-
-      //           if(minLng && maxLng){
-
-      //             spotLng = await Spot.findAll({
-      //               where:{
-      //                 lng:{
-      //                   [Op.between]:[minLng,maxLng]},
-      //                 },
-      //                 attributes:[
-      //                   'id', 'ownerId',
-      //                   'address', 'city',
-      //                   'state', 'country',
-      //                   'lat', 'lng', 'name',
-      //                   'description','price',
-      //                   'createdAt', 'updatedAt'],
-      //             })
-
-      //             array = [...spotLng]
-
-      //           }else{
-
-      //             if(!minLng){
-
-      //               let spotMinLng = await Spot.findAll({
-      //                 where:{
-      //                   lng:{
-      //                     [Op.lte]:[maxLng]},
-      //                   },
-      //                   attributes:[
-      //                     'id', 'ownerId',
-      //                     'address', 'city',
-      //                     'state', 'country',
-      //                     'lat', 'lng', 'name',
-      //                     'description','price',
-      //                     'createdAt', 'updatedAt'],
-      //               })
-
-      //               array = [...spotMinLng]
-
-
-      //             }else if(!maxLng){
-      //               let spotMaxLng = await Spot.findAll({
-      //                 where:{
-      //                   lng:{
-      //                     [Op.gte]:[minLng]},
-      //                   },
-      //                   attributes:[
-      //                     'id', 'ownerId',
-      //                     'address', 'city',
-      //                     'state', 'country',
-      //                     'lat', 'lng', 'name',
-      //                     'description','price',
-      //                     'createdAt', 'updatedAt'],
-      //               })
-
-      //               array = [... spotMaxLng]
-
-      //             }
-      //           }
-
-      //           if(minPrice && maxPrice){
-
-      //             let spotPrice = await Spot.findAll({
-      //               where:{
-      //                 price:{
-      //                   [Op.between]:[minPrice,maxPrice]},
-      //                 },
-      //                 attributes:[
-      //                   'id', 'ownerId',
-      //                   'address', 'city',
-      //                   'state', 'country',
-      //                   'lat', 'lng', 'name',
-      //                   'description','price',
-      //                   'createdAt', 'updatedAt'],
-      //               })
-
-      //             array = [...spotPrice]
-
-      //           }else {
-
-      //             if(!minPrice){
-
-      //               let spotMinPrice = await Spot.findAll({
-      //                 where:{
-      //                   price:{
-      //                     [Op.lte]:[maxPrice]},
-      //                   },
-      //                   attributes:[
-      //                     'id', 'ownerId',
-      //                     'address', 'city',
-      //                     'state', 'country',
-      //                     'lat', 'lng', 'name',
-      //                     'description','price',
-      //                     'createdAt', 'updatedAt'],
-      //               })
-
-      //               array = [... spotMinPrice]
-
-      //             }else if(!maxPrice){
-
-      //               let spotMaxPrice = await Spot.findAll({
-      //                 where:{
-      //                   price:{
-      //                     [Op.gte]:[minPrice]},
-      //                   },
-      //                   attributes:[
-      //                     'id', 'ownerId',
-      //                     'address', 'city',
-      //                     'state', 'country',
-      //                     'lat', 'lng', 'name',
-      //                     'description','price',
-      //                     'createdAt', 'updatedAt'],
-      //               })
-
-      //               array = [spotMaxPrice]
-
-      //             }
-
-      //             // res.json(array,page,size)
-      //           }
-
-      //           }
-      // })
-
-
-
-      router.get('/', validateQuery, async(req,res)=>{
-
-        let {
+    let {
           page,
           size,
           minLat,
@@ -718,22 +198,28 @@ const validateQuery= [
           maxLng,
           minPrice,
           maxPrice
-        } = req.query
+    } = req.query
 
-             //converts page and size input to a number data type
-             page = parseInt(page);
-             size = parseInt(size);
+    //converts page and size input to a number data type
+    page = parseInt(page);
+    size = parseInt(size);
 
-             //sets the page and size to default values
-             if (isNaN(page)) page =0
-             if(page<0) page=0
+    //sets the page and size to default values
+    if(isNaN(page)) page =0
+    if(!page) page=0
+    if(page<0) page=0
 
-             if(isNaN(size)) size =20
-             if(size<0) size=20
 
-             if(minPrice || maxPrice ||minLng ||maxLng ||minLat ||maxLat){
+    if(isNaN(size)) size =20
+    if(!size) size=20
+    if(size<0) size=20
 
-              minLng = parseInt(minLng)
+    console.log('page',page)
+    console.log('size',size)
+    console.log('offset', page*size)
+
+
+              minLng = parseInt(minLng) || -Infinity
               maxLng = parseInt(maxLng)
 
               minPrice = parseInt(minPrice)
@@ -741,77 +227,12 @@ const validateQuery= [
 
               minLat = parseInt(minLat)
               maxLat = parseInt(maxLat)
-             }
 
 
-             console.log(req.query)
-             console.log(maxLat, minLat, maxLng, minLng, minPrice, maxPrice)
+    // 666666666666666666666666666666666666666666666
 
-
-            // 666666666666666666666666666666666666666666666
-
-        //all the queries do NOT exist all
-        if(!minLat && !minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ]
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots}
-        res.json(object)
-        return
-        }
-
-        //all the queries exist
-        if(minLat && minLng && minPrice && maxPrice && maxLng && maxLat){
-
+    //all the queries do NOT exist all
+    if(!minLat && !minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
           //finds all the spots
         const allSpots = await Spot.findAll({
           attributes:[
@@ -821,17 +242,8 @@ const validateQuery= [
             'name', 'description', 'price',
             'createdAt', 'updatedAt'
           ],
-          where:{
-            lat:{
-              [Op.between]:[minLat,maxLat]
-            },
-            lng:{
-              [Op.between]:[minLng,maxLng]
-            },
-            price:{
-              [Op.between]:[minPrice,maxPrice]
-            }
-          }
+          limit:size,
+          offset:page*size
         })
 
         // res.json(allSpots)
@@ -878,7 +290,83 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
+    }
+
+    //all the queries exist
+    if(minLat && minLng && minPrice && maxPrice && maxLng && maxLat){
+
+        console.log(' YOU ARE HERE')
+          //finds all the spots
+        const allSpots = await Spot.findAll({
+          attributes:[
+            'id', 'ownerId',
+            'address', 'city', 'state',
+            'country', 'lat', 'lng',
+            'name', 'description', 'price',
+            'createdAt', 'updatedAt'
+          ],
+          where:{
+            lat:{
+              [Op.between]:[minLat,maxLat]
+            },
+            lng:{
+              [Op.between]:[minLng,maxLng]
+            },
+            price:{
+              [Op.between]:[minPrice,maxPrice]
+            }
+          },
+
+          limit:size,
+          offset: page*size
+        })
+
+
+        // res.json(allSpots)
+
+        //gets all the reviews
+        const allReviews = await Review.findAll()
+        // res.json(allReviews)
+
+        console.log(allReviews.length, 'Reviews')
+        console.log(allSpots.length, 'Spots')
+
+
+        const allImages = await Image.findAll({
+          where:{imagableType:'Spot'}
+        })
+        console.log(allImages.length)
+
+
+        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+        for(let i=0; i<allSpots.length; i++){
+            let sum = 0
+            let totalReviews = 0
+          for(let z=0; z<allReviews.length; z++){
+            if(allSpots[i].id === allReviews[z].spotId){
+              sum = sum + allReviews[z].stars
+              totalReviews++
+            }
+          }
+          let average = sum/totalReviews
+          insertableSpots[i].avgRating = average
+
+          for(let d=0; d<allImages.length; d++){
+            if(allSpots[i].id === allImages[d].imagableId){
+              insertableSpots[i].previewImage = allImages[d].url
+            }
+          }
+
+          if(!insertableSpots[i].previewImage){
+            insertableSpots[i].previewImage = null
+          }
         }
+
+        let object = {Spots:insertableSpots, page:page, size:size}
+        res.json(object)
+        return
+    }
 
           //2222222222222222222222222222222222222222222222222222
 
@@ -898,7 +386,10 @@ const validateQuery= [
             price:{
               [Op.between]:[minPrice,maxPrice]
             }
-          }
+          },
+
+          limit:size,
+          offset:page*size
         })
 
         // res.json(allSpots)
@@ -966,7 +457,11 @@ const validateQuery= [
             lat:{
               [Op.gte]:[minLat]
             }
-          }
+          },
+
+          limit:size,
+          offset: page*size
+
         })
 
         // res.json(allSpots)
@@ -1034,7 +529,11 @@ const validateQuery= [
             lat:{
               [Op.lte]:[maxLat]
             }
-          }
+          },
+
+          limit:size,
+          offset: page*size
+
         })
 
         // res.json(allSpots)
@@ -1102,7 +601,9 @@ const validateQuery= [
             lng:{
               [Op.gte]:[minLng]
             }
-          }
+          },
+          limit:size,
+          offset: page*size
         })
 
         // res.json(allSpots)
@@ -1170,7 +671,9 @@ const validateQuery= [
             lng:{
               [Op.lte]:[maxLng]
             }
-          }
+          },
+          limit:size,
+          offset: page*size
         })
 
         // res.json(allSpots)
@@ -1238,9 +741,9 @@ const validateQuery= [
             lat:{
               [Op.gte]:[minLat]
             }
-
-
-          }
+          },
+          limit:size,
+          offset: page*size
         })
 
         // res.json(allSpots)
@@ -1308,7 +811,9 @@ const validateQuery= [
             lat:{
               [Op.lte]:[maxLat]
             }
-          }
+          },
+          limit:size,
+          offset: page*size
         })
 
         // res.json(allSpots)
@@ -1376,7 +881,9 @@ const validateQuery= [
             lng:{
               [Op.gte]:[minLng]
             }
-          }
+          },
+          limit:size,
+          offset: page*size
         })
 
         // res.json(allSpots)
@@ -1444,7 +951,9 @@ const validateQuery= [
             lng:{
               [Op.lte]:[maxLng]
             }
-          }
+          },
+          limit:size,
+          offset: page*size
         })
 
         // res.json(allSpots)
@@ -1509,7 +1018,9 @@ const validateQuery= [
             lat:{
               [Op.between]:[minLat,maxLat]
             }
-          }
+          },
+          limit:size,
+          offset: page*size
         })
 
         // res.json(allSpots)
@@ -1577,7 +1088,9 @@ const validateQuery= [
                 lng:{
                   [Op.gte]:[minLng]
                 }
-              }
+              },
+              limit:size,
+              offset: page*size
             })
 
             // res.json(allSpots)
@@ -1645,7 +1158,9 @@ const validateQuery= [
             lng:{
               [Op.lte]:[maxLng]
             }
-          }
+          },
+          limit:size,
+          offset: page*size
         })
 
         // res.json(allSpots)
@@ -1713,7 +1228,9 @@ const validateQuery= [
               lng:{
                 [Op.gte]:[minLng]
               }
-            }
+            },
+            limit:size,
+            offset: page*size
           })
 
           // res.json(allSpots)
@@ -1781,7 +1298,9 @@ const validateQuery= [
               lng:{
                 [Op.lte]:[maxLng]
               }
-            }
+            },
+            limit:size,
+            offset: page*size
           })
 
           // res.json(allSpots)
@@ -1846,7 +1365,9 @@ const validateQuery= [
               lng:{
                 [Op.between]:[minLng, maxLng]
               }
-            }
+            },
+            limit:size,
+            offset: page*size
           })
 
           // res.json(allSpots)
@@ -1896,10 +1417,10 @@ const validateQuery= [
           }
 
 
-              //1111111111111111111111111111111111111111111
+    //1111111111111111111111111111111111111111111
 
-          //minPrice ONLY
-          if(!minLat && !minLng && minPrice && !maxPrice && !maxLng && !maxLat){
+    //minPrice ONLY
+    if(!minLat && !minLng && minPrice && !maxPrice && !maxLng && !maxLat){
 
             //finds all the spots
           const allSpots = await Spot.findAll({
@@ -1961,10 +1482,10 @@ const validateQuery= [
           let object = {Spots:insertableSpots, page:page, size:size}
           res.json(object)
           return
-          }
+    }
 
-             //maxPrice ONLY
-             if(!minLat && !minLng && !minPrice && maxPrice && !maxLng && !maxLat){
+    //maxPrice ONLY
+    if(!minLat && !minLng && !minPrice && maxPrice && !maxLng && !maxLat){
 
               //finds all the spots
             const allSpots = await Spot.findAll({
@@ -2026,11 +1547,11 @@ const validateQuery= [
             let object = {Spots:insertableSpots, page:page, size:size}
             res.json(object)
             return
-            }
+    }
 
 
-        //minLat ONLY
-        if(minLat && !minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
+    //minLat ONLY
+    if(minLat && !minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
 
                     //finds all the spots
                   const allSpots = await Spot.findAll({
@@ -2092,10 +1613,10 @@ const validateQuery= [
                   let object = {Spots:insertableSpots, page:page, size:size}
                   res.json(object)
                   return
-        }
+    }
 
-        //maxLat ONLY
-        if(!minLat && !minLng && !minPrice && !maxPrice && !maxLng && maxLat){
+    //maxLat ONLY
+    if(!minLat && !minLng && !minPrice && !maxPrice && !maxLng && maxLat){
 
                                 //finds all the spots
                               const allSpots = await Spot.findAll({
@@ -2157,10 +1678,10 @@ const validateQuery= [
                               let object = {Spots:insertableSpots, page:page, size:size}
                               res.json(object)
                               return
-        }
+    }
 
-        //minLng ONLY
-        if(!minLat && minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
+    //minLng ONLY
+    if(!minLat && minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -2222,10 +1743,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-        //maxLng ONLY
-        if(!minLat && !minLng && !minPrice && !maxPrice && maxLng && !maxLat){
+    //maxLng ONLY
+    if(!minLat && !minLng && !minPrice && !maxPrice && maxLng && !maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -2287,11 +1808,11 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
 
-          //minPrice maxPrice and minLat
-          if(minLat && !minLng && minPrice && maxPrice && !maxLng && !maxLat){
+    //minPrice maxPrice and minLat
+    if(minLat && !minLng && minPrice && maxPrice && !maxLng && !maxLat){
 
             //finds all the spots
           const allSpots = await Spot.findAll({
@@ -2356,10 +1877,10 @@ const validateQuery= [
           let object = {Spots:insertableSpots, page:page, size:size}
           res.json(object)
           return
-          }
+    }
 
-         //minPrice maxPrice and maxLat
-         if(!minLat && !minLng && minPrice && maxPrice && !maxLng && maxLat){
+    //minPrice maxPrice and maxLat
+    if(!minLat && !minLng && minPrice && maxPrice && !maxLng && maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -2424,10 +1945,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-           // minPrice maxPrice and minLng
-           if(!minLat && minLng && minPrice && maxPrice && !maxLng && !maxLat){
+    // minPrice maxPrice and minLng
+    if(!minLat && minLng && minPrice && maxPrice && !maxLng && !maxLat){
 
             //finds all the spots
           const allSpots = await Spot.findAll({
@@ -2492,11 +2013,11 @@ const validateQuery= [
           let object = {Spots:insertableSpots, page:page, size:size}
           res.json(object)
           return
-          }
+    }
 
 
-             //minPrice maxPrice and maxLng
-        if(!minLat && !minLng && minPrice && maxPrice && maxLng && !maxLat){
+    //minPrice maxPrice and maxLng
+    if(!minLat && !minLng && minPrice && maxPrice && maxLng && !maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -2561,10 +2082,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-           //minPrice maxLat and minLng
-           if(!minLat && minLng && minPrice && !maxPrice && !maxLng && maxLat){
+    //minPrice maxLat and minLng
+    if(!minLat && minLng && minPrice && !maxPrice && !maxLng && maxLat){
 
             //finds all the spots
           const allSpots = await Spot.findAll({
@@ -2632,10 +2153,10 @@ const validateQuery= [
           let object = {Spots:insertableSpots, page:page, size:size}
           res.json(object)
           return
-          }
+    }
 
-             //minPrice maxLat and maxLng
-        if(!minLat && !minLng && minPrice && !maxPrice && maxLng && maxLat){
+    //minPrice maxLat and maxLng
+    if(!minLat && !minLng && minPrice && !maxPrice && maxLng && maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -2703,10 +2224,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-         //minPrice minLat and maxLat
-         if(minLat && !minLng && minPrice && !maxPrice && !maxLng && maxLat){
+    //minPrice minLat and maxLat
+    if(minLat && !minLng && minPrice && !maxPrice && !maxLng && maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -2771,10 +2292,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-           //minPrice minLat and minLng
-           if(minLat && minLng && minPrice && !maxPrice && !maxLng && !maxLat){
+    //minPrice minLat and minLng
+    if(minLat && minLng && minPrice && !maxPrice && !maxLng && !maxLat){
 
             //finds all the spots
           const allSpots = await Spot.findAll({
@@ -2842,10 +2363,10 @@ const validateQuery= [
           let object = {Spots:insertableSpots, page:page, size:size}
           res.json(object)
           return
-          }
+    }
 
-        //minPrice minLat and maxLng
-        if(minLat && !minLng && minPrice && !maxPrice && maxLng && !maxLat){
+    //minPrice minLat and maxLng
+    if(minLat && !minLng && minPrice && !maxPrice && maxLng && !maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -2913,10 +2434,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-          //minPrice minLng and maxLng
-          if(!minLat && minLng && minPrice && !maxPrice && maxLng && !maxLat){
+    //minPrice minLng and maxLng
+    if(!minLat && minLng && minPrice && !maxPrice && maxLng && !maxLat){
 
             //finds all the spots
           const allSpots = await Spot.findAll({
@@ -2981,10 +2502,10 @@ const validateQuery= [
           let object = {Spots:insertableSpots, page:page, size:size}
           res.json(object)
           return
-          }
+    }
 
-      //minPrice maxPrice minLat and maxLat
-      if(minLat && !minLng && minPrice && maxPrice && !maxLng && maxLat){
+    //minPrice maxPrice minLat and maxLat
+    if(minLat && !minLng && minPrice && maxPrice && !maxLng && maxLat){
 
         //finds all the spots
       const allSpots = await Spot.findAll({
@@ -3049,10 +2570,10 @@ const validateQuery= [
       let object = {Spots:insertableSpots, page:page, size:size}
       res.json(object)
       return
-      }
+    }
 
-        //minPrice maxPrice minLat and minLng
-        if(minLat && minLng && minPrice && maxPrice && !maxLng && !maxLat){
+    //minPrice maxPrice minLat and minLng
+    if(minLat && minLng && minPrice && maxPrice && !maxLng && !maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -3120,10 +2641,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-          //minPrice maxPrice minLat and maxLng
-          if(minLat && !minLng && minPrice && maxPrice && maxLng && !maxLat){
+    //minPrice maxPrice minLat and maxLng
+    if(minLat && !minLng && minPrice && maxPrice && maxLng && !maxLat){
 
             //finds all the spots
           const allSpots = await Spot.findAll({
@@ -3191,10 +2712,10 @@ const validateQuery= [
           let object = {Spots:insertableSpots, page:page, size:size}
           res.json(object)
           return
-          }
+    }
 
-            //minPrice maxPrice maxLat and minLng
-        if(minLat && !minLng && minPrice && maxPrice && !maxLng && maxLat){
+    //minPrice maxPrice maxLat and minLng
+    if(minLat && !minLng && minPrice && maxPrice && !maxLng && maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -3262,10 +2783,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-          //minPrice maxPrice maxLat and maxLng
-          if(!minLat && !minLng && minPrice && maxPrice && maxLng && maxLat){
+    //minPrice maxPrice maxLat and maxLng
+    if(!minLat && !minLng && minPrice && maxPrice && maxLng && maxLat){
 
             //finds all the spots
           const allSpots = await Spot.findAll({
@@ -3333,10 +2854,10 @@ const validateQuery= [
           let object = {Spots:insertableSpots, page:page, size:size}
           res.json(object)
           return
-          }
+    }
 
-            //minPrice maxPrice minLng and maxLng
-        if(!minLat && minLng && minPrice && maxPrice && maxLng && !maxLat){
+    //minPrice maxPrice minLng and maxLng
+    if(!minLat && minLng && minPrice && maxPrice && maxLng && !maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -3401,14 +2922,12 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
+    ////////5555555555555555555555555
 
-
-        ////////5555555555555555555555555
-
-        //minPrice maxPrice minLat maxLat minLng ABCDE
-        if(minLat && minLng && minPrice && maxPrice && !maxLng && maxLat){
+    //minPrice maxPrice minLat maxLat minLng ABCDE
+    if(minLat && minLng && minPrice && maxPrice && !maxLng && maxLat){
 
                 //finds all the spots
               const allSpots = await Spot.findAll({
@@ -3476,10 +2995,10 @@ const validateQuery= [
               let object = {Spots:insertableSpots, page:page, size:size}
               res.json(object)
               return
-        }
+    }
 
-        //minPrice maxPrice minLat maxLat maxLng ABCDF
-        if(minLat && !minLng && minPrice && maxPrice && maxLng && maxLat){
+    //minPrice maxPrice minLat maxLat maxLng ABCDF
+    if(minLat && !minLng && minPrice && maxPrice && maxLng && maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -3547,10 +3066,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-        //minPrice maxPrice minLat minLng maxLng ABCEF
-        if(minLat && minLng && minPrice && maxPrice && maxLng && !maxLat){
+    //minPrice maxPrice minLat minLng maxLng ABCEF
+    if(minLat && minLng && minPrice && maxPrice && maxLng && !maxLat){
 
                 //finds all the spots
               const allSpots = await Spot.findAll({
@@ -3618,10 +3137,10 @@ const validateQuery= [
               let object = {Spots:insertableSpots, page:page, size:size}
               res.json(object)
               return
-        }
+    }
 
-        //minPrice maxPrice maxLat minLng maxLng ABDEF
-        if(!minLat && minLng && minPrice && maxPrice && maxLng && maxLat){
+    //minPrice maxPrice maxLat minLng maxLng ABDEF
+    if(!minLat && minLng && minPrice && maxPrice && maxLng && maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -3689,10 +3208,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-        //minPrice minLat maxLat minLng maxLng ACDEF
-        if(minLat && minLng && minPrice && !maxPrice && maxLng && maxLat){
+    //minPrice minLat maxLat minLng maxLng ACDEF
+    if(minLat && minLng && minPrice && !maxPrice && maxLng && maxLat){
 
                 //finds all the spots
               const allSpots = await Spot.findAll({
@@ -3760,10 +3279,10 @@ const validateQuery= [
               let object = {Spots:insertableSpots, page:page, size:size}
               res.json(object)
               return
-        }
+    }
 
-        // maxPrice minLat maxLat minLng and maxLng BCDEF
-        if(minLat && minLng && !minPrice && maxPrice && maxLng && maxLat){
+    // maxPrice minLat maxLat minLng and maxLng BCDEF
+    if(minLat && minLng && !minPrice && maxPrice && maxLng && maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -3831,12 +3350,12 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-        //444444444444
+    //444444444444
 
-        // minPrice minLat maxLat minLng ACDE
-        if(minLat && minLng && minPrice && !maxPrice && !maxLng && maxLat){
+    // minPrice minLat maxLat minLng ACDE
+    if(minLat && minLng && minPrice && !maxPrice && !maxLng && maxLat){
 
                           //finds all the spots
                         const allSpots = await Spot.findAll({
@@ -3904,10 +3423,10 @@ const validateQuery= [
                         let object = {Spots:insertableSpots, page:page, size:size}
                         res.json(object)
                         return
-        }
+    }
 
-        // minPrice minLat maxLat maxLng ACDF
-        if(minLat && !minLng && minPrice && !maxPrice && maxLng && maxLat){
+    // minPrice minLat maxLat maxLng ACDF
+    if(minLat && !minLng && minPrice && !maxPrice && maxLng && maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -3975,10 +3494,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-        // minPrice minLat minLng maxLng ACEF
-        if(minLat && minLng && minPrice && !maxPrice && maxLng && !maxLat){
+    // minPrice minLat minLng maxLng ACEF
+    if(minLat && minLng && minPrice && !maxPrice && maxLng && !maxLat){
 
                           //finds all the spots
                         const allSpots = await Spot.findAll({
@@ -4046,10 +3565,10 @@ const validateQuery= [
                         let object = {Spots:insertableSpots, page:page, size:size}
                         res.json(object)
                         return
-        }
+    }
 
-        // minPrice maxLat minLng maxLng ADEF
-        if(!minLat && minLng && minPrice && !maxPrice && maxLng && maxLat){
+    // minPrice maxLat minLng maxLng ADEF
+    if(!minLat && minLng && minPrice && !maxPrice && maxLng && maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -4117,10 +3636,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-      // maxPrice minLat maxLat minLng BCDE
-      if(minLat && minLng && !minPrice && maxPrice && !maxLng && maxLat){
+    // maxPrice minLat maxLat minLng BCDE
+    if(minLat && minLng && !minPrice && maxPrice && !maxLng && maxLat){
 
                           //finds all the spots
                         const allSpots = await Spot.findAll({
@@ -4188,10 +3707,10 @@ const validateQuery= [
                         let object = {Spots:insertableSpots, page:page, size:size}
                         res.json(object)
                         return
-        }
+    }
 
-        // maxPrice minLat maxLat maxLng BCDF
-        if(minLat && !minLng && !minPrice && maxPrice && maxLng && maxLat){
+    // maxPrice minLat maxLat maxLng BCDF
+    if(minLat && !minLng && !minPrice && maxPrice && maxLng && maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -4259,10 +3778,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-        // maxPrice minLat minLng maxLng  BCEF
-        if(minLat && minLng && !minPrice && maxPrice && maxLng && !maxLat){
+    // maxPrice minLat minLng maxLng  BCEF
+    if(minLat && minLng && !minPrice && maxPrice && maxLng && !maxLat){
 
                           //finds all the spots
                         const allSpots = await Spot.findAll({
@@ -4331,10 +3850,10 @@ const validateQuery= [
                         let object = {Spots:insertableSpots, page:page, size:size}
                         res.json(object)
                         return
-        }
+    }
 
-        // maxPrice maxLat minLng maxLng  BDEF
-        if(minLat && !minLng && !minPrice && maxPrice && maxLng && maxLat){
+    // maxPrice maxLat minLng maxLng  BDEF
+    if(minLat && !minLng && !minPrice && maxPrice && maxLng && maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -4402,10 +3921,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-        // minLat maxLat minLng maxLng CDEF
-        if(minLat && minLng && !minPrice && !maxPrice && maxLng && maxLat){
+    // minLat maxLat minLng maxLng CDEF
+    if(minLat && minLng && !minPrice && !maxPrice && maxLng && maxLat){
 
                           //finds all the spots
                         const allSpots = await Spot.findAll({
@@ -4470,13 +3989,13 @@ const validateQuery= [
                         let object = {Spots:insertableSpots, page:page, size:size}
                         res.json(object)
                         return
-        }
+    }
 
 
-        //3333333333333333333333333333333333333333333
+    //3333333333333333333333333333333333333333333
 
-        // maxPrice minLat maxLat  BCD
-        if(minLat && !minLng && !minPrice && maxPrice && !maxLng && maxLat){
+    // maxPrice minLat maxLat  BCD
+    if(minLat && !minLng && !minPrice && maxPrice && !maxLng && maxLat){
 
                           //finds all the spots
                         const allSpots = await Spot.findAll({
@@ -4541,10 +4060,10 @@ const validateQuery= [
                         let object = {Spots:insertableSpots, page:page, size:size}
                         res.json(object)
                         return
-        }
+    }
 
-        // maxPrice minLat minLng  BCE
-        if(minLat && minLng && !minPrice && maxPrice && !maxLng && !maxLat){
+    // maxPrice minLat minLng  BCE
+    if(minLat && minLng && !minPrice && maxPrice && !maxLng && !maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -4612,10 +4131,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-        // maxPrice minLat maxLng BCF
-        if(minLat && !minLng && !minPrice && maxPrice && maxLng && !maxLat){
+    // maxPrice minLat maxLng BCF
+    if(minLat && !minLng && !minPrice && maxPrice && maxLng && !maxLat){
 
                           //finds all the spots
                         const allSpots = await Spot.findAll({
@@ -4683,10 +4202,10 @@ const validateQuery= [
                         let object = {Spots:insertableSpots, page:page, size:size}
                         res.json(object)
                         return
-        }
+    }
 
-        // maxPrice maxLat minLng BDE
-        if(!minLat && minLng && !minPrice && maxPrice && !maxLng && maxLat){
+    // maxPrice maxLat minLng BDE
+    if(!minLat && minLng && !minPrice && maxPrice && !maxLng && maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -4754,10 +4273,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-        // maxPrice maxLat maxLng BDF
-        if(!minLat && !minLng && !minPrice && maxPrice && maxLng && maxLat){
+    // maxPrice maxLat maxLng BDF
+    if(!minLat && !minLng && !minPrice && maxPrice && maxLng && maxLat){
 
                           //finds all the spots
                         const allSpots = await Spot.findAll({
@@ -4825,10 +4344,10 @@ const validateQuery= [
                         let object = {Spots:insertableSpots, page:page, size:size}
                         res.json(object)
                         return
-        }
+    }
 
-        // maxPrice minLng maxLng BEF
-        if(!minLat && minLng && !minPrice && maxPrice && maxLng && !maxLat){
+    // maxPrice minLng maxLng BEF
+    if(!minLat && minLng && !minPrice && maxPrice && maxLng && !maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -4893,10 +4412,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-        //minLat maxLat minLng CDE
-        if(minLat && minLng && !minPrice && !maxPrice && !maxLng && maxLat){
+    //minLat maxLat minLng CDE
+    if(minLat && minLng && !minPrice && !maxPrice && !maxLng && maxLat){
 
                           //finds all the spots
                         const allSpots = await Spot.findAll({
@@ -4961,10 +4480,10 @@ const validateQuery= [
                         let object = {Spots:insertableSpots, page:page, size:size}
                         res.json(object)
                         return
-        }
+    }
 
-        // minLat maxLat maxLng CDF
-        if(minLat && !minLng && !minPrice && !maxPrice && maxLng && maxLat){
+    // minLat maxLat maxLng CDF
+    if(minLat && !minLng && !minPrice && !maxPrice && maxLng && maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -5029,10 +4548,10 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
-        // minLat minLng maxLng CEF
-        if(minLat && minLng && !minPrice && !maxPrice && maxLng && !maxLat){
+    // minLat minLng maxLng CEF
+    if(minLat && minLng && !minPrice && !maxPrice && maxLng && !maxLat){
 
                           //finds all the spots
                         const allSpots = await Spot.findAll({
@@ -5097,10 +4616,10 @@ const validateQuery= [
                         let object = {Spots:insertableSpots, page:page, size:size}
                         res.json(object)
                         return
-        }
+    }
 
-        // maxLat minLng maxLng DEF
-        if(!minLat && minLng && !minPrice && !maxPrice && maxLng && maxLat){
+    // maxLat minLng maxLng DEF
+    if(!minLat && minLng && !minPrice && !maxPrice && maxLng && maxLat){
 
           //finds all the spots
         const allSpots = await Spot.findAll({
@@ -5165,10 +4684,11 @@ const validateQuery= [
         let object = {Spots:insertableSpots, page:page, size:size}
         res.json(object)
         return
-        }
+    }
 
 
-      })
+
+  })
 
 //get spots of current user
 router.get('/current', requireAuth, async(req,res)=>{
