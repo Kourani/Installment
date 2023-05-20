@@ -85,14 +85,32 @@ app.use((err, _req, _res, next) => {
 // ...
 // Error formatter
 app.use((err, _req, res, _next) => {
+
     res.status(err.status || 500);
     console.error(err);
-    res.json({
+
+    //production
+    let response = {
+      // title: err.title || 'Server Error',
+      message: err.message,
+      errors: err.errors,
+      // stack: isProduction ? null : err.stack
+    }
+
+    //local
+    let response2 = {
       title: err.title || 'Server Error',
       message: err.message,
       errors: err.errors,
-      stack: isProduction ? null : err.stack
-    });
+      stack: err.stack || null
+    }
+
+    if(isProduction){
+      res.json(response)
+    }
+
+    res.json(response2)
+
   });
 
 module.exports = app;

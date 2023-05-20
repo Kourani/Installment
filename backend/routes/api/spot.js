@@ -216,2296 +216,26 @@ const validateQuery= [
 
     console.log('page',page)
     console.log('size',size)
-    console.log('offset', page*size)
+    console.log('offset', size*(page-1))
 
 
-              minLng = parseInt(minLng) || -Infinity
-              maxLng = parseInt(maxLng)
+              minLng = parseInt(minLng) || -1000
+              maxLng = parseInt(maxLng) || 1000
 
-              minPrice = parseInt(minPrice)
-              maxPrice = parseInt(maxPrice)
+              minPrice = parseInt(minPrice) || 0
+              maxPrice = parseInt(maxPrice) || 10000000
 
-              minLat = parseInt(minLat)
-              maxLat = parseInt(maxLat)
+              minLat = parseInt(minLat) || -1000
+              maxLat = parseInt(maxLat) || 1000
 
+              console.log('minLng',minLng)
+              console.log('maxLng',maxLng)
 
-    // 666666666666666666666666666666666666666666666
+              console.log('minLat', minLat)
+              console.log('maxLat', maxLat)
 
-    //all the queries do NOT exist all
-    if(!minLat && !minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          limit:size,
-          offset:page*size
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    //all the queries exist
-    if(minLat && minLng && minPrice && maxPrice && maxLng && maxLat){
-
-        console.log(' YOU ARE HERE')
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lat:{
-              [Op.between]:[minLat,maxLat]
-            },
-            lng:{
-              [Op.between]:[minLng,maxLng]
-            },
-            price:{
-              [Op.between]:[minPrice,maxPrice]
-            }
-          },
-
-          limit:size,
-          offset: page*size
-        })
-
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-          //2222222222222222222222222222222222222222222222222222
-
-        //only minPrice and maxPrice
-        if(!minLat && !minLng && minPrice && maxPrice && !maxLng && !maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            price:{
-              [Op.between]:[minPrice,maxPrice]
-            }
-          },
-
-          limit:size,
-          offset:page*size
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-        }
-
-        //only minPrice and minLat
-        if(minLat && !minLng && minPrice && !maxPrice && !maxLng && !maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            price:{
-              [Op.gte]:[minPrice]
-            },
-            lat:{
-              [Op.gte]:[minLat]
-            }
-          },
-
-          limit:size,
-          offset: page*size
-
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-        }
-
-        //only minPrice and maxLat
-        if(!minLat && !minLng && minPrice && !maxPrice && !maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            price:{
-              [Op.gte]:[minPrice]
-            },
-            lat:{
-              [Op.lte]:[maxLat]
-            }
-          },
-
-          limit:size,
-          offset: page*size
-
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-        }
-
-        //only minPrice and minLng
-        if(!minLat && minLng && minPrice && !maxPrice && !maxLng && !maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            price:{
-              [Op.gte]:[minPrice]
-            },
-            lng:{
-              [Op.gte]:[minLng]
-            }
-          },
-          limit:size,
-          offset: page*size
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-        }
-
-        //only minPrice and maxLng
-        if(!minLat && !minLng && minPrice && !maxPrice && maxLng && !maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            price:{
-              [Op.gte]:[minPrice]
-            },
-            lng:{
-              [Op.lte]:[maxLng]
-            }
-          },
-          limit:size,
-          offset: page*size
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-        }
-
-         //only maxPrice and minLat
-         if(minLat && !minLng && !minPrice && maxPrice && !maxLng && !maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            price:{
-              [Op.lte]:[maxPrice]
-            },
-            lat:{
-              [Op.gte]:[minLat]
-            }
-          },
-          limit:size,
-          offset: page*size
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-        }
-
-        //only maxPrice and maxLat
-        if(!minLat && !minLng && !minPrice && maxPrice && !maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            price:{
-              [Op.lte]:[maxPrice]
-            },
-            lat:{
-              [Op.lte]:[maxLat]
-            }
-          },
-          limit:size,
-          offset: page*size
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-        }
-
-        //only maxPrice and minLng
-        if(!minLat && minLng && !minPrice && maxPrice && !maxLng && !maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            price:{
-              [Op.lte]:[maxPrice]
-            },
-            lng:{
-              [Op.gte]:[minLng]
-            }
-          },
-          limit:size,
-          offset: page*size
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-        }
-
-        //only maxPrice and maxLng
-        if(!minLat && !minLng && !minPrice && maxPrice && maxLng && !maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            price:{
-              [Op.lte]:[maxPrice]
-            },
-            lng:{
-              [Op.lte]:[maxLng]
-            }
-          },
-          limit:size,
-          offset: page*size
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-        }
-
-        //only minLat and maxLat
-        if(minLat && !minLng && !minPrice && !maxPrice && !maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lat:{
-              [Op.between]:[minLat,maxLat]
-            }
-          },
-          limit:size,
-          offset: page*size
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-        }
-
-        //only minLat and minLng
-        if(minLat && minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
-
-              //finds all the spots
-            const allSpots = await Spot.findAll({
-              attributes:[
-                'id', 'ownerId',
-                'address', 'city', 'state',
-                'country', 'lat', 'lng',
-                'name', 'description', 'price',
-                'createdAt', 'updatedAt'
-              ],
-              where:{
-                lat:{
-                  [Op.gte]:[minLat]
-                },
-                lng:{
-                  [Op.gte]:[minLng]
-                }
-              },
-              limit:size,
-              offset: page*size
-            })
-
-            // res.json(allSpots)
-
-            //gets all the reviews
-            const allReviews = await Review.findAll()
-            // res.json(allReviews)
-
-            console.log(allReviews.length, 'Reviews')
-            console.log(allSpots.length, 'Spots')
-
-
-            const allImages = await Image.findAll({
-              where:{imagableType:'Spot'}
-            })
-            console.log(allImages.length)
-
-
-            const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-            for(let i=0; i<allSpots.length; i++){
-                let sum = 0
-                let totalReviews = 0
-              for(let z=0; z<allReviews.length; z++){
-                if(allSpots[i].id === allReviews[z].spotId){
-                  sum = sum + allReviews[z].stars
-                  totalReviews++
-                }
-              }
-              let average = sum/totalReviews
-              insertableSpots[i].avgRating = average
-
-              for(let d=0; d<allImages.length; d++){
-                if(allSpots[i].id === allImages[d].imagableId){
-                  insertableSpots[i].previewImage = allImages[d].url
-                }
-              }
-
-              if(!insertableSpots[i].previewImage){
-                insertableSpots[i].previewImage = null
-              }
-            }
-
-            let object = {Spots:insertableSpots, page:page, size:size}
-            res.json(object)
-            return
-        }
-
-        //only minLat and maxLng
-        if(minLat && !minLng && !minPrice && !maxPrice && maxLng && !maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lat:{
-              [Op.gte]:[minLat]
-            },
-            lng:{
-              [Op.lte]:[maxLng]
-            }
-          },
-          limit:size,
-          offset: page*size
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-        }
-
-          //only maxLat and minLng
-          if(!minLat && minLng && !minPrice && !maxPrice && !maxLng && maxLat){
-
-            //finds all the spots
-          const allSpots = await Spot.findAll({
-            attributes:[
-              'id', 'ownerId',
-              'address', 'city', 'state',
-              'country', 'lat', 'lng',
-              'name', 'description', 'price',
-              'createdAt', 'updatedAt'
-            ],
-            where:{
-              lat:{
-                [Op.lte]:[maxLat]
-              },
-              lng:{
-                [Op.gte]:[minLng]
-              }
-            },
-            limit:size,
-            offset: page*size
-          })
-
-          // res.json(allSpots)
-
-          //gets all the reviews
-          const allReviews = await Review.findAll()
-          // res.json(allReviews)
-
-          console.log(allReviews.length, 'Reviews')
-          console.log(allSpots.length, 'Spots')
-
-
-          const allImages = await Image.findAll({
-            where:{imagableType:'Spot'}
-          })
-          console.log(allImages.length)
-
-
-          const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-          for(let i=0; i<allSpots.length; i++){
-              let sum = 0
-              let totalReviews = 0
-            for(let z=0; z<allReviews.length; z++){
-              if(allSpots[i].id === allReviews[z].spotId){
-                sum = sum + allReviews[z].stars
-                totalReviews++
-              }
-            }
-            let average = sum/totalReviews
-            insertableSpots[i].avgRating = average
-
-            for(let d=0; d<allImages.length; d++){
-              if(allSpots[i].id === allImages[d].imagableId){
-                insertableSpots[i].previewImage = allImages[d].url
-              }
-            }
-
-            if(!insertableSpots[i].previewImage){
-              insertableSpots[i].previewImage = null
-            }
-          }
-
-          let object = {Spots:insertableSpots, page:page, size:size}
-          res.json(object)
-          return
-          }
-
-           //only maxLat and maxLng
-           if(!minLat && !minLng && !minPrice && !maxPrice && maxLng && maxLat){
-
-            //finds all the spots
-          const allSpots = await Spot.findAll({
-            attributes:[
-              'id', 'ownerId',
-              'address', 'city', 'state',
-              'country', 'lat', 'lng',
-              'name', 'description', 'price',
-              'createdAt', 'updatedAt'
-            ],
-            where:{
-              lat:{
-                [Op.lte]:[maxLat]
-              },
-              lng:{
-                [Op.lte]:[maxLng]
-              }
-            },
-            limit:size,
-            offset: page*size
-          })
-
-          // res.json(allSpots)
-
-          //gets all the reviews
-          const allReviews = await Review.findAll()
-          // res.json(allReviews)
-
-          console.log(allReviews.length, 'Reviews')
-          console.log(allSpots.length, 'Spots')
-
-
-          const allImages = await Image.findAll({
-            where:{imagableType:'Spot'}
-          })
-          console.log(allImages.length)
-
-
-          const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-          for(let i=0; i<allSpots.length; i++){
-              let sum = 0
-              let totalReviews = 0
-            for(let z=0; z<allReviews.length; z++){
-              if(allSpots[i].id === allReviews[z].spotId){
-                sum = sum + allReviews[z].stars
-                totalReviews++
-              }
-            }
-            let average = sum/totalReviews
-            insertableSpots[i].avgRating = average
-
-            for(let d=0; d<allImages.length; d++){
-              if(allSpots[i].id === allImages[d].imagableId){
-                insertableSpots[i].previewImage = allImages[d].url
-              }
-            }
-
-            if(!insertableSpots[i].previewImage){
-              insertableSpots[i].previewImage = null
-            }
-          }
-
-          let object = {Spots:insertableSpots, page:page, size:size}
-          res.json(object)
-          return
-          }
-
-          //only minLng and maxLng
-          if(!minLat && minLng && !minPrice && !maxPrice && maxLng && !maxLat){
-
-            //finds all the spots
-          const allSpots = await Spot.findAll({
-            attributes:[
-              'id', 'ownerId',
-              'address', 'city', 'state',
-              'country', 'lat', 'lng',
-              'name', 'description', 'price',
-              'createdAt', 'updatedAt'
-            ],
-            where:{
-              lng:{
-                [Op.between]:[minLng, maxLng]
-              }
-            },
-            limit:size,
-            offset: page*size
-          })
-
-          // res.json(allSpots)
-
-          //gets all the reviews
-          const allReviews = await Review.findAll()
-          // res.json(allReviews)
-
-          console.log(allReviews.length, 'Reviews')
-          console.log(allSpots.length, 'Spots')
-
-
-          const allImages = await Image.findAll({
-            where:{imagableType:'Spot'}
-          })
-          console.log(allImages.length)
-
-
-          const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-          for(let i=0; i<allSpots.length; i++){
-              let sum = 0
-              let totalReviews = 0
-            for(let z=0; z<allReviews.length; z++){
-              if(allSpots[i].id === allReviews[z].spotId){
-                sum = sum + allReviews[z].stars
-                totalReviews++
-              }
-            }
-            let average = sum/totalReviews
-            insertableSpots[i].avgRating = average
-
-            for(let d=0; d<allImages.length; d++){
-              if(allSpots[i].id === allImages[d].imagableId){
-                insertableSpots[i].previewImage = allImages[d].url
-              }
-            }
-
-            if(!insertableSpots[i].previewImage){
-              insertableSpots[i].previewImage = null
-            }
-          }
-
-          let object = {Spots:insertableSpots, page:page, size:size}
-          res.json(object)
-          return
-          }
-
-
-    //1111111111111111111111111111111111111111111
-
-    //minPrice ONLY
-    if(!minLat && !minLng && minPrice && !maxPrice && !maxLng && !maxLat){
-
-            //finds all the spots
-          const allSpots = await Spot.findAll({
-            attributes:[
-              'id', 'ownerId',
-              'address', 'city', 'state',
-              'country', 'lat', 'lng',
-              'name', 'description', 'price',
-              'createdAt', 'updatedAt'
-            ],
-            where:{
-              price:{
-                [Op.gte]:[minPrice]
-              }
-            }
-          })
-
-          // res.json(allSpots)
-
-          //gets all the reviews
-          const allReviews = await Review.findAll()
-          // res.json(allReviews)
-
-          console.log(allReviews.length, 'Reviews')
-          console.log(allSpots.length, 'Spots')
-
-
-          const allImages = await Image.findAll({
-            where:{imagableType:'Spot'}
-          })
-          console.log(allImages.length)
-
-
-          const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-          for(let i=0; i<allSpots.length; i++){
-              let sum = 0
-              let totalReviews = 0
-            for(let z=0; z<allReviews.length; z++){
-              if(allSpots[i].id === allReviews[z].spotId){
-                sum = sum + allReviews[z].stars
-                totalReviews++
-              }
-            }
-            let average = sum/totalReviews
-            insertableSpots[i].avgRating = average
-
-            for(let d=0; d<allImages.length; d++){
-              if(allSpots[i].id === allImages[d].imagableId){
-                insertableSpots[i].previewImage = allImages[d].url
-              }
-            }
-
-            if(!insertableSpots[i].previewImage){
-              insertableSpots[i].previewImage = null
-            }
-          }
-
-          let object = {Spots:insertableSpots, page:page, size:size}
-          res.json(object)
-          return
-    }
-
-    //maxPrice ONLY
-    if(!minLat && !minLng && !minPrice && maxPrice && !maxLng && !maxLat){
-
-              //finds all the spots
-            const allSpots = await Spot.findAll({
-              attributes:[
-                'id', 'ownerId',
-                'address', 'city', 'state',
-                'country', 'lat', 'lng',
-                'name', 'description', 'price',
-                'createdAt', 'updatedAt'
-              ],
-              where:{
-                price:{
-                  [Op.lte]:[maxPrice]
-                }
-              }
-            })
-
-            // res.json(allSpots)
-
-            //gets all the reviews
-            const allReviews = await Review.findAll()
-            // res.json(allReviews)
-
-            console.log(allReviews.length, 'Reviews')
-            console.log(allSpots.length, 'Spots')
-
-
-            const allImages = await Image.findAll({
-              where:{imagableType:'Spot'}
-            })
-            console.log(allImages.length)
-
-
-            const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-            for(let i=0; i<allSpots.length; i++){
-                let sum = 0
-                let totalReviews = 0
-              for(let z=0; z<allReviews.length; z++){
-                if(allSpots[i].id === allReviews[z].spotId){
-                  sum = sum + allReviews[z].stars
-                  totalReviews++
-                }
-              }
-              let average = sum/totalReviews
-              insertableSpots[i].avgRating = average
-
-              for(let d=0; d<allImages.length; d++){
-                if(allSpots[i].id === allImages[d].imagableId){
-                  insertableSpots[i].previewImage = allImages[d].url
-                }
-              }
-
-              if(!insertableSpots[i].previewImage){
-                insertableSpots[i].previewImage = null
-              }
-            }
-
-            let object = {Spots:insertableSpots, page:page, size:size}
-            res.json(object)
-            return
-    }
-
-
-    //minLat ONLY
-    if(minLat && !minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
-
-                    //finds all the spots
-                  const allSpots = await Spot.findAll({
-                    attributes:[
-                      'id', 'ownerId',
-                      'address', 'city', 'state',
-                      'country', 'lat', 'lng',
-                      'name', 'description', 'price',
-                      'createdAt', 'updatedAt'
-                    ],
-                    where:{
-                      lat:{
-                        [Op.gte]:[minLat]
-                      }
-                    }
-                  })
-
-                  // res.json(allSpots)
-
-                  //gets all the reviews
-                  const allReviews = await Review.findAll()
-                  // res.json(allReviews)
-
-                  console.log(allReviews.length, 'Reviews')
-                  console.log(allSpots.length, 'Spots')
-
-
-                  const allImages = await Image.findAll({
-                    where:{imagableType:'Spot'}
-                  })
-                  console.log(allImages.length)
-
-
-                  const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-                  for(let i=0; i<allSpots.length; i++){
-                      let sum = 0
-                      let totalReviews = 0
-                    for(let z=0; z<allReviews.length; z++){
-                      if(allSpots[i].id === allReviews[z].spotId){
-                        sum = sum + allReviews[z].stars
-                        totalReviews++
-                      }
-                    }
-                    let average = sum/totalReviews
-                    insertableSpots[i].avgRating = average
-
-                    for(let d=0; d<allImages.length; d++){
-                      if(allSpots[i].id === allImages[d].imagableId){
-                        insertableSpots[i].previewImage = allImages[d].url
-                      }
-                    }
-
-                    if(!insertableSpots[i].previewImage){
-                      insertableSpots[i].previewImage = null
-                    }
-                  }
-
-                  let object = {Spots:insertableSpots, page:page, size:size}
-                  res.json(object)
-                  return
-    }
-
-    //maxLat ONLY
-    if(!minLat && !minLng && !minPrice && !maxPrice && !maxLng && maxLat){
-
-                                //finds all the spots
-                              const allSpots = await Spot.findAll({
-                                attributes:[
-                                  'id', 'ownerId',
-                                  'address', 'city', 'state',
-                                  'country', 'lat', 'lng',
-                                  'name', 'description', 'price',
-                                  'createdAt', 'updatedAt'
-                                ],
-                                where:{
-                                  lat:{
-                                    [Op.lte]:[maxLat]
-                                  }
-                                }
-                              })
-
-                              // res.json(allSpots)
-
-                              //gets all the reviews
-                              const allReviews = await Review.findAll()
-                              // res.json(allReviews)
-
-                              console.log(allReviews.length, 'Reviews')
-                              console.log(allSpots.length, 'Spots')
-
-
-                              const allImages = await Image.findAll({
-                                where:{imagableType:'Spot'}
-                              })
-                              console.log(allImages.length)
-
-
-                              const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-                              for(let i=0; i<allSpots.length; i++){
-                                  let sum = 0
-                                  let totalReviews = 0
-                                for(let z=0; z<allReviews.length; z++){
-                                  if(allSpots[i].id === allReviews[z].spotId){
-                                    sum = sum + allReviews[z].stars
-                                    totalReviews++
-                                  }
-                                }
-                                let average = sum/totalReviews
-                                insertableSpots[i].avgRating = average
-
-                                for(let d=0; d<allImages.length; d++){
-                                  if(allSpots[i].id === allImages[d].imagableId){
-                                    insertableSpots[i].previewImage = allImages[d].url
-                                  }
-                                }
-
-                                if(!insertableSpots[i].previewImage){
-                                  insertableSpots[i].previewImage = null
-                                }
-                              }
-
-                              let object = {Spots:insertableSpots, page:page, size:size}
-                              res.json(object)
-                              return
-    }
-
-    //minLng ONLY
-    if(!minLat && minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.gte]:[minLng]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    //maxLng ONLY
-    if(!minLat && !minLng && !minPrice && !maxPrice && maxLng && !maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.lte]:[maxLng]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-
-    //minPrice maxPrice and minLat
-    if(minLat && !minLng && minPrice && maxPrice && !maxLng && !maxLat){
-
-            //finds all the spots
-          const allSpots = await Spot.findAll({
-            attributes:[
-              'id', 'ownerId',
-              'address', 'city', 'state',
-              'country', 'lat', 'lng',
-              'name', 'description', 'price',
-              'createdAt', 'updatedAt'
-            ],
-            where:{
-              lat:{
-                [Op.gte]:[minLat]
-              },
-              price:{
-                [Op.between]:[minPrice,maxPrice]
-              }
-            }
-          })
-
-          // res.json(allSpots)
-
-          //gets all the reviews
-          const allReviews = await Review.findAll()
-          // res.json(allReviews)
-
-          console.log(allReviews.length, 'Reviews')
-          console.log(allSpots.length, 'Spots')
-
-
-          const allImages = await Image.findAll({
-            where:{imagableType:'Spot'}
-          })
-          console.log(allImages.length)
-
-
-          const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-          for(let i=0; i<allSpots.length; i++){
-              let sum = 0
-              let totalReviews = 0
-            for(let z=0; z<allReviews.length; z++){
-              if(allSpots[i].id === allReviews[z].spotId){
-                sum = sum + allReviews[z].stars
-                totalReviews++
-              }
-            }
-            let average = sum/totalReviews
-            insertableSpots[i].avgRating = average
-
-            for(let d=0; d<allImages.length; d++){
-              if(allSpots[i].id === allImages[d].imagableId){
-                insertableSpots[i].previewImage = allImages[d].url
-              }
-            }
-
-            if(!insertableSpots[i].previewImage){
-              insertableSpots[i].previewImage = null
-            }
-          }
-
-          let object = {Spots:insertableSpots, page:page, size:size}
-          res.json(object)
-          return
-    }
-
-    //minPrice maxPrice and maxLat
-    if(!minLat && !minLng && minPrice && maxPrice && !maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lat:{
-              [Op.gte]:[maxLat]
-            },
-            price:{
-              [Op.between]:[minPrice,maxPrice]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    // minPrice maxPrice and minLng
-    if(!minLat && minLng && minPrice && maxPrice && !maxLng && !maxLat){
-
-            //finds all the spots
-          const allSpots = await Spot.findAll({
-            attributes:[
-              'id', 'ownerId',
-              'address', 'city', 'state',
-              'country', 'lat', 'lng',
-              'name', 'description', 'price',
-              'createdAt', 'updatedAt'
-            ],
-            where:{
-              lng:{
-                [Op.gte]:[minLng]
-              },
-              price:{
-                [Op.between]:[minPrice,maxPrice]
-              }
-            }
-          })
-
-          // res.json(allSpots)
-
-          //gets all the reviews
-          const allReviews = await Review.findAll()
-          // res.json(allReviews)
-
-          console.log(allReviews.length, 'Reviews')
-          console.log(allSpots.length, 'Spots')
-
-
-          const allImages = await Image.findAll({
-            where:{imagableType:'Spot'}
-          })
-          console.log(allImages.length)
-
-
-          const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-          for(let i=0; i<allSpots.length; i++){
-              let sum = 0
-              let totalReviews = 0
-            for(let z=0; z<allReviews.length; z++){
-              if(allSpots[i].id === allReviews[z].spotId){
-                sum = sum + allReviews[z].stars
-                totalReviews++
-              }
-            }
-            let average = sum/totalReviews
-            insertableSpots[i].avgRating = average
-
-            for(let d=0; d<allImages.length; d++){
-              if(allSpots[i].id === allImages[d].imagableId){
-                insertableSpots[i].previewImage = allImages[d].url
-              }
-            }
-
-            if(!insertableSpots[i].previewImage){
-              insertableSpots[i].previewImage = null
-            }
-          }
-
-          let object = {Spots:insertableSpots, page:page, size:size}
-          res.json(object)
-          return
-    }
-
-
-    //minPrice maxPrice and maxLng
-    if(!minLat && !minLng && minPrice && maxPrice && maxLng && !maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.lte]:[maxLng]
-            },
-            price:{
-              [Op.between]:[minPrice,maxPrice]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    //minPrice maxLat and minLng
-    if(!minLat && minLng && minPrice && !maxPrice && !maxLng && maxLat){
-
-            //finds all the spots
-          const allSpots = await Spot.findAll({
-            attributes:[
-              'id', 'ownerId',
-              'address', 'city', 'state',
-              'country', 'lat', 'lng',
-              'name', 'description', 'price',
-              'createdAt', 'updatedAt'
-            ],
-            where:{
-              lng:{
-                [Op.gte]:[minLng]
-              },
-              price:{
-                [Op.gte]:[minPrice]
-              },
-              lat:{
-                [Op.lte]:[maxLat]
-              }
-            }
-          })
-
-          // res.json(allSpots)
-
-          //gets all the reviews
-          const allReviews = await Review.findAll()
-          // res.json(allReviews)
-
-          console.log(allReviews.length, 'Reviews')
-          console.log(allSpots.length, 'Spots')
-
-
-          const allImages = await Image.findAll({
-            where:{imagableType:'Spot'}
-          })
-          console.log(allImages.length)
-
-
-          const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-          for(let i=0; i<allSpots.length; i++){
-              let sum = 0
-              let totalReviews = 0
-            for(let z=0; z<allReviews.length; z++){
-              if(allSpots[i].id === allReviews[z].spotId){
-                sum = sum + allReviews[z].stars
-                totalReviews++
-              }
-            }
-            let average = sum/totalReviews
-            insertableSpots[i].avgRating = average
-
-            for(let d=0; d<allImages.length; d++){
-              if(allSpots[i].id === allImages[d].imagableId){
-                insertableSpots[i].previewImage = allImages[d].url
-              }
-            }
-
-            if(!insertableSpots[i].previewImage){
-              insertableSpots[i].previewImage = null
-            }
-          }
-
-          let object = {Spots:insertableSpots, page:page, size:size}
-          res.json(object)
-          return
-    }
-
-    //minPrice maxLat and maxLng
-    if(!minLat && !minLng && minPrice && !maxPrice && maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.lte]:[maxLng]
-            },
-            lat:{
-              [Op.lte]:[maxLat]
-            },
-            price:{
-              [Op.gte]:[minPrice]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    //minPrice minLat and maxLat
-    if(minLat && !minLng && minPrice && !maxPrice && !maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lat:{
-              [Op.between]:[minLat, maxLat]
-            },
-            price:{
-              [Op.gte]:[minPrice]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    //minPrice minLat and minLng
-    if(minLat && minLng && minPrice && !maxPrice && !maxLng && !maxLat){
-
-            //finds all the spots
-          const allSpots = await Spot.findAll({
-            attributes:[
-              'id', 'ownerId',
-              'address', 'city', 'state',
-              'country', 'lat', 'lng',
-              'name', 'description', 'price',
-              'createdAt', 'updatedAt'
-            ],
-            where:{
-              lng:{
-                [Op.gte]:[minLng]
-              },
-              price:{
-                [Op.gte]:[minPrice]
-              },
-              lat:{
-                [Op.gte]:[minLat]
-              }
-            }
-          })
-
-          // res.json(allSpots)
-
-          //gets all the reviews
-          const allReviews = await Review.findAll()
-          // res.json(allReviews)
-
-          console.log(allReviews.length, 'Reviews')
-          console.log(allSpots.length, 'Spots')
-
-
-          const allImages = await Image.findAll({
-            where:{imagableType:'Spot'}
-          })
-          console.log(allImages.length)
-
-
-          const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-          for(let i=0; i<allSpots.length; i++){
-              let sum = 0
-              let totalReviews = 0
-            for(let z=0; z<allReviews.length; z++){
-              if(allSpots[i].id === allReviews[z].spotId){
-                sum = sum + allReviews[z].stars
-                totalReviews++
-              }
-            }
-            let average = sum/totalReviews
-            insertableSpots[i].avgRating = average
-
-            for(let d=0; d<allImages.length; d++){
-              if(allSpots[i].id === allImages[d].imagableId){
-                insertableSpots[i].previewImage = allImages[d].url
-              }
-            }
-
-            if(!insertableSpots[i].previewImage){
-              insertableSpots[i].previewImage = null
-            }
-          }
-
-          let object = {Spots:insertableSpots, page:page, size:size}
-          res.json(object)
-          return
-    }
-
-    //minPrice minLat and maxLng
-    if(minLat && !minLng && minPrice && !maxPrice && maxLng && !maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.lte]:[maxLng]
-            },
-            price:{
-              [Op.gte]:[minPrice]
-            },
-            lat:{
-              [Op.gte]:[minLat]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    //minPrice minLng and maxLng
-    if(!minLat && minLng && minPrice && !maxPrice && maxLng && !maxLat){
-
-            //finds all the spots
-          const allSpots = await Spot.findAll({
-            attributes:[
-              'id', 'ownerId',
-              'address', 'city', 'state',
-              'country', 'lat', 'lng',
-              'name', 'description', 'price',
-              'createdAt', 'updatedAt'
-            ],
-            where:{
-              lng:{
-                [Op.between]:[minLng, maxLng]
-              },
-              price:{
-                [Op.gte]:[minPrice]
-              },
-            }
-          })
-
-          // res.json(allSpots)
-
-          //gets all the reviews
-          const allReviews = await Review.findAll()
-          // res.json(allReviews)
-
-          console.log(allReviews.length, 'Reviews')
-          console.log(allSpots.length, 'Spots')
-
-
-          const allImages = await Image.findAll({
-            where:{imagableType:'Spot'}
-          })
-          console.log(allImages.length)
-
-
-          const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-          for(let i=0; i<allSpots.length; i++){
-              let sum = 0
-              let totalReviews = 0
-            for(let z=0; z<allReviews.length; z++){
-              if(allSpots[i].id === allReviews[z].spotId){
-                sum = sum + allReviews[z].stars
-                totalReviews++
-              }
-            }
-            let average = sum/totalReviews
-            insertableSpots[i].avgRating = average
-
-            for(let d=0; d<allImages.length; d++){
-              if(allSpots[i].id === allImages[d].imagableId){
-                insertableSpots[i].previewImage = allImages[d].url
-              }
-            }
-
-            if(!insertableSpots[i].previewImage){
-              insertableSpots[i].previewImage = null
-            }
-          }
-
-          let object = {Spots:insertableSpots, page:page, size:size}
-          res.json(object)
-          return
-    }
-
-    //minPrice maxPrice minLat and maxLat
-    if(minLat && !minLng && minPrice && maxPrice && !maxLng && maxLat){
+              console.log('minPrice',minPrice)
+              console.log('maxPrice', maxPrice)
 
         //finds all the spots
       const allSpots = await Spot.findAll({
@@ -2520,11 +250,19 @@ const validateQuery= [
           lat:{
             [Op.between]:[minLat,maxLat]
           },
+          lng:{
+            [Op.between]:[minLng,maxLng]
+          },
           price:{
             [Op.between]:[minPrice,maxPrice]
           }
-        }
+        },
+
+        limit:size,
+        offset: size*(page)
       })
+
+
 
       // res.json(allSpots)
 
@@ -2569,2122 +307,4463 @@ const validateQuery= [
 
       let object = {Spots:insertableSpots, page:page, size:size}
       res.json(object)
-      return
-    }
-
-    //minPrice maxPrice minLat and minLng
-    if(minLat && minLng && minPrice && maxPrice && !maxLng && !maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.gte]:[minLng]
-            },
-            price:{
-              [Op.between]:[minPrice,maxPrice]
-            },
-            lat:{
-              [Op.gte]:[minLat]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    //minPrice maxPrice minLat and maxLng
-    if(minLat && !minLng && minPrice && maxPrice && maxLng && !maxLat){
-
-            //finds all the spots
-          const allSpots = await Spot.findAll({
-            attributes:[
-              'id', 'ownerId',
-              'address', 'city', 'state',
-              'country', 'lat', 'lng',
-              'name', 'description', 'price',
-              'createdAt', 'updatedAt'
-            ],
-            where:{
-              lng:{
-                [Op.lte]:[maxLng]
-              },
-              lat:{
-                [Op.gte]:[minLat]
-              },
-              price:{
-                [Op.between]:[minPrice,maxPrice]
-              }
-            }
-          })
-
-          // res.json(allSpots)
-
-          //gets all the reviews
-          const allReviews = await Review.findAll()
-          // res.json(allReviews)
-
-          console.log(allReviews.length, 'Reviews')
-          console.log(allSpots.length, 'Spots')
-
-
-          const allImages = await Image.findAll({
-            where:{imagableType:'Spot'}
-          })
-          console.log(allImages.length)
-
-
-          const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-          for(let i=0; i<allSpots.length; i++){
-              let sum = 0
-              let totalReviews = 0
-            for(let z=0; z<allReviews.length; z++){
-              if(allSpots[i].id === allReviews[z].spotId){
-                sum = sum + allReviews[z].stars
-                totalReviews++
-              }
-            }
-            let average = sum/totalReviews
-            insertableSpots[i].avgRating = average
-
-            for(let d=0; d<allImages.length; d++){
-              if(allSpots[i].id === allImages[d].imagableId){
-                insertableSpots[i].previewImage = allImages[d].url
-              }
-            }
-
-            if(!insertableSpots[i].previewImage){
-              insertableSpots[i].previewImage = null
-            }
-          }
-
-          let object = {Spots:insertableSpots, page:page, size:size}
-          res.json(object)
-          return
-    }
-
-    //minPrice maxPrice maxLat and minLng
-    if(minLat && !minLng && minPrice && maxPrice && !maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.gte]:[minLng]
-            },
-            lat:{
-              [Op.lte]:[maxLat]
-            },
-            price:{
-              [Op.between]:[minPrice,maxPrice]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    //minPrice maxPrice maxLat and maxLng
-    if(!minLat && !minLng && minPrice && maxPrice && maxLng && maxLat){
-
-            //finds all the spots
-          const allSpots = await Spot.findAll({
-            attributes:[
-              'id', 'ownerId',
-              'address', 'city', 'state',
-              'country', 'lat', 'lng',
-              'name', 'description', 'price',
-              'createdAt', 'updatedAt'
-            ],
-            where:{
-              lng:{
-                [Op.lte]:[maxLng]
-              },
-              lat:{
-                [Op.lte]:[maxLat]
-              },
-              price:{
-                [Op.between]:[minPrice,maxPrice]
-              }
-            }
-          })
-
-          // res.json(allSpots)
-
-          //gets all the reviews
-          const allReviews = await Review.findAll()
-          // res.json(allReviews)
-
-          console.log(allReviews.length, 'Reviews')
-          console.log(allSpots.length, 'Spots')
-
-
-          const allImages = await Image.findAll({
-            where:{imagableType:'Spot'}
-          })
-          console.log(allImages.length)
-
-
-          const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-          for(let i=0; i<allSpots.length; i++){
-              let sum = 0
-              let totalReviews = 0
-            for(let z=0; z<allReviews.length; z++){
-              if(allSpots[i].id === allReviews[z].spotId){
-                sum = sum + allReviews[z].stars
-                totalReviews++
-              }
-            }
-            let average = sum/totalReviews
-            insertableSpots[i].avgRating = average
-
-            for(let d=0; d<allImages.length; d++){
-              if(allSpots[i].id === allImages[d].imagableId){
-                insertableSpots[i].previewImage = allImages[d].url
-              }
-            }
-
-            if(!insertableSpots[i].previewImage){
-              insertableSpots[i].previewImage = null
-            }
-          }
-
-          let object = {Spots:insertableSpots, page:page, size:size}
-          res.json(object)
-          return
-    }
-
-    //minPrice maxPrice minLng and maxLng
-    if(!minLat && minLng && minPrice && maxPrice && maxLng && !maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.between]:[minLng, maxLng]
-            },
-            price:{
-              [Op.between]:[minPrice,maxPrice]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    ////////5555555555555555555555555
-
-    //minPrice maxPrice minLat maxLat minLng ABCDE
-    if(minLat && minLng && minPrice && maxPrice && !maxLng && maxLat){
-
-                //finds all the spots
-              const allSpots = await Spot.findAll({
-                attributes:[
-                  'id', 'ownerId',
-                  'address', 'city', 'state',
-                  'country', 'lat', 'lng',
-                  'name', 'description', 'price',
-                  'createdAt', 'updatedAt'
-                ],
-                where:{
-                  lng:{
-                    [Op.gte]:[minLng]
-                  },
-                  price:{
-                    [Op.between]:[minPrice,maxPrice]
-                  },
-                  lat:{
-                    [Op.between]:[minLat,maxLat]
-                  }
-                }
-              })
-
-              // res.json(allSpots)
-
-              //gets all the reviews
-              const allReviews = await Review.findAll()
-              // res.json(allReviews)
-
-              console.log(allReviews.length, 'Reviews')
-              console.log(allSpots.length, 'Spots')
-
-
-              const allImages = await Image.findAll({
-                where:{imagableType:'Spot'}
-              })
-              console.log(allImages.length)
-
-
-              const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-              for(let i=0; i<allSpots.length; i++){
-                  let sum = 0
-                  let totalReviews = 0
-                for(let z=0; z<allReviews.length; z++){
-                  if(allSpots[i].id === allReviews[z].spotId){
-                    sum = sum + allReviews[z].stars
-                    totalReviews++
-                  }
-                }
-                let average = sum/totalReviews
-                insertableSpots[i].avgRating = average
-
-                for(let d=0; d<allImages.length; d++){
-                  if(allSpots[i].id === allImages[d].imagableId){
-                    insertableSpots[i].previewImage = allImages[d].url
-                  }
-                }
-
-                if(!insertableSpots[i].previewImage){
-                  insertableSpots[i].previewImage = null
-                }
-              }
-
-              let object = {Spots:insertableSpots, page:page, size:size}
-              res.json(object)
-              return
-    }
-
-    //minPrice maxPrice minLat maxLat maxLng ABCDF
-    if(minLat && !minLng && minPrice && maxPrice && maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.lte]:[maxLng]
-            },
-            lat:{
-              [Op.between]:[minLat,maxLat]
-            },
-            price:{
-              [Op.between]:[minPrice,maxPrice]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    //minPrice maxPrice minLat minLng maxLng ABCEF
-    if(minLat && minLng && minPrice && maxPrice && maxLng && !maxLat){
-
-                //finds all the spots
-              const allSpots = await Spot.findAll({
-                attributes:[
-                  'id', 'ownerId',
-                  'address', 'city', 'state',
-                  'country', 'lat', 'lng',
-                  'name', 'description', 'price',
-                  'createdAt', 'updatedAt'
-                ],
-                where:{
-                  lng:{
-                    [Op.between]:[minLng, maxLng]
-                  },
-                  price:{
-                    [Op.between]:[minPrice,maxPrice]
-                  },
-                  lng:{
-                    [Op.gte]:[minLng]
-                  }
-                }
-              })
-
-              // res.json(allSpots)
-
-              //gets all the reviews
-              const allReviews = await Review.findAll()
-              // res.json(allReviews)
-
-              console.log(allReviews.length, 'Reviews')
-              console.log(allSpots.length, 'Spots')
-
-
-              const allImages = await Image.findAll({
-                where:{imagableType:'Spot'}
-              })
-              console.log(allImages.length)
-
-
-              const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-              for(let i=0; i<allSpots.length; i++){
-                  let sum = 0
-                  let totalReviews = 0
-                for(let z=0; z<allReviews.length; z++){
-                  if(allSpots[i].id === allReviews[z].spotId){
-                    sum = sum + allReviews[z].stars
-                    totalReviews++
-                  }
-                }
-                let average = sum/totalReviews
-                insertableSpots[i].avgRating = average
-
-                for(let d=0; d<allImages.length; d++){
-                  if(allSpots[i].id === allImages[d].imagableId){
-                    insertableSpots[i].previewImage = allImages[d].url
-                  }
-                }
-
-                if(!insertableSpots[i].previewImage){
-                  insertableSpots[i].previewImage = null
-                }
-              }
-
-              let object = {Spots:insertableSpots, page:page, size:size}
-              res.json(object)
-              return
-    }
-
-    //minPrice maxPrice maxLat minLng maxLng ABDEF
-    if(!minLat && minLng && minPrice && maxPrice && maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.between]:[minLng, maxLng]
-            },
-            price:{
-              [Op.between]:[minPrice,maxPrice]
-            },
-            lat:{
-              [Op.lte]:[maxLat]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    //minPrice minLat maxLat minLng maxLng ACDEF
-    if(minLat && minLng && minPrice && !maxPrice && maxLng && maxLat){
-
-                //finds all the spots
-              const allSpots = await Spot.findAll({
-                attributes:[
-                  'id', 'ownerId',
-                  'address', 'city', 'state',
-                  'country', 'lat', 'lng',
-                  'name', 'description', 'price',
-                  'createdAt', 'updatedAt'
-                ],
-                where:{
-                  lng:{
-                    [Op.between]:[minLng, maxLng]
-                  },
-                  lat:{
-                    [Op.between]:[minLat,maxLat]
-                  },
-                  price:{
-                    [Op.gte]:[minPrice]
-                  }
-                }
-              })
-
-              // res.json(allSpots)
-
-              //gets all the reviews
-              const allReviews = await Review.findAll()
-              // res.json(allReviews)
-
-              console.log(allReviews.length, 'Reviews')
-              console.log(allSpots.length, 'Spots')
-
-
-              const allImages = await Image.findAll({
-                where:{imagableType:'Spot'}
-              })
-              console.log(allImages.length)
-
-
-              const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-              for(let i=0; i<allSpots.length; i++){
-                  let sum = 0
-                  let totalReviews = 0
-                for(let z=0; z<allReviews.length; z++){
-                  if(allSpots[i].id === allReviews[z].spotId){
-                    sum = sum + allReviews[z].stars
-                    totalReviews++
-                  }
-                }
-                let average = sum/totalReviews
-                insertableSpots[i].avgRating = average
-
-                for(let d=0; d<allImages.length; d++){
-                  if(allSpots[i].id === allImages[d].imagableId){
-                    insertableSpots[i].previewImage = allImages[d].url
-                  }
-                }
-
-                if(!insertableSpots[i].previewImage){
-                  insertableSpots[i].previewImage = null
-                }
-              }
-
-              let object = {Spots:insertableSpots, page:page, size:size}
-              res.json(object)
-              return
-    }
-
-    // maxPrice minLat maxLat minLng and maxLng BCDEF
-    if(minLat && minLng && !minPrice && maxPrice && maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.between]:[minLng, maxLng]
-            },
-            lat:{
-              [Op.between]:[minLat,maxLng]
-            },
-            price:{
-              [Op.lte]:[maxPrice]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    //444444444444
-
-    // minPrice minLat maxLat minLng ACDE
-    if(minLat && minLng && minPrice && !maxPrice && !maxLng && maxLat){
-
-                          //finds all the spots
-                        const allSpots = await Spot.findAll({
-                          attributes:[
-                            'id', 'ownerId',
-                            'address', 'city', 'state',
-                            'country', 'lat', 'lng',
-                            'name', 'description', 'price',
-                            'createdAt', 'updatedAt'
-                          ],
-                          where:{
-                            lat:{
-                              [Op.between]:[minLat, maxLat]
-                            },
-                            price:{
-                              [Op.gte]:[minPrice]
-                            },
-                            lng:{
-                              [Op.gte]:[minLng]
-                            }
-                          }
-                        })
-
-                        // res.json(allSpots)
-
-                        //gets all the reviews
-                        const allReviews = await Review.findAll()
-                        // res.json(allReviews)
-
-                        console.log(allReviews.length, 'Reviews')
-                        console.log(allSpots.length, 'Spots')
-
-
-                        const allImages = await Image.findAll({
-                          where:{imagableType:'Spot'}
-                        })
-                        console.log(allImages.length)
-
-
-                        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-                        for(let i=0; i<allSpots.length; i++){
-                            let sum = 0
-                            let totalReviews = 0
-                          for(let z=0; z<allReviews.length; z++){
-                            if(allSpots[i].id === allReviews[z].spotId){
-                              sum = sum + allReviews[z].stars
-                              totalReviews++
-                            }
-                          }
-                          let average = sum/totalReviews
-                          insertableSpots[i].avgRating = average
-
-                          for(let d=0; d<allImages.length; d++){
-                            if(allSpots[i].id === allImages[d].imagableId){
-                              insertableSpots[i].previewImage = allImages[d].url
-                            }
-                          }
-
-                          if(!insertableSpots[i].previewImage){
-                            insertableSpots[i].previewImage = null
-                          }
-                        }
-
-                        let object = {Spots:insertableSpots, page:page, size:size}
-                        res.json(object)
-                        return
-    }
-
-    // minPrice minLat maxLat maxLng ACDF
-    if(minLat && !minLng && minPrice && !maxPrice && maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lat:{
-              [Op.between]:[minLat, maxLat]
-            },
-            price:{
-              [Op.gte]:[minPrice]
-            },
-            lng:{
-              [Op.lte]:[maxLng]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    // minPrice minLat minLng maxLng ACEF
-    if(minLat && minLng && minPrice && !maxPrice && maxLng && !maxLat){
-
-                          //finds all the spots
-                        const allSpots = await Spot.findAll({
-                          attributes:[
-                            'id', 'ownerId',
-                            'address', 'city', 'state',
-                            'country', 'lat', 'lng',
-                            'name', 'description', 'price',
-                            'createdAt', 'updatedAt'
-                          ],
-                          where:{
-                            lng:{
-                              [Op.between]:[minLng, maxLng]
-                            },
-                            price:{
-                              [Op.gte]:[minPrice]
-                            },
-                            lat:{
-                              [Op.gte]:[minLat]
-                            }
-                          }
-                        })
-
-                        // res.json(allSpots)
-
-                        //gets all the reviews
-                        const allReviews = await Review.findAll()
-                        // res.json(allReviews)
-
-                        console.log(allReviews.length, 'Reviews')
-                        console.log(allSpots.length, 'Spots')
-
-
-                        const allImages = await Image.findAll({
-                          where:{imagableType:'Spot'}
-                        })
-                        console.log(allImages.length)
-
-
-                        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-                        for(let i=0; i<allSpots.length; i++){
-                            let sum = 0
-                            let totalReviews = 0
-                          for(let z=0; z<allReviews.length; z++){
-                            if(allSpots[i].id === allReviews[z].spotId){
-                              sum = sum + allReviews[z].stars
-                              totalReviews++
-                            }
-                          }
-                          let average = sum/totalReviews
-                          insertableSpots[i].avgRating = average
-
-                          for(let d=0; d<allImages.length; d++){
-                            if(allSpots[i].id === allImages[d].imagableId){
-                              insertableSpots[i].previewImage = allImages[d].url
-                            }
-                          }
-
-                          if(!insertableSpots[i].previewImage){
-                            insertableSpots[i].previewImage = null
-                          }
-                        }
-
-                        let object = {Spots:insertableSpots, page:page, size:size}
-                        res.json(object)
-                        return
-    }
-
-    // minPrice maxLat minLng maxLng ADEF
-    if(!minLat && minLng && minPrice && !maxPrice && maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.between]:[minLng, maxLng]
-            },
-            price:{
-              [Op.gte]:[minPrice]
-            },
-            lat:{
-              [Op.lte]:[maxLat]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    // maxPrice minLat maxLat minLng BCDE
-    if(minLat && minLng && !minPrice && maxPrice && !maxLng && maxLat){
-
-                          //finds all the spots
-                        const allSpots = await Spot.findAll({
-                          attributes:[
-                            'id', 'ownerId',
-                            'address', 'city', 'state',
-                            'country', 'lat', 'lng',
-                            'name', 'description', 'price',
-                            'createdAt', 'updatedAt'
-                          ],
-                          where:{
-                            lat:{
-                              [Op.between]:[minLat, maxLat]
-                            },
-                            price:{
-                              [Op.lte]:[maxPrice]
-                            },
-                            lng:{
-                              [Op.gte]:[minLng]
-                            }
-                          }
-                        })
-
-                        // res.json(allSpots)
-
-                        //gets all the reviews
-                        const allReviews = await Review.findAll()
-                        // res.json(allReviews)
-
-                        console.log(allReviews.length, 'Reviews')
-                        console.log(allSpots.length, 'Spots')
-
-
-                        const allImages = await Image.findAll({
-                          where:{imagableType:'Spot'}
-                        })
-                        console.log(allImages.length)
-
-
-                        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-                        for(let i=0; i<allSpots.length; i++){
-                            let sum = 0
-                            let totalReviews = 0
-                          for(let z=0; z<allReviews.length; z++){
-                            if(allSpots[i].id === allReviews[z].spotId){
-                              sum = sum + allReviews[z].stars
-                              totalReviews++
-                            }
-                          }
-                          let average = sum/totalReviews
-                          insertableSpots[i].avgRating = average
-
-                          for(let d=0; d<allImages.length; d++){
-                            if(allSpots[i].id === allImages[d].imagableId){
-                              insertableSpots[i].previewImage = allImages[d].url
-                            }
-                          }
-
-                          if(!insertableSpots[i].previewImage){
-                            insertableSpots[i].previewImage = null
-                          }
-                        }
-
-                        let object = {Spots:insertableSpots, page:page, size:size}
-                        res.json(object)
-                        return
-    }
-
-    // maxPrice minLat maxLat maxLng BCDF
-    if(minLat && !minLng && !minPrice && maxPrice && maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lat:{
-              [Op.between]:[minLat, maxLat]
-            },
-            price:{
-              [Op.lte]:[maxPrice]
-            },
-            lng:{
-              [Op.lte]:[maxLng]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    // maxPrice minLat minLng maxLng  BCEF
-    if(minLat && minLng && !minPrice && maxPrice && maxLng && !maxLat){
-
-                          //finds all the spots
-                        const allSpots = await Spot.findAll({
-                          attributes:[
-                            'id', 'ownerId',
-                            'address', 'city', 'state',
-                            'country', 'lat', 'lng',
-                            'name', 'description', 'price',
-                            'createdAt', 'updatedAt'
-                          ],
-                          where:{
-                            lng:{
-                              [Op.between]:[minLng, maxLng]
-                            },
-                            price:{
-                              [Op.lte]:[maxPrice]
-                            },
-                            lat:{
-                              [Op.gte]:[minLat]
-                            }
-
-                          }
-                        })
-
-                        // res.json(allSpots)
-
-                        //gets all the reviews
-                        const allReviews = await Review.findAll()
-                        // res.json(allReviews)
-
-                        console.log(allReviews.length, 'Reviews')
-                        console.log(allSpots.length, 'Spots')
-
-
-                        const allImages = await Image.findAll({
-                          where:{imagableType:'Spot'}
-                        })
-                        console.log(allImages.length)
-
-
-                        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-                        for(let i=0; i<allSpots.length; i++){
-                            let sum = 0
-                            let totalReviews = 0
-                          for(let z=0; z<allReviews.length; z++){
-                            if(allSpots[i].id === allReviews[z].spotId){
-                              sum = sum + allReviews[z].stars
-                              totalReviews++
-                            }
-                          }
-                          let average = sum/totalReviews
-                          insertableSpots[i].avgRating = average
-
-                          for(let d=0; d<allImages.length; d++){
-                            if(allSpots[i].id === allImages[d].imagableId){
-                              insertableSpots[i].previewImage = allImages[d].url
-                            }
-                          }
-
-                          if(!insertableSpots[i].previewImage){
-                            insertableSpots[i].previewImage = null
-                          }
-                        }
-
-                        let object = {Spots:insertableSpots, page:page, size:size}
-                        res.json(object)
-                        return
-    }
-
-    // maxPrice maxLat minLng maxLng  BDEF
-    if(minLat && !minLng && !minPrice && maxPrice && maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.between]:[minLng, maxLng]
-            },
-            price:{
-              [Op.lte]:[maxPrice]
-            },
-            lat:{
-              [Op.lte]:[maxLat]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    // minLat maxLat minLng maxLng CDEF
-    if(minLat && minLng && !minPrice && !maxPrice && maxLng && maxLat){
-
-                          //finds all the spots
-                        const allSpots = await Spot.findAll({
-                          attributes:[
-                            'id', 'ownerId',
-                            'address', 'city', 'state',
-                            'country', 'lat', 'lng',
-                            'name', 'description', 'price',
-                            'createdAt', 'updatedAt'
-                          ],
-                          where:{
-                            lat:{
-                              [Op.between]:[minLat, maxLat]
-                            },
-                            lng:{
-                              [Op.between]:[minLng,maxLng]
-                            }
-                          }
-                        })
-
-                        // res.json(allSpots)
-
-                        //gets all the reviews
-                        const allReviews = await Review.findAll()
-                        // res.json(allReviews)
-
-                        console.log(allReviews.length, 'Reviews')
-                        console.log(allSpots.length, 'Spots')
-
-
-                        const allImages = await Image.findAll({
-                          where:{imagableType:'Spot'}
-                        })
-                        console.log(allImages.length)
-
-
-                        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-                        for(let i=0; i<allSpots.length; i++){
-                            let sum = 0
-                            let totalReviews = 0
-                          for(let z=0; z<allReviews.length; z++){
-                            if(allSpots[i].id === allReviews[z].spotId){
-                              sum = sum + allReviews[z].stars
-                              totalReviews++
-                            }
-                          }
-                          let average = sum/totalReviews
-                          insertableSpots[i].avgRating = average
-
-                          for(let d=0; d<allImages.length; d++){
-                            if(allSpots[i].id === allImages[d].imagableId){
-                              insertableSpots[i].previewImage = allImages[d].url
-                            }
-                          }
-
-                          if(!insertableSpots[i].previewImage){
-                            insertableSpots[i].previewImage = null
-                          }
-                        }
-
-                        let object = {Spots:insertableSpots, page:page, size:size}
-                        res.json(object)
-                        return
-    }
-
-
-    //3333333333333333333333333333333333333333333
-
-    // maxPrice minLat maxLat  BCD
-    if(minLat && !minLng && !minPrice && maxPrice && !maxLng && maxLat){
-
-                          //finds all the spots
-                        const allSpots = await Spot.findAll({
-                          attributes:[
-                            'id', 'ownerId',
-                            'address', 'city', 'state',
-                            'country', 'lat', 'lng',
-                            'name', 'description', 'price',
-                            'createdAt', 'updatedAt'
-                          ],
-                          where:{
-                            lat:{
-                              [Op.between]:[minLat, maxLat]
-                            },
-                            price:{
-                              [Op.lte]:[maxPrice]
-                            }
-                          }
-                        })
-
-                        // res.json(allSpots)
-
-                        //gets all the reviews
-                        const allReviews = await Review.findAll()
-                        // res.json(allReviews)
-
-                        console.log(allReviews.length, 'Reviews')
-                        console.log(allSpots.length, 'Spots')
-
-
-                        const allImages = await Image.findAll({
-                          where:{imagableType:'Spot'}
-                        })
-                        console.log(allImages.length)
-
-
-                        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-                        for(let i=0; i<allSpots.length; i++){
-                            let sum = 0
-                            let totalReviews = 0
-                          for(let z=0; z<allReviews.length; z++){
-                            if(allSpots[i].id === allReviews[z].spotId){
-                              sum = sum + allReviews[z].stars
-                              totalReviews++
-                            }
-                          }
-                          let average = sum/totalReviews
-                          insertableSpots[i].avgRating = average
-
-                          for(let d=0; d<allImages.length; d++){
-                            if(allSpots[i].id === allImages[d].imagableId){
-                              insertableSpots[i].previewImage = allImages[d].url
-                            }
-                          }
-
-                          if(!insertableSpots[i].previewImage){
-                            insertableSpots[i].previewImage = null
-                          }
-                        }
-
-                        let object = {Spots:insertableSpots, page:page, size:size}
-                        res.json(object)
-                        return
-    }
-
-    // maxPrice minLat minLng  BCE
-    if(minLat && minLng && !minPrice && maxPrice && !maxLng && !maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.gte]:[minLng]
-            },
-            lat:{
-              [Op.gte]:[minLat]
-            },
-            price:{
-              [Op.lte]:[maxPrice]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    // maxPrice minLat maxLng BCF
-    if(minLat && !minLng && !minPrice && maxPrice && maxLng && !maxLat){
-
-                          //finds all the spots
-                        const allSpots = await Spot.findAll({
-                          attributes:[
-                            'id', 'ownerId',
-                            'address', 'city', 'state',
-                            'country', 'lat', 'lng',
-                            'name', 'description', 'price',
-                            'createdAt', 'updatedAt'
-                          ],
-                          where:{
-                            lng:{
-                              [Op.lte]:[maxLng]
-                            },
-                            price:{
-                              [Op.lte]:[maxPrice]
-                            },
-                            lat:{
-                              [Op.gte]:[minLat]
-                            }
-                          }
-                        })
-
-                        // res.json(allSpots)
-
-                        //gets all the reviews
-                        const allReviews = await Review.findAll()
-                        // res.json(allReviews)
-
-                        console.log(allReviews.length, 'Reviews')
-                        console.log(allSpots.length, 'Spots')
-
-
-                        const allImages = await Image.findAll({
-                          where:{imagableType:'Spot'}
-                        })
-                        console.log(allImages.length)
-
-
-                        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-                        for(let i=0; i<allSpots.length; i++){
-                            let sum = 0
-                            let totalReviews = 0
-                          for(let z=0; z<allReviews.length; z++){
-                            if(allSpots[i].id === allReviews[z].spotId){
-                              sum = sum + allReviews[z].stars
-                              totalReviews++
-                            }
-                          }
-                          let average = sum/totalReviews
-                          insertableSpots[i].avgRating = average
-
-                          for(let d=0; d<allImages.length; d++){
-                            if(allSpots[i].id === allImages[d].imagableId){
-                              insertableSpots[i].previewImage = allImages[d].url
-                            }
-                          }
-
-                          if(!insertableSpots[i].previewImage){
-                            insertableSpots[i].previewImage = null
-                          }
-                        }
-
-                        let object = {Spots:insertableSpots, page:page, size:size}
-                        res.json(object)
-                        return
-    }
-
-    // maxPrice maxLat minLng BDE
-    if(!minLat && minLng && !minPrice && maxPrice && !maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.gte]:[minLng]
-            },
-            lat:{
-              [Op.lte]:[maxLat]
-            },
-            price:{
-              [Op.lte]:[maxPrice]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    // maxPrice maxLat maxLng BDF
-    if(!minLat && !minLng && !minPrice && maxPrice && maxLng && maxLat){
-
-                          //finds all the spots
-                        const allSpots = await Spot.findAll({
-                          attributes:[
-                            'id', 'ownerId',
-                            'address', 'city', 'state',
-                            'country', 'lat', 'lng',
-                            'name', 'description', 'price',
-                            'createdAt', 'updatedAt'
-                          ],
-                          where:{
-                            lng:{
-                              [Op.lte]:[maxLng]
-                            },
-                            lat:{
-                              [Op.lte]:[maxLat]
-                            },
-                            price:{
-                              [Op.lte]:[maxPrice]
-                            }
-                          }
-                        })
-
-                        // res.json(allSpots)
-
-                        //gets all the reviews
-                        const allReviews = await Review.findAll()
-                        // res.json(allReviews)
-
-                        console.log(allReviews.length, 'Reviews')
-                        console.log(allSpots.length, 'Spots')
-
-
-                        const allImages = await Image.findAll({
-                          where:{imagableType:'Spot'}
-                        })
-                        console.log(allImages.length)
-
-
-                        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-                        for(let i=0; i<allSpots.length; i++){
-                            let sum = 0
-                            let totalReviews = 0
-                          for(let z=0; z<allReviews.length; z++){
-                            if(allSpots[i].id === allReviews[z].spotId){
-                              sum = sum + allReviews[z].stars
-                              totalReviews++
-                            }
-                          }
-                          let average = sum/totalReviews
-                          insertableSpots[i].avgRating = average
-
-                          for(let d=0; d<allImages.length; d++){
-                            if(allSpots[i].id === allImages[d].imagableId){
-                              insertableSpots[i].previewImage = allImages[d].url
-                            }
-                          }
-
-                          if(!insertableSpots[i].previewImage){
-                            insertableSpots[i].previewImage = null
-                          }
-                        }
-
-                        let object = {Spots:insertableSpots, page:page, size:size}
-                        res.json(object)
-                        return
-    }
-
-    // maxPrice minLng maxLng BEF
-    if(!minLat && minLng && !minPrice && maxPrice && maxLng && !maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.between]:[minLng, maxLng]
-            },
-            price:{
-              [Op.lte]:[maxPrice]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    //minLat maxLat minLng CDE
-    if(minLat && minLng && !minPrice && !maxPrice && !maxLng && maxLat){
-
-                          //finds all the spots
-                        const allSpots = await Spot.findAll({
-                          attributes:[
-                            'id', 'ownerId',
-                            'address', 'city', 'state',
-                            'country', 'lat', 'lng',
-                            'name', 'description', 'price',
-                            'createdAt', 'updatedAt'
-                          ],
-                          where:{
-                            lat:{
-                              [Op.between]:[minLat, maxLat]
-                            },
-                            lng:{
-                              [Op.gte]:[minLng]
-                            }
-                          }
-                        })
-
-                        // res.json(allSpots)
-
-                        //gets all the reviews
-                        const allReviews = await Review.findAll()
-                        // res.json(allReviews)
-
-                        console.log(allReviews.length, 'Reviews')
-                        console.log(allSpots.length, 'Spots')
-
-
-                        const allImages = await Image.findAll({
-                          where:{imagableType:'Spot'}
-                        })
-                        console.log(allImages.length)
-
-
-                        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-                        for(let i=0; i<allSpots.length; i++){
-                            let sum = 0
-                            let totalReviews = 0
-                          for(let z=0; z<allReviews.length; z++){
-                            if(allSpots[i].id === allReviews[z].spotId){
-                              sum = sum + allReviews[z].stars
-                              totalReviews++
-                            }
-                          }
-                          let average = sum/totalReviews
-                          insertableSpots[i].avgRating = average
-
-                          for(let d=0; d<allImages.length; d++){
-                            if(allSpots[i].id === allImages[d].imagableId){
-                              insertableSpots[i].previewImage = allImages[d].url
-                            }
-                          }
-
-                          if(!insertableSpots[i].previewImage){
-                            insertableSpots[i].previewImage = null
-                          }
-                        }
-
-                        let object = {Spots:insertableSpots, page:page, size:size}
-                        res.json(object)
-                        return
-    }
-
-    // minLat maxLat maxLng CDF
-    if(minLat && !minLng && !minPrice && !maxPrice && maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lat:{
-              [Op.between]:[minLat, maxLat]
-            },
-            lng:{
-              [Op.lte]:[maxLng]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
-
-    // minLat minLng maxLng CEF
-    if(minLat && minLng && !minPrice && !maxPrice && maxLng && !maxLat){
-
-                          //finds all the spots
-                        const allSpots = await Spot.findAll({
-                          attributes:[
-                            'id', 'ownerId',
-                            'address', 'city', 'state',
-                            'country', 'lat', 'lng',
-                            'name', 'description', 'price',
-                            'createdAt', 'updatedAt'
-                          ],
-                          where:{
-                            lng:{
-                              [Op.between]:[minLng, maxLng]
-                            },
-                            lat:{
-                              [Op.gte]:[minLat]
-                            }
-                          }
-                        })
-
-                        // res.json(allSpots)
-
-                        //gets all the reviews
-                        const allReviews = await Review.findAll()
-                        // res.json(allReviews)
-
-                        console.log(allReviews.length, 'Reviews')
-                        console.log(allSpots.length, 'Spots')
-
-
-                        const allImages = await Image.findAll({
-                          where:{imagableType:'Spot'}
-                        })
-                        console.log(allImages.length)
-
-
-                        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-                        for(let i=0; i<allSpots.length; i++){
-                            let sum = 0
-                            let totalReviews = 0
-                          for(let z=0; z<allReviews.length; z++){
-                            if(allSpots[i].id === allReviews[z].spotId){
-                              sum = sum + allReviews[z].stars
-                              totalReviews++
-                            }
-                          }
-                          let average = sum/totalReviews
-                          insertableSpots[i].avgRating = average
-
-                          for(let d=0; d<allImages.length; d++){
-                            if(allSpots[i].id === allImages[d].imagableId){
-                              insertableSpots[i].previewImage = allImages[d].url
-                            }
-                          }
-
-                          if(!insertableSpots[i].previewImage){
-                            insertableSpots[i].previewImage = null
-                          }
-                        }
-
-                        let object = {Spots:insertableSpots, page:page, size:size}
-                        res.json(object)
-                        return
-    }
-
-    // maxLat minLng maxLng DEF
-    if(!minLat && minLng && !minPrice && !maxPrice && maxLng && maxLat){
-
-          //finds all the spots
-        const allSpots = await Spot.findAll({
-          attributes:[
-            'id', 'ownerId',
-            'address', 'city', 'state',
-            'country', 'lat', 'lng',
-            'name', 'description', 'price',
-            'createdAt', 'updatedAt'
-          ],
-          where:{
-            lng:{
-              [Op.between]:[minLng, maxLng]
-            },
-            lat:{
-              [Op.lte]:[maxLat]
-            }
-          }
-        })
-
-        // res.json(allSpots)
-
-        //gets all the reviews
-        const allReviews = await Review.findAll()
-        // res.json(allReviews)
-
-        console.log(allReviews.length, 'Reviews')
-        console.log(allSpots.length, 'Spots')
-
-
-        const allImages = await Image.findAll({
-          where:{imagableType:'Spot'}
-        })
-        console.log(allImages.length)
-
-
-        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-        for(let i=0; i<allSpots.length; i++){
-            let sum = 0
-            let totalReviews = 0
-          for(let z=0; z<allReviews.length; z++){
-            if(allSpots[i].id === allReviews[z].spotId){
-              sum = sum + allReviews[z].stars
-              totalReviews++
-            }
-          }
-          let average = sum/totalReviews
-          insertableSpots[i].avgRating = average
-
-          for(let d=0; d<allImages.length; d++){
-            if(allSpots[i].id === allImages[d].imagableId){
-              insertableSpots[i].previewImage = allImages[d].url
-            }
-          }
-
-          if(!insertableSpots[i].previewImage){
-            insertableSpots[i].previewImage = null
-          }
-        }
-
-        let object = {Spots:insertableSpots, page:page, size:size}
-        res.json(object)
-        return
-    }
+
+    // 666666666666666666666666666666666666666666666
+
+    //all the queries do NOT exist all
+    // if(!minLat && !minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       limit:size,
+    //       offset:page*size
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // //all the queries exist
+    // if(minLat && minLng && minPrice && maxPrice && maxLng && maxLat){
+
+    //     console.log(' YOU ARE HERE')
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lat:{
+    //           [Op.between]:[minLat,maxLat]
+    //         },
+    //         lng:{
+    //           [Op.between]:[minLng,maxLng]
+    //         },
+    //         price:{
+    //           [Op.between]:[minPrice,maxPrice]
+    //         }
+    //       },
+
+    //       limit:size,
+    //       offset: page*size
+    //     })
+
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    //       //2222222222222222222222222222222222222222222222222222
+
+    //     //only minPrice and maxPrice
+    //     if(!minLat && !minLng && minPrice && maxPrice && !maxLng && !maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         price:{
+    //           [Op.between]:[minPrice,maxPrice]
+    //         }
+    //       },
+
+    //       limit:size,
+    //       offset:page*size
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    //     }
+
+    //     //only minPrice and minLat
+    //     if(minLat && !minLng && minPrice && !maxPrice && !maxLng && !maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         price:{
+    //           [Op.gte]:[minPrice]
+    //         },
+    //         lat:{
+    //           [Op.gte]:[minLat]
+    //         }
+    //       },
+
+    //       limit:size,
+    //       offset: page*size
+
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    //     }
+
+    //     //only minPrice and maxLat
+    //     if(!minLat && !minLng && minPrice && !maxPrice && !maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         price:{
+    //           [Op.gte]:[minPrice]
+    //         },
+    //         lat:{
+    //           [Op.lte]:[maxLat]
+    //         }
+    //       },
+
+    //       limit:size,
+    //       offset: page*size
+
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    //     }
+
+    //     //only minPrice and minLng
+    //     if(!minLat && minLng && minPrice && !maxPrice && !maxLng && !maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         price:{
+    //           [Op.gte]:[minPrice]
+    //         },
+    //         lng:{
+    //           [Op.gte]:[minLng]
+    //         }
+    //       },
+    //       limit:size,
+    //       offset: page*size
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    //     }
+
+    //     //only minPrice and maxLng
+    //     if(!minLat && !minLng && minPrice && !maxPrice && maxLng && !maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         price:{
+    //           [Op.gte]:[minPrice]
+    //         },
+    //         lng:{
+    //           [Op.lte]:[maxLng]
+    //         }
+    //       },
+    //       limit:size,
+    //       offset: page*size
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    //     }
+
+    //      //only maxPrice and minLat
+    //      if(minLat && !minLng && !minPrice && maxPrice && !maxLng && !maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         price:{
+    //           [Op.lte]:[maxPrice]
+    //         },
+    //         lat:{
+    //           [Op.gte]:[minLat]
+    //         }
+    //       },
+    //       limit:size,
+    //       offset: page*size
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    //     }
+
+    //     //only maxPrice and maxLat
+    //     if(!minLat && !minLng && !minPrice && maxPrice && !maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         price:{
+    //           [Op.lte]:[maxPrice]
+    //         },
+    //         lat:{
+    //           [Op.lte]:[maxLat]
+    //         }
+    //       },
+    //       limit:size,
+    //       offset: page*size
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    //     }
+
+    //     //only maxPrice and minLng
+    //     if(!minLat && minLng && !minPrice && maxPrice && !maxLng && !maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         price:{
+    //           [Op.lte]:[maxPrice]
+    //         },
+    //         lng:{
+    //           [Op.gte]:[minLng]
+    //         }
+    //       },
+    //       limit:size,
+    //       offset: page*size
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    //     }
+
+    //     //only maxPrice and maxLng
+    //     if(!minLat && !minLng && !minPrice && maxPrice && maxLng && !maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         price:{
+    //           [Op.lte]:[maxPrice]
+    //         },
+    //         lng:{
+    //           [Op.lte]:[maxLng]
+    //         }
+    //       },
+    //       limit:size,
+    //       offset: page*size
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    //     }
+
+    //     //only minLat and maxLat
+    //     if(minLat && !minLng && !minPrice && !maxPrice && !maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lat:{
+    //           [Op.between]:[minLat,maxLat]
+    //         }
+    //       },
+    //       limit:size,
+    //       offset: page*size
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    //     }
+
+    //     //only minLat and minLng
+    //     if(minLat && minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
+
+    //           //finds all the spots
+    //         const allSpots = await Spot.findAll({
+    //           attributes:[
+    //             'id', 'ownerId',
+    //             'address', 'city', 'state',
+    //             'country', 'lat', 'lng',
+    //             'name', 'description', 'price',
+    //             'createdAt', 'updatedAt'
+    //           ],
+    //           where:{
+    //             lat:{
+    //               [Op.gte]:[minLat]
+    //             },
+    //             lng:{
+    //               [Op.gte]:[minLng]
+    //             }
+    //           },
+    //           limit:size,
+    //           offset: page*size
+    //         })
+
+    //         // res.json(allSpots)
+
+    //         //gets all the reviews
+    //         const allReviews = await Review.findAll()
+    //         // res.json(allReviews)
+
+    //         console.log(allReviews.length, 'Reviews')
+    //         console.log(allSpots.length, 'Spots')
+
+
+    //         const allImages = await Image.findAll({
+    //           where:{imagableType:'Spot'}
+    //         })
+    //         console.log(allImages.length)
+
+
+    //         const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //         for(let i=0; i<allSpots.length; i++){
+    //             let sum = 0
+    //             let totalReviews = 0
+    //           for(let z=0; z<allReviews.length; z++){
+    //             if(allSpots[i].id === allReviews[z].spotId){
+    //               sum = sum + allReviews[z].stars
+    //               totalReviews++
+    //             }
+    //           }
+    //           let average = sum/totalReviews
+    //           insertableSpots[i].avgRating = average
+
+    //           for(let d=0; d<allImages.length; d++){
+    //             if(allSpots[i].id === allImages[d].imagableId){
+    //               insertableSpots[i].previewImage = allImages[d].url
+    //             }
+    //           }
+
+    //           if(!insertableSpots[i].previewImage){
+    //             insertableSpots[i].previewImage = null
+    //           }
+    //         }
+
+    //         let object = {Spots:insertableSpots, page:page, size:size}
+    //         res.json(object)
+    //         return
+    //     }
+
+    //     //only minLat and maxLng
+    //     if(minLat && !minLng && !minPrice && !maxPrice && maxLng && !maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lat:{
+    //           [Op.gte]:[minLat]
+    //         },
+    //         lng:{
+    //           [Op.lte]:[maxLng]
+    //         }
+    //       },
+    //       limit:size,
+    //       offset: page*size
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    //     }
+
+    //       //only maxLat and minLng
+    //       if(!minLat && minLng && !minPrice && !maxPrice && !maxLng && maxLat){
+
+    //         //finds all the spots
+    //       const allSpots = await Spot.findAll({
+    //         attributes:[
+    //           'id', 'ownerId',
+    //           'address', 'city', 'state',
+    //           'country', 'lat', 'lng',
+    //           'name', 'description', 'price',
+    //           'createdAt', 'updatedAt'
+    //         ],
+    //         where:{
+    //           lat:{
+    //             [Op.lte]:[maxLat]
+    //           },
+    //           lng:{
+    //             [Op.gte]:[minLng]
+    //           }
+    //         },
+    //         limit:size,
+    //         offset: page*size
+    //       })
+
+    //       // res.json(allSpots)
+
+    //       //gets all the reviews
+    //       const allReviews = await Review.findAll()
+    //       // res.json(allReviews)
+
+    //       console.log(allReviews.length, 'Reviews')
+    //       console.log(allSpots.length, 'Spots')
+
+
+    //       const allImages = await Image.findAll({
+    //         where:{imagableType:'Spot'}
+    //       })
+    //       console.log(allImages.length)
+
+
+    //       const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //       for(let i=0; i<allSpots.length; i++){
+    //           let sum = 0
+    //           let totalReviews = 0
+    //         for(let z=0; z<allReviews.length; z++){
+    //           if(allSpots[i].id === allReviews[z].spotId){
+    //             sum = sum + allReviews[z].stars
+    //             totalReviews++
+    //           }
+    //         }
+    //         let average = sum/totalReviews
+    //         insertableSpots[i].avgRating = average
+
+    //         for(let d=0; d<allImages.length; d++){
+    //           if(allSpots[i].id === allImages[d].imagableId){
+    //             insertableSpots[i].previewImage = allImages[d].url
+    //           }
+    //         }
+
+    //         if(!insertableSpots[i].previewImage){
+    //           insertableSpots[i].previewImage = null
+    //         }
+    //       }
+
+    //       let object = {Spots:insertableSpots, page:page, size:size}
+    //       res.json(object)
+    //       return
+    //       }
+
+    //        //only maxLat and maxLng
+    //        if(!minLat && !minLng && !minPrice && !maxPrice && maxLng && maxLat){
+
+    //         //finds all the spots
+    //       const allSpots = await Spot.findAll({
+    //         attributes:[
+    //           'id', 'ownerId',
+    //           'address', 'city', 'state',
+    //           'country', 'lat', 'lng',
+    //           'name', 'description', 'price',
+    //           'createdAt', 'updatedAt'
+    //         ],
+    //         where:{
+    //           lat:{
+    //             [Op.lte]:[maxLat]
+    //           },
+    //           lng:{
+    //             [Op.lte]:[maxLng]
+    //           }
+    //         },
+    //         limit:size,
+    //         offset: page*size
+    //       })
+
+    //       // res.json(allSpots)
+
+    //       //gets all the reviews
+    //       const allReviews = await Review.findAll()
+    //       // res.json(allReviews)
+
+    //       console.log(allReviews.length, 'Reviews')
+    //       console.log(allSpots.length, 'Spots')
+
+
+    //       const allImages = await Image.findAll({
+    //         where:{imagableType:'Spot'}
+    //       })
+    //       console.log(allImages.length)
+
+
+    //       const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //       for(let i=0; i<allSpots.length; i++){
+    //           let sum = 0
+    //           let totalReviews = 0
+    //         for(let z=0; z<allReviews.length; z++){
+    //           if(allSpots[i].id === allReviews[z].spotId){
+    //             sum = sum + allReviews[z].stars
+    //             totalReviews++
+    //           }
+    //         }
+    //         let average = sum/totalReviews
+    //         insertableSpots[i].avgRating = average
+
+    //         for(let d=0; d<allImages.length; d++){
+    //           if(allSpots[i].id === allImages[d].imagableId){
+    //             insertableSpots[i].previewImage = allImages[d].url
+    //           }
+    //         }
+
+    //         if(!insertableSpots[i].previewImage){
+    //           insertableSpots[i].previewImage = null
+    //         }
+    //       }
+
+    //       let object = {Spots:insertableSpots, page:page, size:size}
+    //       res.json(object)
+    //       return
+    //       }
+
+    //       //only minLng and maxLng
+    //       if(!minLat && minLng && !minPrice && !maxPrice && maxLng && !maxLat){
+
+    //         //finds all the spots
+    //       const allSpots = await Spot.findAll({
+    //         attributes:[
+    //           'id', 'ownerId',
+    //           'address', 'city', 'state',
+    //           'country', 'lat', 'lng',
+    //           'name', 'description', 'price',
+    //           'createdAt', 'updatedAt'
+    //         ],
+    //         where:{
+    //           lng:{
+    //             [Op.between]:[minLng, maxLng]
+    //           }
+    //         },
+    //         limit:size,
+    //         offset: page*size
+    //       })
+
+    //       // res.json(allSpots)
+
+    //       //gets all the reviews
+    //       const allReviews = await Review.findAll()
+    //       // res.json(allReviews)
+
+    //       console.log(allReviews.length, 'Reviews')
+    //       console.log(allSpots.length, 'Spots')
+
+
+    //       const allImages = await Image.findAll({
+    //         where:{imagableType:'Spot'}
+    //       })
+    //       console.log(allImages.length)
+
+
+    //       const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //       for(let i=0; i<allSpots.length; i++){
+    //           let sum = 0
+    //           let totalReviews = 0
+    //         for(let z=0; z<allReviews.length; z++){
+    //           if(allSpots[i].id === allReviews[z].spotId){
+    //             sum = sum + allReviews[z].stars
+    //             totalReviews++
+    //           }
+    //         }
+    //         let average = sum/totalReviews
+    //         insertableSpots[i].avgRating = average
+
+    //         for(let d=0; d<allImages.length; d++){
+    //           if(allSpots[i].id === allImages[d].imagableId){
+    //             insertableSpots[i].previewImage = allImages[d].url
+    //           }
+    //         }
+
+    //         if(!insertableSpots[i].previewImage){
+    //           insertableSpots[i].previewImage = null
+    //         }
+    //       }
+
+    //       let object = {Spots:insertableSpots, page:page, size:size}
+    //       res.json(object)
+    //       return
+    //       }
+
+
+    // //1111111111111111111111111111111111111111111
+
+    // //minPrice ONLY
+    // if(!minLat && !minLng && minPrice && !maxPrice && !maxLng && !maxLat){
+
+    //         //finds all the spots
+    //       const allSpots = await Spot.findAll({
+    //         attributes:[
+    //           'id', 'ownerId',
+    //           'address', 'city', 'state',
+    //           'country', 'lat', 'lng',
+    //           'name', 'description', 'price',
+    //           'createdAt', 'updatedAt'
+    //         ],
+    //         where:{
+    //           price:{
+    //             [Op.gte]:[minPrice]
+    //           }
+    //         }
+    //       })
+
+    //       // res.json(allSpots)
+
+    //       //gets all the reviews
+    //       const allReviews = await Review.findAll()
+    //       // res.json(allReviews)
+
+    //       console.log(allReviews.length, 'Reviews')
+    //       console.log(allSpots.length, 'Spots')
+
+
+    //       const allImages = await Image.findAll({
+    //         where:{imagableType:'Spot'}
+    //       })
+    //       console.log(allImages.length)
+
+
+    //       const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //       for(let i=0; i<allSpots.length; i++){
+    //           let sum = 0
+    //           let totalReviews = 0
+    //         for(let z=0; z<allReviews.length; z++){
+    //           if(allSpots[i].id === allReviews[z].spotId){
+    //             sum = sum + allReviews[z].stars
+    //             totalReviews++
+    //           }
+    //         }
+    //         let average = sum/totalReviews
+    //         insertableSpots[i].avgRating = average
+
+    //         for(let d=0; d<allImages.length; d++){
+    //           if(allSpots[i].id === allImages[d].imagableId){
+    //             insertableSpots[i].previewImage = allImages[d].url
+    //           }
+    //         }
+
+    //         if(!insertableSpots[i].previewImage){
+    //           insertableSpots[i].previewImage = null
+    //         }
+    //       }
+
+    //       let object = {Spots:insertableSpots, page:page, size:size}
+    //       res.json(object)
+    //       return
+    // }
+
+    // //maxPrice ONLY
+    // if(!minLat && !minLng && !minPrice && maxPrice && !maxLng && !maxLat){
+
+    //           //finds all the spots
+    //         const allSpots = await Spot.findAll({
+    //           attributes:[
+    //             'id', 'ownerId',
+    //             'address', 'city', 'state',
+    //             'country', 'lat', 'lng',
+    //             'name', 'description', 'price',
+    //             'createdAt', 'updatedAt'
+    //           ],
+    //           where:{
+    //             price:{
+    //               [Op.lte]:[maxPrice]
+    //             }
+    //           }
+    //         })
+
+    //         // res.json(allSpots)
+
+    //         //gets all the reviews
+    //         const allReviews = await Review.findAll()
+    //         // res.json(allReviews)
+
+    //         console.log(allReviews.length, 'Reviews')
+    //         console.log(allSpots.length, 'Spots')
+
+
+    //         const allImages = await Image.findAll({
+    //           where:{imagableType:'Spot'}
+    //         })
+    //         console.log(allImages.length)
+
+
+    //         const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //         for(let i=0; i<allSpots.length; i++){
+    //             let sum = 0
+    //             let totalReviews = 0
+    //           for(let z=0; z<allReviews.length; z++){
+    //             if(allSpots[i].id === allReviews[z].spotId){
+    //               sum = sum + allReviews[z].stars
+    //               totalReviews++
+    //             }
+    //           }
+    //           let average = sum/totalReviews
+    //           insertableSpots[i].avgRating = average
+
+    //           for(let d=0; d<allImages.length; d++){
+    //             if(allSpots[i].id === allImages[d].imagableId){
+    //               insertableSpots[i].previewImage = allImages[d].url
+    //             }
+    //           }
+
+    //           if(!insertableSpots[i].previewImage){
+    //             insertableSpots[i].previewImage = null
+    //           }
+    //         }
+
+    //         let object = {Spots:insertableSpots, page:page, size:size}
+    //         res.json(object)
+    //         return
+    // }
+
+
+    // //minLat ONLY
+    // if(minLat && !minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
+
+    //                 //finds all the spots
+    //               const allSpots = await Spot.findAll({
+    //                 attributes:[
+    //                   'id', 'ownerId',
+    //                   'address', 'city', 'state',
+    //                   'country', 'lat', 'lng',
+    //                   'name', 'description', 'price',
+    //                   'createdAt', 'updatedAt'
+    //                 ],
+    //                 where:{
+    //                   lat:{
+    //                     [Op.gte]:[minLat]
+    //                   }
+    //                 }
+    //               })
+
+    //               // res.json(allSpots)
+
+    //               //gets all the reviews
+    //               const allReviews = await Review.findAll()
+    //               // res.json(allReviews)
+
+    //               console.log(allReviews.length, 'Reviews')
+    //               console.log(allSpots.length, 'Spots')
+
+
+    //               const allImages = await Image.findAll({
+    //                 where:{imagableType:'Spot'}
+    //               })
+    //               console.log(allImages.length)
+
+
+    //               const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //               for(let i=0; i<allSpots.length; i++){
+    //                   let sum = 0
+    //                   let totalReviews = 0
+    //                 for(let z=0; z<allReviews.length; z++){
+    //                   if(allSpots[i].id === allReviews[z].spotId){
+    //                     sum = sum + allReviews[z].stars
+    //                     totalReviews++
+    //                   }
+    //                 }
+    //                 let average = sum/totalReviews
+    //                 insertableSpots[i].avgRating = average
+
+    //                 for(let d=0; d<allImages.length; d++){
+    //                   if(allSpots[i].id === allImages[d].imagableId){
+    //                     insertableSpots[i].previewImage = allImages[d].url
+    //                   }
+    //                 }
+
+    //                 if(!insertableSpots[i].previewImage){
+    //                   insertableSpots[i].previewImage = null
+    //                 }
+    //               }
+
+    //               let object = {Spots:insertableSpots, page:page, size:size}
+    //               res.json(object)
+    //               return
+    // }
+
+    // //maxLat ONLY
+    // if(!minLat && !minLng && !minPrice && !maxPrice && !maxLng && maxLat){
+
+    //                             //finds all the spots
+    //                           const allSpots = await Spot.findAll({
+    //                             attributes:[
+    //                               'id', 'ownerId',
+    //                               'address', 'city', 'state',
+    //                               'country', 'lat', 'lng',
+    //                               'name', 'description', 'price',
+    //                               'createdAt', 'updatedAt'
+    //                             ],
+    //                             where:{
+    //                               lat:{
+    //                                 [Op.lte]:[maxLat]
+    //                               }
+    //                             }
+    //                           })
+
+    //                           // res.json(allSpots)
+
+    //                           //gets all the reviews
+    //                           const allReviews = await Review.findAll()
+    //                           // res.json(allReviews)
+
+    //                           console.log(allReviews.length, 'Reviews')
+    //                           console.log(allSpots.length, 'Spots')
+
+
+    //                           const allImages = await Image.findAll({
+    //                             where:{imagableType:'Spot'}
+    //                           })
+    //                           console.log(allImages.length)
+
+
+    //                           const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //                           for(let i=0; i<allSpots.length; i++){
+    //                               let sum = 0
+    //                               let totalReviews = 0
+    //                             for(let z=0; z<allReviews.length; z++){
+    //                               if(allSpots[i].id === allReviews[z].spotId){
+    //                                 sum = sum + allReviews[z].stars
+    //                                 totalReviews++
+    //                               }
+    //                             }
+    //                             let average = sum/totalReviews
+    //                             insertableSpots[i].avgRating = average
+
+    //                             for(let d=0; d<allImages.length; d++){
+    //                               if(allSpots[i].id === allImages[d].imagableId){
+    //                                 insertableSpots[i].previewImage = allImages[d].url
+    //                               }
+    //                             }
+
+    //                             if(!insertableSpots[i].previewImage){
+    //                               insertableSpots[i].previewImage = null
+    //                             }
+    //                           }
+
+    //                           let object = {Spots:insertableSpots, page:page, size:size}
+    //                           res.json(object)
+    //                           return
+    // }
+
+    // //minLng ONLY
+    // if(!minLat && minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.gte]:[minLng]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // //maxLng ONLY
+    // if(!minLat && !minLng && !minPrice && !maxPrice && maxLng && !maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.lte]:[maxLng]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+
+    // //minPrice maxPrice and minLat
+    // if(minLat && !minLng && minPrice && maxPrice && !maxLng && !maxLat){
+
+    //         //finds all the spots
+    //       const allSpots = await Spot.findAll({
+    //         attributes:[
+    //           'id', 'ownerId',
+    //           'address', 'city', 'state',
+    //           'country', 'lat', 'lng',
+    //           'name', 'description', 'price',
+    //           'createdAt', 'updatedAt'
+    //         ],
+    //         where:{
+    //           lat:{
+    //             [Op.gte]:[minLat]
+    //           },
+    //           price:{
+    //             [Op.between]:[minPrice,maxPrice]
+    //           }
+    //         }
+    //       })
+
+    //       // res.json(allSpots)
+
+    //       //gets all the reviews
+    //       const allReviews = await Review.findAll()
+    //       // res.json(allReviews)
+
+    //       console.log(allReviews.length, 'Reviews')
+    //       console.log(allSpots.length, 'Spots')
+
+
+    //       const allImages = await Image.findAll({
+    //         where:{imagableType:'Spot'}
+    //       })
+    //       console.log(allImages.length)
+
+
+    //       const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //       for(let i=0; i<allSpots.length; i++){
+    //           let sum = 0
+    //           let totalReviews = 0
+    //         for(let z=0; z<allReviews.length; z++){
+    //           if(allSpots[i].id === allReviews[z].spotId){
+    //             sum = sum + allReviews[z].stars
+    //             totalReviews++
+    //           }
+    //         }
+    //         let average = sum/totalReviews
+    //         insertableSpots[i].avgRating = average
+
+    //         for(let d=0; d<allImages.length; d++){
+    //           if(allSpots[i].id === allImages[d].imagableId){
+    //             insertableSpots[i].previewImage = allImages[d].url
+    //           }
+    //         }
+
+    //         if(!insertableSpots[i].previewImage){
+    //           insertableSpots[i].previewImage = null
+    //         }
+    //       }
+
+    //       let object = {Spots:insertableSpots, page:page, size:size}
+    //       res.json(object)
+    //       return
+    // }
+
+    // //minPrice maxPrice and maxLat
+    // if(!minLat && !minLng && minPrice && maxPrice && !maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lat:{
+    //           [Op.gte]:[maxLat]
+    //         },
+    //         price:{
+    //           [Op.between]:[minPrice,maxPrice]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // // minPrice maxPrice and minLng
+    // if(!minLat && minLng && minPrice && maxPrice && !maxLng && !maxLat){
+
+    //         //finds all the spots
+    //       const allSpots = await Spot.findAll({
+    //         attributes:[
+    //           'id', 'ownerId',
+    //           'address', 'city', 'state',
+    //           'country', 'lat', 'lng',
+    //           'name', 'description', 'price',
+    //           'createdAt', 'updatedAt'
+    //         ],
+    //         where:{
+    //           lng:{
+    //             [Op.gte]:[minLng]
+    //           },
+    //           price:{
+    //             [Op.between]:[minPrice,maxPrice]
+    //           }
+    //         }
+    //       })
+
+    //       // res.json(allSpots)
+
+    //       //gets all the reviews
+    //       const allReviews = await Review.findAll()
+    //       // res.json(allReviews)
+
+    //       console.log(allReviews.length, 'Reviews')
+    //       console.log(allSpots.length, 'Spots')
+
+
+    //       const allImages = await Image.findAll({
+    //         where:{imagableType:'Spot'}
+    //       })
+    //       console.log(allImages.length)
+
+
+    //       const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //       for(let i=0; i<allSpots.length; i++){
+    //           let sum = 0
+    //           let totalReviews = 0
+    //         for(let z=0; z<allReviews.length; z++){
+    //           if(allSpots[i].id === allReviews[z].spotId){
+    //             sum = sum + allReviews[z].stars
+    //             totalReviews++
+    //           }
+    //         }
+    //         let average = sum/totalReviews
+    //         insertableSpots[i].avgRating = average
+
+    //         for(let d=0; d<allImages.length; d++){
+    //           if(allSpots[i].id === allImages[d].imagableId){
+    //             insertableSpots[i].previewImage = allImages[d].url
+    //           }
+    //         }
+
+    //         if(!insertableSpots[i].previewImage){
+    //           insertableSpots[i].previewImage = null
+    //         }
+    //       }
+
+    //       let object = {Spots:insertableSpots, page:page, size:size}
+    //       res.json(object)
+    //       return
+    // }
+
+
+    // //minPrice maxPrice and maxLng
+    // if(!minLat && !minLng && minPrice && maxPrice && maxLng && !maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.lte]:[maxLng]
+    //         },
+    //         price:{
+    //           [Op.between]:[minPrice,maxPrice]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // //minPrice maxLat and minLng
+    // if(!minLat && minLng && minPrice && !maxPrice && !maxLng && maxLat){
+
+    //         //finds all the spots
+    //       const allSpots = await Spot.findAll({
+    //         attributes:[
+    //           'id', 'ownerId',
+    //           'address', 'city', 'state',
+    //           'country', 'lat', 'lng',
+    //           'name', 'description', 'price',
+    //           'createdAt', 'updatedAt'
+    //         ],
+    //         where:{
+    //           lng:{
+    //             [Op.gte]:[minLng]
+    //           },
+    //           price:{
+    //             [Op.gte]:[minPrice]
+    //           },
+    //           lat:{
+    //             [Op.lte]:[maxLat]
+    //           }
+    //         }
+    //       })
+
+    //       // res.json(allSpots)
+
+    //       //gets all the reviews
+    //       const allReviews = await Review.findAll()
+    //       // res.json(allReviews)
+
+    //       console.log(allReviews.length, 'Reviews')
+    //       console.log(allSpots.length, 'Spots')
+
+
+    //       const allImages = await Image.findAll({
+    //         where:{imagableType:'Spot'}
+    //       })
+    //       console.log(allImages.length)
+
+
+    //       const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //       for(let i=0; i<allSpots.length; i++){
+    //           let sum = 0
+    //           let totalReviews = 0
+    //         for(let z=0; z<allReviews.length; z++){
+    //           if(allSpots[i].id === allReviews[z].spotId){
+    //             sum = sum + allReviews[z].stars
+    //             totalReviews++
+    //           }
+    //         }
+    //         let average = sum/totalReviews
+    //         insertableSpots[i].avgRating = average
+
+    //         for(let d=0; d<allImages.length; d++){
+    //           if(allSpots[i].id === allImages[d].imagableId){
+    //             insertableSpots[i].previewImage = allImages[d].url
+    //           }
+    //         }
+
+    //         if(!insertableSpots[i].previewImage){
+    //           insertableSpots[i].previewImage = null
+    //         }
+    //       }
+
+    //       let object = {Spots:insertableSpots, page:page, size:size}
+    //       res.json(object)
+    //       return
+    // }
+
+    // //minPrice maxLat and maxLng
+    // if(!minLat && !minLng && minPrice && !maxPrice && maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.lte]:[maxLng]
+    //         },
+    //         lat:{
+    //           [Op.lte]:[maxLat]
+    //         },
+    //         price:{
+    //           [Op.gte]:[minPrice]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // //minPrice minLat and maxLat
+    // if(minLat && !minLng && minPrice && !maxPrice && !maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lat:{
+    //           [Op.between]:[minLat, maxLat]
+    //         },
+    //         price:{
+    //           [Op.gte]:[minPrice]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // //minPrice minLat and minLng
+    // if(minLat && minLng && minPrice && !maxPrice && !maxLng && !maxLat){
+
+    //         //finds all the spots
+    //       const allSpots = await Spot.findAll({
+    //         attributes:[
+    //           'id', 'ownerId',
+    //           'address', 'city', 'state',
+    //           'country', 'lat', 'lng',
+    //           'name', 'description', 'price',
+    //           'createdAt', 'updatedAt'
+    //         ],
+    //         where:{
+    //           lng:{
+    //             [Op.gte]:[minLng]
+    //           },
+    //           price:{
+    //             [Op.gte]:[minPrice]
+    //           },
+    //           lat:{
+    //             [Op.gte]:[minLat]
+    //           }
+    //         }
+    //       })
+
+    //       // res.json(allSpots)
+
+    //       //gets all the reviews
+    //       const allReviews = await Review.findAll()
+    //       // res.json(allReviews)
+
+    //       console.log(allReviews.length, 'Reviews')
+    //       console.log(allSpots.length, 'Spots')
+
+
+    //       const allImages = await Image.findAll({
+    //         where:{imagableType:'Spot'}
+    //       })
+    //       console.log(allImages.length)
+
+
+    //       const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //       for(let i=0; i<allSpots.length; i++){
+    //           let sum = 0
+    //           let totalReviews = 0
+    //         for(let z=0; z<allReviews.length; z++){
+    //           if(allSpots[i].id === allReviews[z].spotId){
+    //             sum = sum + allReviews[z].stars
+    //             totalReviews++
+    //           }
+    //         }
+    //         let average = sum/totalReviews
+    //         insertableSpots[i].avgRating = average
+
+    //         for(let d=0; d<allImages.length; d++){
+    //           if(allSpots[i].id === allImages[d].imagableId){
+    //             insertableSpots[i].previewImage = allImages[d].url
+    //           }
+    //         }
+
+    //         if(!insertableSpots[i].previewImage){
+    //           insertableSpots[i].previewImage = null
+    //         }
+    //       }
+
+    //       let object = {Spots:insertableSpots, page:page, size:size}
+    //       res.json(object)
+    //       return
+    // }
+
+    // //minPrice minLat and maxLng
+    // if(minLat && !minLng && minPrice && !maxPrice && maxLng && !maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.lte]:[maxLng]
+    //         },
+    //         price:{
+    //           [Op.gte]:[minPrice]
+    //         },
+    //         lat:{
+    //           [Op.gte]:[minLat]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // //minPrice minLng and maxLng
+    // if(!minLat && minLng && minPrice && !maxPrice && maxLng && !maxLat){
+
+    //         //finds all the spots
+    //       const allSpots = await Spot.findAll({
+    //         attributes:[
+    //           'id', 'ownerId',
+    //           'address', 'city', 'state',
+    //           'country', 'lat', 'lng',
+    //           'name', 'description', 'price',
+    //           'createdAt', 'updatedAt'
+    //         ],
+    //         where:{
+    //           lng:{
+    //             [Op.between]:[minLng, maxLng]
+    //           },
+    //           price:{
+    //             [Op.gte]:[minPrice]
+    //           },
+    //         }
+    //       })
+
+    //       // res.json(allSpots)
+
+    //       //gets all the reviews
+    //       const allReviews = await Review.findAll()
+    //       // res.json(allReviews)
+
+    //       console.log(allReviews.length, 'Reviews')
+    //       console.log(allSpots.length, 'Spots')
+
+
+    //       const allImages = await Image.findAll({
+    //         where:{imagableType:'Spot'}
+    //       })
+    //       console.log(allImages.length)
+
+
+    //       const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //       for(let i=0; i<allSpots.length; i++){
+    //           let sum = 0
+    //           let totalReviews = 0
+    //         for(let z=0; z<allReviews.length; z++){
+    //           if(allSpots[i].id === allReviews[z].spotId){
+    //             sum = sum + allReviews[z].stars
+    //             totalReviews++
+    //           }
+    //         }
+    //         let average = sum/totalReviews
+    //         insertableSpots[i].avgRating = average
+
+    //         for(let d=0; d<allImages.length; d++){
+    //           if(allSpots[i].id === allImages[d].imagableId){
+    //             insertableSpots[i].previewImage = allImages[d].url
+    //           }
+    //         }
+
+    //         if(!insertableSpots[i].previewImage){
+    //           insertableSpots[i].previewImage = null
+    //         }
+    //       }
+
+    //       let object = {Spots:insertableSpots, page:page, size:size}
+    //       res.json(object)
+    //       return
+    // }
+
+    // //minPrice maxPrice minLat and maxLat
+    // if(minLat && !minLng && minPrice && maxPrice && !maxLng && maxLat){
+
+    //     //finds all the spots
+    //   const allSpots = await Spot.findAll({
+    //     attributes:[
+    //       'id', 'ownerId',
+    //       'address', 'city', 'state',
+    //       'country', 'lat', 'lng',
+    //       'name', 'description', 'price',
+    //       'createdAt', 'updatedAt'
+    //     ],
+    //     where:{
+    //       lat:{
+    //         [Op.between]:[minLat,maxLat]
+    //       },
+    //       price:{
+    //         [Op.between]:[minPrice,maxPrice]
+    //       }
+    //     }
+    //   })
+
+    //   // res.json(allSpots)
+
+    //   //gets all the reviews
+    //   const allReviews = await Review.findAll()
+    //   // res.json(allReviews)
+
+    //   console.log(allReviews.length, 'Reviews')
+    //   console.log(allSpots.length, 'Spots')
+
+
+    //   const allImages = await Image.findAll({
+    //     where:{imagableType:'Spot'}
+    //   })
+    //   console.log(allImages.length)
+
+
+    //   const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //   for(let i=0; i<allSpots.length; i++){
+    //       let sum = 0
+    //       let totalReviews = 0
+    //     for(let z=0; z<allReviews.length; z++){
+    //       if(allSpots[i].id === allReviews[z].spotId){
+    //         sum = sum + allReviews[z].stars
+    //         totalReviews++
+    //       }
+    //     }
+    //     let average = sum/totalReviews
+    //     insertableSpots[i].avgRating = average
+
+    //     for(let d=0; d<allImages.length; d++){
+    //       if(allSpots[i].id === allImages[d].imagableId){
+    //         insertableSpots[i].previewImage = allImages[d].url
+    //       }
+    //     }
+
+    //     if(!insertableSpots[i].previewImage){
+    //       insertableSpots[i].previewImage = null
+    //     }
+    //   }
+
+    //   let object = {Spots:insertableSpots, page:page, size:size}
+    //   res.json(object)
+    //   return
+    // }
+
+    // //minPrice maxPrice minLat and minLng
+    // if(minLat && minLng && minPrice && maxPrice && !maxLng && !maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.gte]:[minLng]
+    //         },
+    //         price:{
+    //           [Op.between]:[minPrice,maxPrice]
+    //         },
+    //         lat:{
+    //           [Op.gte]:[minLat]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // //minPrice maxPrice minLat and maxLng
+    // if(minLat && !minLng && minPrice && maxPrice && maxLng && !maxLat){
+
+    //         //finds all the spots
+    //       const allSpots = await Spot.findAll({
+    //         attributes:[
+    //           'id', 'ownerId',
+    //           'address', 'city', 'state',
+    //           'country', 'lat', 'lng',
+    //           'name', 'description', 'price',
+    //           'createdAt', 'updatedAt'
+    //         ],
+    //         where:{
+    //           lng:{
+    //             [Op.lte]:[maxLng]
+    //           },
+    //           lat:{
+    //             [Op.gte]:[minLat]
+    //           },
+    //           price:{
+    //             [Op.between]:[minPrice,maxPrice]
+    //           }
+    //         }
+    //       })
+
+    //       // res.json(allSpots)
+
+    //       //gets all the reviews
+    //       const allReviews = await Review.findAll()
+    //       // res.json(allReviews)
+
+    //       console.log(allReviews.length, 'Reviews')
+    //       console.log(allSpots.length, 'Spots')
+
+
+    //       const allImages = await Image.findAll({
+    //         where:{imagableType:'Spot'}
+    //       })
+    //       console.log(allImages.length)
+
+
+    //       const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //       for(let i=0; i<allSpots.length; i++){
+    //           let sum = 0
+    //           let totalReviews = 0
+    //         for(let z=0; z<allReviews.length; z++){
+    //           if(allSpots[i].id === allReviews[z].spotId){
+    //             sum = sum + allReviews[z].stars
+    //             totalReviews++
+    //           }
+    //         }
+    //         let average = sum/totalReviews
+    //         insertableSpots[i].avgRating = average
+
+    //         for(let d=0; d<allImages.length; d++){
+    //           if(allSpots[i].id === allImages[d].imagableId){
+    //             insertableSpots[i].previewImage = allImages[d].url
+    //           }
+    //         }
+
+    //         if(!insertableSpots[i].previewImage){
+    //           insertableSpots[i].previewImage = null
+    //         }
+    //       }
+
+    //       let object = {Spots:insertableSpots, page:page, size:size}
+    //       res.json(object)
+    //       return
+    // }
+
+    // //minPrice maxPrice maxLat and minLng
+    // if(minLat && !minLng && minPrice && maxPrice && !maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.gte]:[minLng]
+    //         },
+    //         lat:{
+    //           [Op.lte]:[maxLat]
+    //         },
+    //         price:{
+    //           [Op.between]:[minPrice,maxPrice]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // //minPrice maxPrice maxLat and maxLng
+    // if(!minLat && !minLng && minPrice && maxPrice && maxLng && maxLat){
+
+    //         //finds all the spots
+    //       const allSpots = await Spot.findAll({
+    //         attributes:[
+    //           'id', 'ownerId',
+    //           'address', 'city', 'state',
+    //           'country', 'lat', 'lng',
+    //           'name', 'description', 'price',
+    //           'createdAt', 'updatedAt'
+    //         ],
+    //         where:{
+    //           lng:{
+    //             [Op.lte]:[maxLng]
+    //           },
+    //           lat:{
+    //             [Op.lte]:[maxLat]
+    //           },
+    //           price:{
+    //             [Op.between]:[minPrice,maxPrice]
+    //           }
+    //         }
+    //       })
+
+    //       // res.json(allSpots)
+
+    //       //gets all the reviews
+    //       const allReviews = await Review.findAll()
+    //       // res.json(allReviews)
+
+    //       console.log(allReviews.length, 'Reviews')
+    //       console.log(allSpots.length, 'Spots')
+
+
+    //       const allImages = await Image.findAll({
+    //         where:{imagableType:'Spot'}
+    //       })
+    //       console.log(allImages.length)
+
+
+    //       const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //       for(let i=0; i<allSpots.length; i++){
+    //           let sum = 0
+    //           let totalReviews = 0
+    //         for(let z=0; z<allReviews.length; z++){
+    //           if(allSpots[i].id === allReviews[z].spotId){
+    //             sum = sum + allReviews[z].stars
+    //             totalReviews++
+    //           }
+    //         }
+    //         let average = sum/totalReviews
+    //         insertableSpots[i].avgRating = average
+
+    //         for(let d=0; d<allImages.length; d++){
+    //           if(allSpots[i].id === allImages[d].imagableId){
+    //             insertableSpots[i].previewImage = allImages[d].url
+    //           }
+    //         }
+
+    //         if(!insertableSpots[i].previewImage){
+    //           insertableSpots[i].previewImage = null
+    //         }
+    //       }
+
+    //       let object = {Spots:insertableSpots, page:page, size:size}
+    //       res.json(object)
+    //       return
+    // }
+
+    // //minPrice maxPrice minLng and maxLng
+    // if(!minLat && minLng && minPrice && maxPrice && maxLng && !maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.between]:[minLng, maxLng]
+    //         },
+    //         price:{
+    //           [Op.between]:[minPrice,maxPrice]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // ////////5555555555555555555555555
+
+    // //minPrice maxPrice minLat maxLat minLng ABCDE
+    // if(minLat && minLng && minPrice && maxPrice && !maxLng && maxLat){
+
+    //             //finds all the spots
+    //           const allSpots = await Spot.findAll({
+    //             attributes:[
+    //               'id', 'ownerId',
+    //               'address', 'city', 'state',
+    //               'country', 'lat', 'lng',
+    //               'name', 'description', 'price',
+    //               'createdAt', 'updatedAt'
+    //             ],
+    //             where:{
+    //               lng:{
+    //                 [Op.gte]:[minLng]
+    //               },
+    //               price:{
+    //                 [Op.between]:[minPrice,maxPrice]
+    //               },
+    //               lat:{
+    //                 [Op.between]:[minLat,maxLat]
+    //               }
+    //             }
+    //           })
+
+    //           // res.json(allSpots)
+
+    //           //gets all the reviews
+    //           const allReviews = await Review.findAll()
+    //           // res.json(allReviews)
+
+    //           console.log(allReviews.length, 'Reviews')
+    //           console.log(allSpots.length, 'Spots')
+
+
+    //           const allImages = await Image.findAll({
+    //             where:{imagableType:'Spot'}
+    //           })
+    //           console.log(allImages.length)
+
+
+    //           const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //           for(let i=0; i<allSpots.length; i++){
+    //               let sum = 0
+    //               let totalReviews = 0
+    //             for(let z=0; z<allReviews.length; z++){
+    //               if(allSpots[i].id === allReviews[z].spotId){
+    //                 sum = sum + allReviews[z].stars
+    //                 totalReviews++
+    //               }
+    //             }
+    //             let average = sum/totalReviews
+    //             insertableSpots[i].avgRating = average
+
+    //             for(let d=0; d<allImages.length; d++){
+    //               if(allSpots[i].id === allImages[d].imagableId){
+    //                 insertableSpots[i].previewImage = allImages[d].url
+    //               }
+    //             }
+
+    //             if(!insertableSpots[i].previewImage){
+    //               insertableSpots[i].previewImage = null
+    //             }
+    //           }
+
+    //           let object = {Spots:insertableSpots, page:page, size:size}
+    //           res.json(object)
+    //           return
+    // }
+
+    // //minPrice maxPrice minLat maxLat maxLng ABCDF
+    // if(minLat && !minLng && minPrice && maxPrice && maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.lte]:[maxLng]
+    //         },
+    //         lat:{
+    //           [Op.between]:[minLat,maxLat]
+    //         },
+    //         price:{
+    //           [Op.between]:[minPrice,maxPrice]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // //minPrice maxPrice minLat minLng maxLng ABCEF
+    // if(minLat && minLng && minPrice && maxPrice && maxLng && !maxLat){
+
+    //             //finds all the spots
+    //           const allSpots = await Spot.findAll({
+    //             attributes:[
+    //               'id', 'ownerId',
+    //               'address', 'city', 'state',
+    //               'country', 'lat', 'lng',
+    //               'name', 'description', 'price',
+    //               'createdAt', 'updatedAt'
+    //             ],
+    //             where:{
+    //               lng:{
+    //                 [Op.between]:[minLng, maxLng]
+    //               },
+    //               price:{
+    //                 [Op.between]:[minPrice,maxPrice]
+    //               },
+    //               lng:{
+    //                 [Op.gte]:[minLng]
+    //               }
+    //             }
+    //           })
+
+    //           // res.json(allSpots)
+
+    //           //gets all the reviews
+    //           const allReviews = await Review.findAll()
+    //           // res.json(allReviews)
+
+    //           console.log(allReviews.length, 'Reviews')
+    //           console.log(allSpots.length, 'Spots')
+
+
+    //           const allImages = await Image.findAll({
+    //             where:{imagableType:'Spot'}
+    //           })
+    //           console.log(allImages.length)
+
+
+    //           const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //           for(let i=0; i<allSpots.length; i++){
+    //               let sum = 0
+    //               let totalReviews = 0
+    //             for(let z=0; z<allReviews.length; z++){
+    //               if(allSpots[i].id === allReviews[z].spotId){
+    //                 sum = sum + allReviews[z].stars
+    //                 totalReviews++
+    //               }
+    //             }
+    //             let average = sum/totalReviews
+    //             insertableSpots[i].avgRating = average
+
+    //             for(let d=0; d<allImages.length; d++){
+    //               if(allSpots[i].id === allImages[d].imagableId){
+    //                 insertableSpots[i].previewImage = allImages[d].url
+    //               }
+    //             }
+
+    //             if(!insertableSpots[i].previewImage){
+    //               insertableSpots[i].previewImage = null
+    //             }
+    //           }
+
+    //           let object = {Spots:insertableSpots, page:page, size:size}
+    //           res.json(object)
+    //           return
+    // }
+
+    // //minPrice maxPrice maxLat minLng maxLng ABDEF
+    // if(!minLat && minLng && minPrice && maxPrice && maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.between]:[minLng, maxLng]
+    //         },
+    //         price:{
+    //           [Op.between]:[minPrice,maxPrice]
+    //         },
+    //         lat:{
+    //           [Op.lte]:[maxLat]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // //minPrice minLat maxLat minLng maxLng ACDEF
+    // if(minLat && minLng && minPrice && !maxPrice && maxLng && maxLat){
+
+    //             //finds all the spots
+    //           const allSpots = await Spot.findAll({
+    //             attributes:[
+    //               'id', 'ownerId',
+    //               'address', 'city', 'state',
+    //               'country', 'lat', 'lng',
+    //               'name', 'description', 'price',
+    //               'createdAt', 'updatedAt'
+    //             ],
+    //             where:{
+    //               lng:{
+    //                 [Op.between]:[minLng, maxLng]
+    //               },
+    //               lat:{
+    //                 [Op.between]:[minLat,maxLat]
+    //               },
+    //               price:{
+    //                 [Op.gte]:[minPrice]
+    //               }
+    //             }
+    //           })
+
+    //           // res.json(allSpots)
+
+    //           //gets all the reviews
+    //           const allReviews = await Review.findAll()
+    //           // res.json(allReviews)
+
+    //           console.log(allReviews.length, 'Reviews')
+    //           console.log(allSpots.length, 'Spots')
+
+
+    //           const allImages = await Image.findAll({
+    //             where:{imagableType:'Spot'}
+    //           })
+    //           console.log(allImages.length)
+
+
+    //           const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //           for(let i=0; i<allSpots.length; i++){
+    //               let sum = 0
+    //               let totalReviews = 0
+    //             for(let z=0; z<allReviews.length; z++){
+    //               if(allSpots[i].id === allReviews[z].spotId){
+    //                 sum = sum + allReviews[z].stars
+    //                 totalReviews++
+    //               }
+    //             }
+    //             let average = sum/totalReviews
+    //             insertableSpots[i].avgRating = average
+
+    //             for(let d=0; d<allImages.length; d++){
+    //               if(allSpots[i].id === allImages[d].imagableId){
+    //                 insertableSpots[i].previewImage = allImages[d].url
+    //               }
+    //             }
+
+    //             if(!insertableSpots[i].previewImage){
+    //               insertableSpots[i].previewImage = null
+    //             }
+    //           }
+
+    //           let object = {Spots:insertableSpots, page:page, size:size}
+    //           res.json(object)
+    //           return
+    // }
+
+    // // maxPrice minLat maxLat minLng and maxLng BCDEF
+    // if(minLat && minLng && !minPrice && maxPrice && maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.between]:[minLng, maxLng]
+    //         },
+    //         lat:{
+    //           [Op.between]:[minLat,maxLng]
+    //         },
+    //         price:{
+    //           [Op.lte]:[maxPrice]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // //444444444444
+
+    // // minPrice minLat maxLat minLng ACDE
+    // if(minLat && minLng && minPrice && !maxPrice && !maxLng && maxLat){
+
+    //                       //finds all the spots
+    //                     const allSpots = await Spot.findAll({
+    //                       attributes:[
+    //                         'id', 'ownerId',
+    //                         'address', 'city', 'state',
+    //                         'country', 'lat', 'lng',
+    //                         'name', 'description', 'price',
+    //                         'createdAt', 'updatedAt'
+    //                       ],
+    //                       where:{
+    //                         lat:{
+    //                           [Op.between]:[minLat, maxLat]
+    //                         },
+    //                         price:{
+    //                           [Op.gte]:[minPrice]
+    //                         },
+    //                         lng:{
+    //                           [Op.gte]:[minLng]
+    //                         }
+    //                       }
+    //                     })
+
+    //                     // res.json(allSpots)
+
+    //                     //gets all the reviews
+    //                     const allReviews = await Review.findAll()
+    //                     // res.json(allReviews)
+
+    //                     console.log(allReviews.length, 'Reviews')
+    //                     console.log(allSpots.length, 'Spots')
+
+
+    //                     const allImages = await Image.findAll({
+    //                       where:{imagableType:'Spot'}
+    //                     })
+    //                     console.log(allImages.length)
+
+
+    //                     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //                     for(let i=0; i<allSpots.length; i++){
+    //                         let sum = 0
+    //                         let totalReviews = 0
+    //                       for(let z=0; z<allReviews.length; z++){
+    //                         if(allSpots[i].id === allReviews[z].spotId){
+    //                           sum = sum + allReviews[z].stars
+    //                           totalReviews++
+    //                         }
+    //                       }
+    //                       let average = sum/totalReviews
+    //                       insertableSpots[i].avgRating = average
+
+    //                       for(let d=0; d<allImages.length; d++){
+    //                         if(allSpots[i].id === allImages[d].imagableId){
+    //                           insertableSpots[i].previewImage = allImages[d].url
+    //                         }
+    //                       }
+
+    //                       if(!insertableSpots[i].previewImage){
+    //                         insertableSpots[i].previewImage = null
+    //                       }
+    //                     }
+
+    //                     let object = {Spots:insertableSpots, page:page, size:size}
+    //                     res.json(object)
+    //                     return
+    // }
+
+    // // minPrice minLat maxLat maxLng ACDF
+    // if(minLat && !minLng && minPrice && !maxPrice && maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lat:{
+    //           [Op.between]:[minLat, maxLat]
+    //         },
+    //         price:{
+    //           [Op.gte]:[minPrice]
+    //         },
+    //         lng:{
+    //           [Op.lte]:[maxLng]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // // minPrice minLat minLng maxLng ACEF
+    // if(minLat && minLng && minPrice && !maxPrice && maxLng && !maxLat){
+
+    //                       //finds all the spots
+    //                     const allSpots = await Spot.findAll({
+    //                       attributes:[
+    //                         'id', 'ownerId',
+    //                         'address', 'city', 'state',
+    //                         'country', 'lat', 'lng',
+    //                         'name', 'description', 'price',
+    //                         'createdAt', 'updatedAt'
+    //                       ],
+    //                       where:{
+    //                         lng:{
+    //                           [Op.between]:[minLng, maxLng]
+    //                         },
+    //                         price:{
+    //                           [Op.gte]:[minPrice]
+    //                         },
+    //                         lat:{
+    //                           [Op.gte]:[minLat]
+    //                         }
+    //                       }
+    //                     })
+
+    //                     // res.json(allSpots)
+
+    //                     //gets all the reviews
+    //                     const allReviews = await Review.findAll()
+    //                     // res.json(allReviews)
+
+    //                     console.log(allReviews.length, 'Reviews')
+    //                     console.log(allSpots.length, 'Spots')
+
+
+    //                     const allImages = await Image.findAll({
+    //                       where:{imagableType:'Spot'}
+    //                     })
+    //                     console.log(allImages.length)
+
+
+    //                     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //                     for(let i=0; i<allSpots.length; i++){
+    //                         let sum = 0
+    //                         let totalReviews = 0
+    //                       for(let z=0; z<allReviews.length; z++){
+    //                         if(allSpots[i].id === allReviews[z].spotId){
+    //                           sum = sum + allReviews[z].stars
+    //                           totalReviews++
+    //                         }
+    //                       }
+    //                       let average = sum/totalReviews
+    //                       insertableSpots[i].avgRating = average
+
+    //                       for(let d=0; d<allImages.length; d++){
+    //                         if(allSpots[i].id === allImages[d].imagableId){
+    //                           insertableSpots[i].previewImage = allImages[d].url
+    //                         }
+    //                       }
+
+    //                       if(!insertableSpots[i].previewImage){
+    //                         insertableSpots[i].previewImage = null
+    //                       }
+    //                     }
+
+    //                     let object = {Spots:insertableSpots, page:page, size:size}
+    //                     res.json(object)
+    //                     return
+    // }
+
+    // // minPrice maxLat minLng maxLng ADEF
+    // if(!minLat && minLng && minPrice && !maxPrice && maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.between]:[minLng, maxLng]
+    //         },
+    //         price:{
+    //           [Op.gte]:[minPrice]
+    //         },
+    //         lat:{
+    //           [Op.lte]:[maxLat]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // // maxPrice minLat maxLat minLng BCDE
+    // if(minLat && minLng && !minPrice && maxPrice && !maxLng && maxLat){
+
+    //                       //finds all the spots
+    //                     const allSpots = await Spot.findAll({
+    //                       attributes:[
+    //                         'id', 'ownerId',
+    //                         'address', 'city', 'state',
+    //                         'country', 'lat', 'lng',
+    //                         'name', 'description', 'price',
+    //                         'createdAt', 'updatedAt'
+    //                       ],
+    //                       where:{
+    //                         lat:{
+    //                           [Op.between]:[minLat, maxLat]
+    //                         },
+    //                         price:{
+    //                           [Op.lte]:[maxPrice]
+    //                         },
+    //                         lng:{
+    //                           [Op.gte]:[minLng]
+    //                         }
+    //                       }
+    //                     })
+
+    //                     // res.json(allSpots)
+
+    //                     //gets all the reviews
+    //                     const allReviews = await Review.findAll()
+    //                     // res.json(allReviews)
+
+    //                     console.log(allReviews.length, 'Reviews')
+    //                     console.log(allSpots.length, 'Spots')
+
+
+    //                     const allImages = await Image.findAll({
+    //                       where:{imagableType:'Spot'}
+    //                     })
+    //                     console.log(allImages.length)
+
+
+    //                     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //                     for(let i=0; i<allSpots.length; i++){
+    //                         let sum = 0
+    //                         let totalReviews = 0
+    //                       for(let z=0; z<allReviews.length; z++){
+    //                         if(allSpots[i].id === allReviews[z].spotId){
+    //                           sum = sum + allReviews[z].stars
+    //                           totalReviews++
+    //                         }
+    //                       }
+    //                       let average = sum/totalReviews
+    //                       insertableSpots[i].avgRating = average
+
+    //                       for(let d=0; d<allImages.length; d++){
+    //                         if(allSpots[i].id === allImages[d].imagableId){
+    //                           insertableSpots[i].previewImage = allImages[d].url
+    //                         }
+    //                       }
+
+    //                       if(!insertableSpots[i].previewImage){
+    //                         insertableSpots[i].previewImage = null
+    //                       }
+    //                     }
+
+    //                     let object = {Spots:insertableSpots, page:page, size:size}
+    //                     res.json(object)
+    //                     return
+    // }
+
+    // // maxPrice minLat maxLat maxLng BCDF
+    // if(minLat && !minLng && !minPrice && maxPrice && maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lat:{
+    //           [Op.between]:[minLat, maxLat]
+    //         },
+    //         price:{
+    //           [Op.lte]:[maxPrice]
+    //         },
+    //         lng:{
+    //           [Op.lte]:[maxLng]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // // maxPrice minLat minLng maxLng  BCEF
+    // if(minLat && minLng && !minPrice && maxPrice && maxLng && !maxLat){
+
+    //                       //finds all the spots
+    //                     const allSpots = await Spot.findAll({
+    //                       attributes:[
+    //                         'id', 'ownerId',
+    //                         'address', 'city', 'state',
+    //                         'country', 'lat', 'lng',
+    //                         'name', 'description', 'price',
+    //                         'createdAt', 'updatedAt'
+    //                       ],
+    //                       where:{
+    //                         lng:{
+    //                           [Op.between]:[minLng, maxLng]
+    //                         },
+    //                         price:{
+    //                           [Op.lte]:[maxPrice]
+    //                         },
+    //                         lat:{
+    //                           [Op.gte]:[minLat]
+    //                         }
+
+    //                       }
+    //                     })
+
+    //                     // res.json(allSpots)
+
+    //                     //gets all the reviews
+    //                     const allReviews = await Review.findAll()
+    //                     // res.json(allReviews)
+
+    //                     console.log(allReviews.length, 'Reviews')
+    //                     console.log(allSpots.length, 'Spots')
+
+
+    //                     const allImages = await Image.findAll({
+    //                       where:{imagableType:'Spot'}
+    //                     })
+    //                     console.log(allImages.length)
+
+
+    //                     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //                     for(let i=0; i<allSpots.length; i++){
+    //                         let sum = 0
+    //                         let totalReviews = 0
+    //                       for(let z=0; z<allReviews.length; z++){
+    //                         if(allSpots[i].id === allReviews[z].spotId){
+    //                           sum = sum + allReviews[z].stars
+    //                           totalReviews++
+    //                         }
+    //                       }
+    //                       let average = sum/totalReviews
+    //                       insertableSpots[i].avgRating = average
+
+    //                       for(let d=0; d<allImages.length; d++){
+    //                         if(allSpots[i].id === allImages[d].imagableId){
+    //                           insertableSpots[i].previewImage = allImages[d].url
+    //                         }
+    //                       }
+
+    //                       if(!insertableSpots[i].previewImage){
+    //                         insertableSpots[i].previewImage = null
+    //                       }
+    //                     }
+
+    //                     let object = {Spots:insertableSpots, page:page, size:size}
+    //                     res.json(object)
+    //                     return
+    // }
+
+    // // maxPrice maxLat minLng maxLng  BDEF
+    // if(minLat && !minLng && !minPrice && maxPrice && maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.between]:[minLng, maxLng]
+    //         },
+    //         price:{
+    //           [Op.lte]:[maxPrice]
+    //         },
+    //         lat:{
+    //           [Op.lte]:[maxLat]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // // minLat maxLat minLng maxLng CDEF
+    // if(minLat && minLng && !minPrice && !maxPrice && maxLng && maxLat){
+
+    //                       //finds all the spots
+    //                     const allSpots = await Spot.findAll({
+    //                       attributes:[
+    //                         'id', 'ownerId',
+    //                         'address', 'city', 'state',
+    //                         'country', 'lat', 'lng',
+    //                         'name', 'description', 'price',
+    //                         'createdAt', 'updatedAt'
+    //                       ],
+    //                       where:{
+    //                         lat:{
+    //                           [Op.between]:[minLat, maxLat]
+    //                         },
+    //                         lng:{
+    //                           [Op.between]:[minLng,maxLng]
+    //                         }
+    //                       }
+    //                     })
+
+    //                     // res.json(allSpots)
+
+    //                     //gets all the reviews
+    //                     const allReviews = await Review.findAll()
+    //                     // res.json(allReviews)
+
+    //                     console.log(allReviews.length, 'Reviews')
+    //                     console.log(allSpots.length, 'Spots')
+
+
+    //                     const allImages = await Image.findAll({
+    //                       where:{imagableType:'Spot'}
+    //                     })
+    //                     console.log(allImages.length)
+
+
+    //                     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //                     for(let i=0; i<allSpots.length; i++){
+    //                         let sum = 0
+    //                         let totalReviews = 0
+    //                       for(let z=0; z<allReviews.length; z++){
+    //                         if(allSpots[i].id === allReviews[z].spotId){
+    //                           sum = sum + allReviews[z].stars
+    //                           totalReviews++
+    //                         }
+    //                       }
+    //                       let average = sum/totalReviews
+    //                       insertableSpots[i].avgRating = average
+
+    //                       for(let d=0; d<allImages.length; d++){
+    //                         if(allSpots[i].id === allImages[d].imagableId){
+    //                           insertableSpots[i].previewImage = allImages[d].url
+    //                         }
+    //                       }
+
+    //                       if(!insertableSpots[i].previewImage){
+    //                         insertableSpots[i].previewImage = null
+    //                       }
+    //                     }
+
+    //                     let object = {Spots:insertableSpots, page:page, size:size}
+    //                     res.json(object)
+    //                     return
+    // }
+
+
+    // //3333333333333333333333333333333333333333333
+
+    // // maxPrice minLat maxLat  BCD
+    // if(minLat && !minLng && !minPrice && maxPrice && !maxLng && maxLat){
+
+    //                       //finds all the spots
+    //                     const allSpots = await Spot.findAll({
+    //                       attributes:[
+    //                         'id', 'ownerId',
+    //                         'address', 'city', 'state',
+    //                         'country', 'lat', 'lng',
+    //                         'name', 'description', 'price',
+    //                         'createdAt', 'updatedAt'
+    //                       ],
+    //                       where:{
+    //                         lat:{
+    //                           [Op.between]:[minLat, maxLat]
+    //                         },
+    //                         price:{
+    //                           [Op.lte]:[maxPrice]
+    //                         }
+    //                       }
+    //                     })
+
+    //                     // res.json(allSpots)
+
+    //                     //gets all the reviews
+    //                     const allReviews = await Review.findAll()
+    //                     // res.json(allReviews)
+
+    //                     console.log(allReviews.length, 'Reviews')
+    //                     console.log(allSpots.length, 'Spots')
+
+
+    //                     const allImages = await Image.findAll({
+    //                       where:{imagableType:'Spot'}
+    //                     })
+    //                     console.log(allImages.length)
+
+
+    //                     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //                     for(let i=0; i<allSpots.length; i++){
+    //                         let sum = 0
+    //                         let totalReviews = 0
+    //                       for(let z=0; z<allReviews.length; z++){
+    //                         if(allSpots[i].id === allReviews[z].spotId){
+    //                           sum = sum + allReviews[z].stars
+    //                           totalReviews++
+    //                         }
+    //                       }
+    //                       let average = sum/totalReviews
+    //                       insertableSpots[i].avgRating = average
+
+    //                       for(let d=0; d<allImages.length; d++){
+    //                         if(allSpots[i].id === allImages[d].imagableId){
+    //                           insertableSpots[i].previewImage = allImages[d].url
+    //                         }
+    //                       }
+
+    //                       if(!insertableSpots[i].previewImage){
+    //                         insertableSpots[i].previewImage = null
+    //                       }
+    //                     }
+
+    //                     let object = {Spots:insertableSpots, page:page, size:size}
+    //                     res.json(object)
+    //                     return
+    // }
+
+    // // maxPrice minLat minLng  BCE
+    // if(minLat && minLng && !minPrice && maxPrice && !maxLng && !maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.gte]:[minLng]
+    //         },
+    //         lat:{
+    //           [Op.gte]:[minLat]
+    //         },
+    //         price:{
+    //           [Op.lte]:[maxPrice]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // // maxPrice minLat maxLng BCF
+    // if(minLat && !minLng && !minPrice && maxPrice && maxLng && !maxLat){
+
+    //                       //finds all the spots
+    //                     const allSpots = await Spot.findAll({
+    //                       attributes:[
+    //                         'id', 'ownerId',
+    //                         'address', 'city', 'state',
+    //                         'country', 'lat', 'lng',
+    //                         'name', 'description', 'price',
+    //                         'createdAt', 'updatedAt'
+    //                       ],
+    //                       where:{
+    //                         lng:{
+    //                           [Op.lte]:[maxLng]
+    //                         },
+    //                         price:{
+    //                           [Op.lte]:[maxPrice]
+    //                         },
+    //                         lat:{
+    //                           [Op.gte]:[minLat]
+    //                         }
+    //                       }
+    //                     })
+
+    //                     // res.json(allSpots)
+
+    //                     //gets all the reviews
+    //                     const allReviews = await Review.findAll()
+    //                     // res.json(allReviews)
+
+    //                     console.log(allReviews.length, 'Reviews')
+    //                     console.log(allSpots.length, 'Spots')
+
+
+    //                     const allImages = await Image.findAll({
+    //                       where:{imagableType:'Spot'}
+    //                     })
+    //                     console.log(allImages.length)
+
+
+    //                     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //                     for(let i=0; i<allSpots.length; i++){
+    //                         let sum = 0
+    //                         let totalReviews = 0
+    //                       for(let z=0; z<allReviews.length; z++){
+    //                         if(allSpots[i].id === allReviews[z].spotId){
+    //                           sum = sum + allReviews[z].stars
+    //                           totalReviews++
+    //                         }
+    //                       }
+    //                       let average = sum/totalReviews
+    //                       insertableSpots[i].avgRating = average
+
+    //                       for(let d=0; d<allImages.length; d++){
+    //                         if(allSpots[i].id === allImages[d].imagableId){
+    //                           insertableSpots[i].previewImage = allImages[d].url
+    //                         }
+    //                       }
+
+    //                       if(!insertableSpots[i].previewImage){
+    //                         insertableSpots[i].previewImage = null
+    //                       }
+    //                     }
+
+    //                     let object = {Spots:insertableSpots, page:page, size:size}
+    //                     res.json(object)
+    //                     return
+    // }
+
+    // // maxPrice maxLat minLng BDE
+    // if(!minLat && minLng && !minPrice && maxPrice && !maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.gte]:[minLng]
+    //         },
+    //         lat:{
+    //           [Op.lte]:[maxLat]
+    //         },
+    //         price:{
+    //           [Op.lte]:[maxPrice]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // // maxPrice maxLat maxLng BDF
+    // if(!minLat && !minLng && !minPrice && maxPrice && maxLng && maxLat){
+
+    //                       //finds all the spots
+    //                     const allSpots = await Spot.findAll({
+    //                       attributes:[
+    //                         'id', 'ownerId',
+    //                         'address', 'city', 'state',
+    //                         'country', 'lat', 'lng',
+    //                         'name', 'description', 'price',
+    //                         'createdAt', 'updatedAt'
+    //                       ],
+    //                       where:{
+    //                         lng:{
+    //                           [Op.lte]:[maxLng]
+    //                         },
+    //                         lat:{
+    //                           [Op.lte]:[maxLat]
+    //                         },
+    //                         price:{
+    //                           [Op.lte]:[maxPrice]
+    //                         }
+    //                       }
+    //                     })
+
+    //                     // res.json(allSpots)
+
+    //                     //gets all the reviews
+    //                     const allReviews = await Review.findAll()
+    //                     // res.json(allReviews)
+
+    //                     console.log(allReviews.length, 'Reviews')
+    //                     console.log(allSpots.length, 'Spots')
+
+
+    //                     const allImages = await Image.findAll({
+    //                       where:{imagableType:'Spot'}
+    //                     })
+    //                     console.log(allImages.length)
+
+
+    //                     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //                     for(let i=0; i<allSpots.length; i++){
+    //                         let sum = 0
+    //                         let totalReviews = 0
+    //                       for(let z=0; z<allReviews.length; z++){
+    //                         if(allSpots[i].id === allReviews[z].spotId){
+    //                           sum = sum + allReviews[z].stars
+    //                           totalReviews++
+    //                         }
+    //                       }
+    //                       let average = sum/totalReviews
+    //                       insertableSpots[i].avgRating = average
+
+    //                       for(let d=0; d<allImages.length; d++){
+    //                         if(allSpots[i].id === allImages[d].imagableId){
+    //                           insertableSpots[i].previewImage = allImages[d].url
+    //                         }
+    //                       }
+
+    //                       if(!insertableSpots[i].previewImage){
+    //                         insertableSpots[i].previewImage = null
+    //                       }
+    //                     }
+
+    //                     let object = {Spots:insertableSpots, page:page, size:size}
+    //                     res.json(object)
+    //                     return
+    // }
+
+    // // maxPrice minLng maxLng BEF
+    // if(!minLat && minLng && !minPrice && maxPrice && maxLng && !maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.between]:[minLng, maxLng]
+    //         },
+    //         price:{
+    //           [Op.lte]:[maxPrice]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // //minLat maxLat minLng CDE
+    // if(minLat && minLng && !minPrice && !maxPrice && !maxLng && maxLat){
+
+    //                       //finds all the spots
+    //                     const allSpots = await Spot.findAll({
+    //                       attributes:[
+    //                         'id', 'ownerId',
+    //                         'address', 'city', 'state',
+    //                         'country', 'lat', 'lng',
+    //                         'name', 'description', 'price',
+    //                         'createdAt', 'updatedAt'
+    //                       ],
+    //                       where:{
+    //                         lat:{
+    //                           [Op.between]:[minLat, maxLat]
+    //                         },
+    //                         lng:{
+    //                           [Op.gte]:[minLng]
+    //                         }
+    //                       }
+    //                     })
+
+    //                     // res.json(allSpots)
+
+    //                     //gets all the reviews
+    //                     const allReviews = await Review.findAll()
+    //                     // res.json(allReviews)
+
+    //                     console.log(allReviews.length, 'Reviews')
+    //                     console.log(allSpots.length, 'Spots')
+
+
+    //                     const allImages = await Image.findAll({
+    //                       where:{imagableType:'Spot'}
+    //                     })
+    //                     console.log(allImages.length)
+
+
+    //                     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //                     for(let i=0; i<allSpots.length; i++){
+    //                         let sum = 0
+    //                         let totalReviews = 0
+    //                       for(let z=0; z<allReviews.length; z++){
+    //                         if(allSpots[i].id === allReviews[z].spotId){
+    //                           sum = sum + allReviews[z].stars
+    //                           totalReviews++
+    //                         }
+    //                       }
+    //                       let average = sum/totalReviews
+    //                       insertableSpots[i].avgRating = average
+
+    //                       for(let d=0; d<allImages.length; d++){
+    //                         if(allSpots[i].id === allImages[d].imagableId){
+    //                           insertableSpots[i].previewImage = allImages[d].url
+    //                         }
+    //                       }
+
+    //                       if(!insertableSpots[i].previewImage){
+    //                         insertableSpots[i].previewImage = null
+    //                       }
+    //                     }
+
+    //                     let object = {Spots:insertableSpots, page:page, size:size}
+    //                     res.json(object)
+    //                     return
+    // }
+
+    // // minLat maxLat maxLng CDF
+    // if(minLat && !minLng && !minPrice && !maxPrice && maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lat:{
+    //           [Op.between]:[minLat, maxLat]
+    //         },
+    //         lng:{
+    //           [Op.lte]:[maxLng]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
+
+    // // minLat minLng maxLng CEF
+    // if(minLat && minLng && !minPrice && !maxPrice && maxLng && !maxLat){
+
+    //                       //finds all the spots
+    //                     const allSpots = await Spot.findAll({
+    //                       attributes:[
+    //                         'id', 'ownerId',
+    //                         'address', 'city', 'state',
+    //                         'country', 'lat', 'lng',
+    //                         'name', 'description', 'price',
+    //                         'createdAt', 'updatedAt'
+    //                       ],
+    //                       where:{
+    //                         lng:{
+    //                           [Op.between]:[minLng, maxLng]
+    //                         },
+    //                         lat:{
+    //                           [Op.gte]:[minLat]
+    //                         }
+    //                       }
+    //                     })
+
+    //                     // res.json(allSpots)
+
+    //                     //gets all the reviews
+    //                     const allReviews = await Review.findAll()
+    //                     // res.json(allReviews)
+
+    //                     console.log(allReviews.length, 'Reviews')
+    //                     console.log(allSpots.length, 'Spots')
+
+
+    //                     const allImages = await Image.findAll({
+    //                       where:{imagableType:'Spot'}
+    //                     })
+    //                     console.log(allImages.length)
+
+
+    //                     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //                     for(let i=0; i<allSpots.length; i++){
+    //                         let sum = 0
+    //                         let totalReviews = 0
+    //                       for(let z=0; z<allReviews.length; z++){
+    //                         if(allSpots[i].id === allReviews[z].spotId){
+    //                           sum = sum + allReviews[z].stars
+    //                           totalReviews++
+    //                         }
+    //                       }
+    //                       let average = sum/totalReviews
+    //                       insertableSpots[i].avgRating = average
+
+    //                       for(let d=0; d<allImages.length; d++){
+    //                         if(allSpots[i].id === allImages[d].imagableId){
+    //                           insertableSpots[i].previewImage = allImages[d].url
+    //                         }
+    //                       }
+
+    //                       if(!insertableSpots[i].previewImage){
+    //                         insertableSpots[i].previewImage = null
+    //                       }
+    //                     }
+
+    //                     let object = {Spots:insertableSpots, page:page, size:size}
+    //                     res.json(object)
+    //                     return
+    // }
+
+    // // maxLat minLng maxLng DEF
+    // if(!minLat && minLng && !minPrice && !maxPrice && maxLng && maxLat){
+
+    //       //finds all the spots
+    //     const allSpots = await Spot.findAll({
+    //       attributes:[
+    //         'id', 'ownerId',
+    //         'address', 'city', 'state',
+    //         'country', 'lat', 'lng',
+    //         'name', 'description', 'price',
+    //         'createdAt', 'updatedAt'
+    //       ],
+    //       where:{
+    //         lng:{
+    //           [Op.between]:[minLng, maxLng]
+    //         },
+    //         lat:{
+    //           [Op.lte]:[maxLat]
+    //         }
+    //       }
+    //     })
+
+    //     // res.json(allSpots)
+
+    //     //gets all the reviews
+    //     const allReviews = await Review.findAll()
+    //     // res.json(allReviews)
+
+    //     console.log(allReviews.length, 'Reviews')
+    //     console.log(allSpots.length, 'Spots')
+
+
+    //     const allImages = await Image.findAll({
+    //       where:{imagableType:'Spot'}
+    //     })
+    //     console.log(allImages.length)
+
+
+    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+    //     for(let i=0; i<allSpots.length; i++){
+    //         let sum = 0
+    //         let totalReviews = 0
+    //       for(let z=0; z<allReviews.length; z++){
+    //         if(allSpots[i].id === allReviews[z].spotId){
+    //           sum = sum + allReviews[z].stars
+    //           totalReviews++
+    //         }
+    //       }
+    //       let average = sum/totalReviews
+    //       insertableSpots[i].avgRating = average
+
+    //       for(let d=0; d<allImages.length; d++){
+    //         if(allSpots[i].id === allImages[d].imagableId){
+    //           insertableSpots[i].previewImage = allImages[d].url
+    //         }
+    //       }
+
+    //       if(!insertableSpots[i].previewImage){
+    //         insertableSpots[i].previewImage = null
+    //       }
+    //     }
+
+    //     let object = {Spots:insertableSpots, page:page, size:size}
+    //     res.json(object)
+    //     return
+    // }
 
 
 
