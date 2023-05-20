@@ -131,7 +131,7 @@ router.delete('/:id', requireAuth, async(req,res) =>{
     //if the booking does not exist
     if(!deleteBooking)
     {
-        res.status(404).json({message:"Booking couldn't be found", status:404})
+        res.status(404).json({message:"Booking couldn't be found", statusCode:404})
         return
     }
 
@@ -169,21 +169,21 @@ router.delete('/:id', requireAuth, async(req,res) =>{
     //if the year for booking is prior to todays year CANNOT delete
     if(startDate[0] < todayDate[0])
     {
-        res.status(403).json({message:"Bookings that have been started can't be deleted", status:403})
+        res.status(403).json({message:"Bookings that have been started can't be deleted", statusCode:403})
         return
     }
 
     //if the year for booking and today are the same but the month is prior CANNOT delete
     if(startDate[0] === todayDate[0] && startDate[1]<todayDate[1])
     {
-        res.status(403).json({message:"Bookings that have been started can't be deleted", status:403})
+        res.status(403).json({message:"Bookings that have been started can't be deleted", statusCode:403})
         return
     }
 
       //if the year and month for booking and today are the same but the day is prior CANNOT delete
     if(startDate[0] === todayDate[0] && startDate[1] === todayDate[1] && startDate[2] < todayDate[2])
     {
-        res.status(403).json({message:"Bookings that have been started can't be deleted", status:403})
+        res.status(403).json({message:"Bookings that have been started can't be deleted", statusCode:403})
         return
     }
 
@@ -192,7 +192,7 @@ router.delete('/:id', requireAuth, async(req,res) =>{
     if(deleteBooking.userId === req.user.id)
     {
         await deleteBooking.destroy()
-        res.json({message:'Successfully Deleted', status:200})
+        res.json({message:'Successfully Deleted', statusCode:200})
         return
     }
 
@@ -208,7 +208,7 @@ router.delete('/:id', requireAuth, async(req,res) =>{
         return
     }
 
-    res.status(403).json({message:'Forbidden', status:403})
+    res.status(403).json({message:'Forbidden', statusCode:403})
 })
 
 
@@ -220,7 +220,7 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
     let findBooking = await Booking.findByPk(req.params.id)
 
     if(!findBooking){
-        res.status(404).json({message:"Booking couldn't be found", status:404})
+        res.status(404).json({message:"Booking couldn't be found", statusCode:404})
         return
     }
 
@@ -275,21 +275,21 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
     //if the year for booking is prior to todays year CANNOT edit booking
     if(end[0] < today[0])
     {
-        res.status(403).json({message:"Past bookings can't be modified", status:403})
+        res.status(403).json({message:"Past bookings can't be modified", statusCode:403})
         return
     }
 
     //if the year for booking and today are the same but the month is prior CANNOT edit booking
     if(end[0] === today[0] && end[1]<today[1])
     {
-        res.status(403).json({message:"Past bookings can't be modified", status:403})
+        res.status(403).json({message:"Past bookings can't be modified", statusCode:403})
         return
     }
 
       //if the year and month for booking and today are the same but the day is prior CANNOT edit booking
     if(end[0] === today[0] && end[1] === today[1] && end[2] < today[2])
     {
-        res.status(4003).send({message:"Past bookings can't be modified", status:403})
+        res.status(4003).send({message:"Past bookings can't be modified", statusCode:403})
         return
     }
 
@@ -400,21 +400,21 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
 
                 if(startRequest[0] < start[0] < endRequest[0])
                 {
-                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", status:403,
+                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
                     error:["Start date conflicts with an existing booking"]})
                     return
                 }
 
                 if(startRequest[0] === start[0] && startRequest[1] < start[1] < endRequest[1])
                 {
-                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", status:403,
+                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
                     error:["Start date conflicts with an existing booking"]})
                     return
                 }
 
                 if(startRequest[0] === start[0] && startRequest[1] === start[1] && startRequest[2] < start[2] < endRequest[2])
                 {
-                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", status:403,
+                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
                     error:["Start date conflicts with an existing booking"]})
                     return
                 }
@@ -424,21 +424,21 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
 
                 if(startRequest[0] < start[0] && start[0]< endRequest[0])
                 {
-                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", status:403,
+                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
                     error:["Start date conflicts with an existing booking"]})
                     return
                 }
 
                 if(startRequest[0] === start[0] && startRequest[1] < start[1] < endRequest[1])
                 {
-                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", status:403,
+                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
                     error:["Start date conflicts with an existing booking"]})
                     return
                 }
 
                 if(startRequest[0] === start[0] && startRequest[1] === start[1] && startRequest[2] < start[2] < endRequest[2])
                 {
-                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", status:403,
+                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
                     error:["Start date conflicts with an existing booking"]})
                     return
                 }
@@ -458,7 +458,7 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
     }
 
 
-    res.status(403).json({message:'Forbidden', status:403})
+    res.status(403).json({message:'Forbidden', statusCode:403})
 
 })
 

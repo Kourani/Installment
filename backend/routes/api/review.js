@@ -116,7 +116,7 @@ router.get('/current', requireAuth, async(req,res) =>{
                 plainFirstR[h].Spot=[]
             }
         }
-        
+
         let object = {Reviews:plainFirstR}
         res.json(object)
         })
@@ -128,14 +128,14 @@ router.delete('/:id', requireAuth, async(req,res) =>{
 
             if(!deleteReview)
             {
-                res.status(404).json({message:"Review couldn't be found", status:404})
+                res.status(404).json({message:"Review couldn't be found", statusCode:404})
                 return
             }
 
             if(deleteReview.userId === req.user.id)
                 {
                     await deleteReview.destroy()
-                    res.json({message:'Successfully Deleted', status:200})
+                    res.json({message:'Successfully Deleted', statusCode:200})
                     return
                 }
 
@@ -144,7 +144,7 @@ router.delete('/:id', requireAuth, async(req,res) =>{
                 console.log(req.user.id, 'current user')
 
                 // res.send('You did not write this review')
-                res.status(403).json({message:'Forbidden', status:403})
+                res.status(403).json({message:'Forbidden', statusCode:403})
 
 })
 
@@ -154,7 +154,7 @@ router.put('/:id', requireAuth, validateReview, async(req,res)=>{
     let findReview = await Review.findByPk(req.params.id)
 
     if(!findReview){
-        res.status(404).json({message:"Review couldn't be found", status:404})
+        res.status(404).json({message:"Review couldn't be found", statusCode:404})
         return
     }
 
@@ -186,7 +186,7 @@ router.put('/:id', requireAuth, validateReview, async(req,res)=>{
     // console.log(findReview)
 
     // res.send('you did not write this review')
-    res.status(403).json({message:'Forbidden', status:403})
+    res.status(403).json({message:'Forbidden', statusCode:403})
 })
 
 //create an image for a review
@@ -197,13 +197,13 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
     let find = await Review.findByPk(req.params.id)
 
     if(!find){
-        res.status(404).json({message:"Review couldn't be found", status:404})
+        res.status(404).json({message:"Review couldn't be found", statusCode:404})
         return
     }
 
     if(find.userId !== req.user.id){
     //   res.send('you did not write this review')
-    res.status(403).json({message:'Forbidden', status:403})
+    res.status(403).json({message:'Forbidden', statusCode:403})
       return
     }
 
@@ -231,7 +231,7 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
     console.log(ImageCount[0].ReviewImages.length)
 
     if(ImageCount[0].ReviewImages.length > 10){
-        res.status(403).json({message:"Maximum number of images for this resource was reached",status:403})
+        res.status(403).json({message:"Maximum number of images for this resource was reached",statusCode:403})
     }
 
     res.json(findCreatedImageReview[0])

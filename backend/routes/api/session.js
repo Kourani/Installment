@@ -107,7 +107,7 @@ router.post('/',validateLogin, async (req, res, next) => {
         // delete err.stack
         // return next(err);
 
-        res.status(401).json({message:'Invalid credentials', status:401})
+        res.status(401).json({message:'Invalid credentials', statusCode:401})
         return
       }
 

@@ -20,7 +20,7 @@ router.delete('/spot-images/:id', requireAuth, async(req,res)=>{
 
     if(!imageSpot)
     {
-        return res.status(404).json({message:"Spot Image couldn't be found", status:404})
+        return res.status(404).json({message:"Spot Image couldn't be found", statusCode:404})
     }
 
     console.log(imageSpot.imagableType, 'type')
@@ -41,14 +41,14 @@ router.delete('/spot-images/:id', requireAuth, async(req,res)=>{
         if(findSpot[0].ownerId === req.user.id)
         {
             await imageSpot.destroy()
-            res.json({message:'Successfully Deleted', status:200})
+            res.json({message:'Successfully Deleted', statusCode:200})
             return
         }
 
     }
 
     // res.send('you are not the owner of this Spot')
-    res.status(403).json({message:'Forbidden', status:403})
+    res.status(403).json({message:'Forbidden', statusCode:403})
 
 })
 
@@ -62,7 +62,7 @@ router.delete('/review-images/:id', requireAuth, async(req,res)=>{
 
     if(!imageReview)
     {
-        return res.status(404).json({message:"Review Image couldn't be found", status:404})
+        return res.status(404).json({message:"Review Image couldn't be found", statusCode:404})
     }
 
     console.log(imageReview.imagableType, 'type')
@@ -81,14 +81,14 @@ router.delete('/review-images/:id', requireAuth, async(req,res)=>{
         if(findReview[0].userId === req.user.id)
         {
             await imageReview.destroy()
-            res.json({message:'Successfully Deleted', status:200})
+            res.json({message:'Successfully Deleted', statusCode:200})
             return
         }
 
     }
 
     // res.send('you did not write this review')
-    res.status(403).json({message:'Forbidden',status:403})
+    res.status(403).json({message:'Forbidden',statusCode:403})
 
 })
 

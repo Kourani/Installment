@@ -41,6 +41,7 @@ const validateSpot = [
       .isLength({min:undefined, max:50})
       .withMessage("Name must be less than 50 characters")
       .notEmpty()
+      // .optional()
       .withMessage("Name must be less than 50 characters"),
 
     check('description')
@@ -4936,7 +4937,7 @@ router.get('/:id' , async (req,res) =>{
     const find = await Spot.findByPk(req.params.id)
 
     if(!find){
-        res.status(404).json({message:"Spot couldn't be found", status:404})
+        res.status(404).json({message:"Spot couldn't be found", statusCode:404})
         return
     }
 
@@ -5078,7 +5079,7 @@ router.delete('/:id', requireAuth, async(req,res) =>{
 
     if(!spotDelete)
     {
-        return res.status(404).json({message:"Spot couldn't be found", status:404})
+        return res.status(404).json({message:"Spot couldn't be found", statusCode:404})
     }
 
         if(spotDelete.ownerId === req.user.id)
@@ -5086,13 +5087,13 @@ router.delete('/:id', requireAuth, async(req,res) =>{
           await spotDelete.destroy()
           res.json({
             message:'Successfully Deleted',
-            status:200
+            statusCode:200
           })
           return
         }
 
         // res.send('you are not the owner of this Spot')
-        res.status(403).json({message:'Forbidden', status:403})
+        res.status(403).json({message:'Forbidden', statusCode:403})
 
 })
 
@@ -5103,7 +5104,7 @@ router.put('/:spotId',requireAuth, validateSpot, async(req,res) =>{
 
     if(!findSpot)
     {
-        res.status(404).json({message:"Spot couldn't be found", status:404})
+        res.status(404).json({message:"Spot couldn't be found", statusCode:404})
         return
     }
 
@@ -5149,7 +5150,7 @@ router.put('/:spotId',requireAuth, validateSpot, async(req,res) =>{
   }
 
 
-  res.status(403).json({message:'Forbidden', status:403})
+  res.status(403).json({message:'Forbidden', statusCode:403})
   return
 
 })
@@ -5160,7 +5161,7 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async(req,res)=>{
 
     let find = await Spot.findByPk(req.params.spotId)
     if(!find){
-        res.status(404).send({message:"Spot couldn't be found", status:404})
+        res.status(404).send({message:"Spot couldn't be found", statusCode:404})
         return
     }
 
@@ -5184,7 +5185,7 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async(req,res)=>{
 
       console.log('here')
       // res.status(403).send('you have already created a review for this spot')
-      res.status(403).json({message:"User already has a review for this spot", status:403})
+      res.status(403).json({message:"User already has a review for this spot", statusCode:403})
       return
     }
 
@@ -5209,13 +5210,13 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
     let find = await Spot.findByPk(req.params.id)
 
     if(!find){
-        res.status(404).json({message:"Spot couldn't be found", status:404})
+        res.status(404).json({message:"Spot couldn't be found", statusCode:404})
         return
     }
 
     if(find.ownerId !== req.user.id){
       // res.send('you are not the owner of the spot')
-      res.status(403).json({message:'Forbidden', status:403})
+      res.status(403).json({message:'Forbidden', statusCode:403})
       return
     }
 
@@ -5251,7 +5252,7 @@ router.get('/:id/bookings' ,requireAuth, async (req,res) =>{
   const findSpot = await Spot.findByPk(req.params.id)
 
   if(!findSpot){
-    res.status(404).json({message:"Spot couldn't be found", status:404})
+    res.status(404).json({message:"Spot couldn't be found", statusCode:404})
     return
     }
 
@@ -5298,7 +5299,7 @@ router.get('/:spotId/reviews' , async (req,res) =>{
   const find = await Review.findByPk(req.params.spotId)
 
   if(!find){
-      return res.status(404).json({message:"Spot couldn't be found", status:404})
+      return res.status(404).json({message:"Spot couldn't be found", statusCode:404})
   }
 
   const all = await Review.findAll({
@@ -5375,7 +5376,7 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
 
   //if the desired spot does not exist 404
   if(!find){
-    res.status(404).json({message:"Spot couldn't be found", status:404})
+    res.status(404).json({message:"Spot couldn't be found", statusCode:404})
     return
   }
 
@@ -5413,7 +5414,7 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
           console.log(DateI, 'DateI'),
           console.log(insideEndI, 'insideEndI')
 
-          res.status(403).json({message: "Sorry, this spot is already booked for the specified dates", errors: ["Start date conflicts with an existing booking"], status:403})
+          res.status(403).json({message: "Sorry, this spot is already booked for the specified dates", errors: ["Start date conflicts with an existing booking"], statusCode:403})
           return
         }
 
@@ -5423,7 +5424,7 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
           console.log(endI, 'endIeeeeeeeeee'),
           console.log(insideEndI, 'insideEndIeeeeeeeee')
 
-          res.status(403).json({message: "Sorry, this spot is already booked for the specified dates", errors: ["End date conflicts with an existing booking"],status:403})
+          res.status(403).json({message: "Sorry, this spot is already booked for the specified dates", errors: ["End date conflicts with an existing booking"],statusCode:403})
           return
         }
 
@@ -5432,7 +5433,7 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
         res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", errors: [
           "Start date conflicts with an existing booking",
           "End date conflicts with an existing booking"
-        ], status:403})
+        ], statusCode:403})
         return
       }
     }
@@ -5452,7 +5453,7 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
   }
 
   // res.send('Owner of the spot cannot create a booking')
-  res.status(403).json({message:'Forbidden', status:403})
+  res.status(403).json({message:'Forbidden', statusCode:403})
 })
 
 
