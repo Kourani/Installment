@@ -93,12 +93,13 @@ app.use((err, _req, res, _next) => {
     let response = {
       // title: err.title || 'Server Error',
       message: err.message,
+      statusCode:400,
       errors: err.errors,
       // stack: isProduction ? null : err.stack
     }
 
     //local
-    let response2 = {
+    let localRes = {
       // title: err.title || 'Server Error',
       message: err.message,
       statusCode:400,
@@ -110,7 +111,7 @@ app.use((err, _req, res, _next) => {
       res.json(response)
     }
 
-    res.json(response2)
+    res.json(localRes)
 
   });
 

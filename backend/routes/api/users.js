@@ -19,7 +19,7 @@ const validateSignup = [
     check('email')
       .exists({ checkFalsy: true })
       .isEmail()
-      .withMessage('Please provide a valid email.'),
+      .withMessage('Invalid email.'),
     check('username')
       .exists({ checkFalsy: true })
       .isLength({ min: 4 })
@@ -32,6 +32,13 @@ const validateSignup = [
       .exists({ checkFalsy: true })
       .isLength({ min: 6 })
       .withMessage('Password must be 6 characters or more.'),
+        check('firstName')
+      .exists({ checkFalsy: true })
+      .withMessage('First Name is required'),
+        check('lastName')
+      .exists({ checkFalsy: true })
+      .withMessage('Last Name is required'),
+
 
     handleValidationErrors
   ];
@@ -44,8 +51,33 @@ const validateSignup = [
 router.post(
     '', validateSignup,
     async (req, res) => {
+
       const { email, password, username, firstName, lastName } = req.body;
       const hashedPassword = bcrypt.hashSync(password);
+
+      // res.json(req.body)
+
+      const findUser = await User.findAll()
+
+      // res.json(findUser)
+
+      for(let i=0; i<findUser.length; i++){
+        if(findUser[i].username === username){
+          console.log('UUUUUUUUUUUUUUUUUUUUUU')
+          return res.status(403).json({message:"User already exists", statusCode:403, errors:["User with that username already exists"]})
+        }
+        if(findUser[i].email === email){
+          return res.status(403).json({message:"User already exists", statusCode:403, errors:["User with that email already exists"]})
+        }
+      }
+
+
+
+
+
+
+
+
       const user = await User.create({ email, username, hashedPassword, firstName, lastName });
 
       const safeUser = {
@@ -56,7 +88,8 @@ router.post(
         username: user.username,
       };
 
-      await setTokenCookie(res, safeUser);
+      let first = await setTokenCookie(res, safeUser);
+      safeUser.token = first
 
       return res.json({
         user: safeUser
@@ -68,31 +101,33 @@ router.post(
 // backend/routes/api/users.js
 // ...
 
-// Sign up
-router.post(
-    '',
-    validateSignup,
-    async (req, res) => {
-      const { email, password, username } = req.body;
-      const hashedPassword = bcrypt.hashSync(password);
-      const user = await User.create({ email, username, hashedPassword });
+// // Sign up
+// router.post(
+//     '',
+//     validateSignup,
+//     async (req, res) => {
+//       const { email, password, username } = req.body;
+//       const hashedPassword = bcrypt.hashSync(password);
+//       const user = await User.create({ email, username, hashedPassword });
 
-      const safeUser = {
-        id: user.id,
-        email: user.email,
-        username: user.username,
-        firstName: user.firstName,
-        lastName:user.lastName,
-        token:""
-      };
+//       const safeUser = {
+//         id: user.id,
+//         email: user.email,
+//         username: user.username,
+//         firstName: user.firstName,
+//         lastName:user.lastName,
+//       };
 
-      await setTokenCookie(res, safeUser);
 
-      return res.json({
-        user: safeUser
-      });
-    }
-  );
+//       let first = await setTokenCookie(res, safeUser);
+
+//       safeUser.token = first
+
+//       return res.json({
+//         user: safeUser
+//       });
+//     }
+//   );
 
 
 
