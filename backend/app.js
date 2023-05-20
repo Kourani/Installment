@@ -75,8 +75,8 @@ app.use((err, _req, _res, next) => {
     }
     err.title = 'Validation error';
     err.errors = errors;
-    err.stack=null
-    delete err.stack
+    // err.stack=null
+    // delete err.stack
   }
   next(err);
 });
@@ -99,8 +99,9 @@ app.use((err, _req, res, _next) => {
 
     //local
     let response2 = {
-      title: err.title || 'Server Error',
+      // title: err.title || 'Server Error',
       message: err.message,
+      statusCode:400,
       errors: err.errors,
       stack: err.stack || null
     }

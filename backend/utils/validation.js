@@ -25,11 +25,12 @@ const handleValidationErrors = (req, _res, next) => {
     err.errors = errors;
     err.title = "Bad request.";
     err.status = 400;
-    err.errors = { message:errors.undefined, status:400};
+    err.errors = [errors.undefined]
+    // err.errors = { message:errors.undefined, status:400};
 
     // Error.captureStackTrace(err, handleValidationErrors)
-    err.stack=null
-    delete err.stack
+    // err.stack=null
+    // delete err.stack
     next(err);
 
   }

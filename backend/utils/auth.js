@@ -81,7 +81,7 @@ const requireAuth = function (req, _res, next) {
     err.status = 401;
     // err.stack = 'delete'
     // err.stack=null
-    delete err.stack
+    // delete err.stack
     // console.log(err.stack, 'hereeeeeeeee')
     // Error.captureStackTrace(err, requireAuth)
     return next(err);
