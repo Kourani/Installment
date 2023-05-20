@@ -58,15 +58,15 @@ router.post(
       // res.json(req.body)
 
       const findUser = await User.findAll()
-
       // res.json(findUser)
+
 
       for(let i=0; i<findUser.length; i++){
         if(findUser[i].username === username){
-          console.log('UUUUUUUUUUUUUUUUUUUUUU')
           return res.status(403).json({message:"User already exists", statusCode:403, errors:["User with that username already exists"]})
         }
         if(findUser[i].email === email){
+          console.log('UUUUUUUUUUUUUUUUUUUUUU')
           return res.status(403).json({message:"User already exists", statusCode:403, errors:["User with that email already exists"]})
         }
       }

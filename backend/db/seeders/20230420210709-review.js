@@ -7,7 +7,7 @@ if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;  // define your schema in options object
 }
 
-const {Spot, Review} = require('../models')
+const {Spot, User, Review} = require('../models')
 
 const spotReviews = [
   {
@@ -62,7 +62,7 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
     for(let spotIdx = 0; spotIdx<spotReviews.length; spotIdx++){
-      const {name, reviews} = spotReviews[spotIdx]
+      const {name, reviews, userId} = spotReviews[spotIdx]
       const spot = await Spot.findOne({where:{name}})
 
       for(let reviewIdx =0; reviewIdx < reviews.length; reviewIdx++){
