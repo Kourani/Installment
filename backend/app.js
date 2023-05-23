@@ -93,7 +93,7 @@ app.use((err, _req, res, _next) => {
     let response = {
       // title: err.title || 'Server Error',
       message: err.message,
-      statusCode:400,
+      statusCode:err.status || 400,
       errors: err.errors,
       // stack: isProduction ? null : err.stack
     }
@@ -102,7 +102,7 @@ app.use((err, _req, res, _next) => {
     let localRes = {
       // title: err.title || 'Server Error',
       message: err.message,
-      statusCode:400,
+      statusCode:err.status || 400,
       errors: err.errors,
       stack: err.stack || null
     }

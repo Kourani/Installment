@@ -42,8 +42,7 @@ router.get('/current', requireAuth, async(req,res) =>{
 
                 attributes:[
                     'id', 'userId', 'spotId',
-                    'review', 'stars', 'createdAt',
-                    'updatedAt'
+                    'review', 'stars', 'createdAt', 'updatedAt'
                     ],
 
                     include:[{
@@ -67,7 +66,9 @@ router.get('/current', requireAuth, async(req,res) =>{
                     })
 
         //find ALL the SPOTS
-        const allSpots = await Spot.findAll()
+        const allSpots = await Spot.findAll({
+            attributes: { exclude: ['description', 'createdAt', 'updatedAt'] }
+        })
 
         //find ALL the IMAGES that belong to a SPOT
         const allImages = await Image.findAll({

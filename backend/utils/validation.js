@@ -13,19 +13,24 @@ const handleValidationErrors = (req, _res, next) => {
 
     const errors = {};
 
+
+
     validationErrors
       .array()
       .forEach(error => {
-        errors[error.param] = error.msg
+        errors[error.path] = error.msg
       });
+
+      console.log(errors, 'errrors')
+      console.log(validationErrors, 'HERE')
 
 
 
     const err = Error("Validation Error");
-    err.errors = errors;
+    // err.errors = errors;
     err.title = "Bad request.";
     err.status = 400;
-    err.errors = [errors.undefined]
+    err.errors = Object.values(errors)
     // err.errors = { message:errors.undefined, status:400};
 
     // Error.captureStackTrace(err, handleValidationErrors)
