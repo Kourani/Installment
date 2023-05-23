@@ -226,6 +226,7 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
 
         //sets the current date in the following format example '2023-1-25' with january being 0
         let  currentTime = new Date()
+        // console.log(currentTime)
         const day = String(currentTime.getDate()).padStart(2, '0');
         const  month = String(currentTime.getMonth() + 1).padStart(2, '0');
         const year = currentTime.getFullYear();

@@ -38,7 +38,7 @@ const validateLogin = [
             // throw err
         }
         else if(!req.body.credential && req.body.password) {
-          throw new Error ('Please provide a valid email or username.');
+          throw new Error ('Email or username is required.');
           // // res.status(400).json({message:'Validation Error',errors:['Please provide a valid email or username.'], status:400})
           // err.title = 'Authentication required';
           // err.message = 'Authentication required';
@@ -51,7 +51,7 @@ const validateLogin = [
 
       }
       else if(req.body.credential && !req.body.password) {
-        throw new Error ('Please provide a password.');
+        throw new Error ('Password is required.');
         // err.title = 'Authentication required';
         // err.message = 'Authentication required';
         // err.errors = { message: 'Authentication required' , status:401};
