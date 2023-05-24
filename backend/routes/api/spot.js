@@ -17,6 +17,12 @@ const { handleValidationErrors } = require('../../utils/validation');
 const { Op } = require("sequelize");
 
 const validateSpot = [
+  check('address')
+  .exists({ checkFalsy: true })
+  .isAlphanumeric('en-US',{ignore: ' '})
+  .notEmpty()
+  .withMessage( "Street address is required"),
+
     check('city')
       .exists({ checkFalsy: true })
       .isAlpha('en-US',{ignore: ' '})
@@ -35,6 +41,18 @@ const validateSpot = [
       .notEmpty()
       .withMessage("Country is required"),
 
+    check('lat')
+      .exists({ checkFalsy: true })
+      .isNumeric()
+      .notEmpty()
+      .withMessage("Latitude is not valid"),
+
+    check('lng')
+      .exists({ checkFalsy: true })
+      .isNumeric()
+      .notEmpty()
+      .withMessage("Longitude is not valid"),
+
     check('name')
       // .exists({ checkFalsy: true })
       // .isAlpha('en-US',{ignore: ' '})
@@ -49,24 +67,6 @@ const validateSpot = [
       .isAlpha('en-US',{ignore: ' '})
       .notEmpty()
       .withMessage("Description is required"),
-
-    check('address')
-      .exists({ checkFalsy: true })
-      .isAlphanumeric('en-US',{ignore: ' '})
-      .notEmpty()
-      .withMessage( "Street address is required"),
-
-    check('lat')
-      .exists({ checkFalsy: true })
-      .isNumeric()
-      .notEmpty()
-      .withMessage("Latitude is not valid"),
-
-    check('lng')
-      .exists({ checkFalsy: true })
-      .isNumeric()
-      .notEmpty()
-      .withMessage("Longitude is not valid"),
 
     check('price')
       .exists({ checkFalsy: true })
@@ -97,21 +97,19 @@ const validateReview = [
 
 const validateBooking= [
 
-  // check('startDate')
-  //   // .exists({ checkFalsy: true })
-  //   // .isNumeric()
-  //   // .notEmpty()
-  //   .isDate()
-  //   .withMessage( "startDate must be a date example yyyy-mm-dd"),
+  check('startDate')
+    .exists({ checkFalsy: true })
+    // .isNumeric()
+    .notEmpty()
+    // .isDate()
+    .withMessage( "startDate required, must be in the following format yyyy-mm-dd"),
 
-  //   check('endDate')
-  //   // .exists({ checkFalsy: true })
-  //   // .isNumeric()
-  //   // .notEmpty()
-  //   .isDate()
-  //   // .isAfter('startDate',{comparsionDate:'startDate'})
-  //   // .equals('startDate')
-  //   .withMessage( "startDate must be a date example yyyy-mm-dd"),
+    check('endDate')
+    .exists({ checkFalsy: true })
+    // .isNumeric()
+    .notEmpty()
+    // .isDate()
+    .withMessage( "endDate required, must be in the following format yyyy-mm-dd"),
 
     check('endDate').custom((value, { req }) => {
       if(new Date(value) <= new Date(req.body.startDate)) {
@@ -4929,7 +4927,7 @@ router.get('/current', requireAuth, async(req,res)=>{
   }
 
    // res.status(403).json({message:'Forbidden'})
-  res.send('you do not own any spots')
+  res.json([])
 })
 
 
@@ -5145,7 +5143,7 @@ router.put('/:spotId',requireAuth, validateSpot, async(req,res) =>{
     attributes:[
       'id', 'ownerId', 'address','city',
       'state', 'country', 'lat',
-      'lng', 'description', 'price',
+      'lng','name', 'description', 'price',
       'createdAt', 'updatedAt'
     ]
   })
@@ -5301,7 +5299,7 @@ router.get('/:id/bookings' ,requireAuth, async (req,res) =>{
 //get all reviews by a spots id
 router.get('/:spotId/reviews' , async (req,res) =>{
 
-  const find = await Review.findByPk(req.params.spotId)
+  const find = await Spot.findByPk(req.params.spotId)
 
   if(!find){
       return res.status(404).json({message:"Spot couldn't be found", statusCode:404})
@@ -5390,6 +5388,22 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
     where:{spotId:req.params.id}
   })
 
+  let findSpot = await Spot.findAll({
+    where:{id:req.params.id}
+  })
+
+
+
+
+
+  // console.log(findBooking)
+  console.log(req.user.id)
+  console.log(findBooking.userId)
+
+
+
+
+
     let Datee = startDate.split('-')
     console.log(Datee)
 
@@ -5397,6 +5411,15 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
     console.log(end, 'end')
 
     for(let i=0; i<findBooking.length; i++){
+
+      for(let h=0; h<findSpot.length; h++){
+
+      if((findSpot[h].ownerId === findBooking[i].userId) && findBooking[i].userId === req.user.id){
+        console.log('HEREEEEEEEEE')
+        res.status(403).json({message:"Forbidden", statusCode:403})
+      }
+      }
+
 
       // if(findBooking[i].endDate === findBooking[i].startDate){
       //   res.status(400).json({message:"Validation error", status:400, errors:"endDate cannot be on or before startDate"})
@@ -5406,15 +5429,15 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
       console.log(insidee, 'startttt')
 
       let inside = findBooking[i].endDate.split('-')
-      console.log(inside, 'startttt')
+      console.log(inside, 'end')
 
-      let insideDateI = parseInt(insidee[i])
-      let insideEndI=parseInt(inside)
+      let insideDateI = parseInt(insidee[i]) //start date inside booking
+      let insideEndI=parseInt(inside[i]) //end date inside booking
 
-      let DateI = parseInt(Datee[i])
-      let endI = parseInt(end[i])
+      let DateI = parseInt(Datee[i]) //start date from body
+      let endI = parseInt(end[i]) //end date from body
 
-        if(insideDateI<DateI && DateI<insideEndI){
+        if(insideDateI>DateI && DateI<insideEndI){
           console.log(insideDateI, 'insideDateI')
           console.log(DateI, 'DateI'),
           console.log(insideEndI, 'insideEndI')
@@ -5423,7 +5446,7 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
           return
         }
 
-        if(insideDateI<endI && endI<insideEndI){
+        if(insideEndI<endI && endI<insideEndI){
           console.log(insideDateI, 'insideDateIeeeeeeee')
           console.log(DateI, 'DateIeeeeeeeeee'),
           console.log(endI, 'endIeeeeeeeeee'),

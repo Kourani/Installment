@@ -17,23 +17,27 @@ module.exports = (sequelize, DataTypes) => {
 
       Spot.belongsTo(
         models.User,
-        {foreignKey:'ownerId'}
+        {foreignKey:'ownerId',
+        OnDelete:"CASCADE"}
       ),
 
       Spot.hasMany(
         models.Booking,
-        {foreignKey:'spotId'}
+        {foreignKey:'spotId',
+        OnDelete:"CASCADE"}
       ),
 
       Spot.hasMany(
         models.Review,
-        {foreignKey:'spotId'}
+        {foreignKey:'spotId',
+        OnDelete:"CASCADE"}
       ),
 
       Spot.hasMany(
         models.Image,
         {foreignKey:'imagableId',
          constraints:false,
+         OnDelete:"CASCADE",
         scope:{
           imagableType:'Spot'
         }}
