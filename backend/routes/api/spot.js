@@ -188,6 +188,7 @@ const validateQuery= [
 ];
 
 
+//get all the spots
   router.get('/', validateQuery, async(req,res)=>{
 
     let {
@@ -218,6 +219,68 @@ const validateQuery= [
     console.log('page',page)
     console.log('size',size)
     console.log('offset', size*(page-1))
+
+       //if all the query params do NOT exist !
+       if(!minLat && !minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
+        //finds all the spots
+        console.log('HEREEEEEEEEEEEEE')
+      const allSpots = await Spot.findAll({
+        attributes:[
+          'id', 'ownerId',
+          'address', 'city', 'state',
+          'country', 'lat', 'lng',
+          'name', 'description', 'price',
+          'createdAt', 'updatedAt'
+        ],
+        limit:size,
+        offset:page*size
+      })
+
+      // res.json(allSpots)
+
+      //gets all the reviews
+      const allReviews = await Review.findAll()
+      // res.json(allReviews)
+
+      console.log(allReviews.length, 'Reviews')
+      console.log(allSpots.length, 'Spots')
+
+
+      const allImages = await Image.findAll({
+        where:{imagableType:'Spot'}
+      })
+      console.log(allImages.length)
+
+
+      const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+      for(let i=0; i<allSpots.length; i++){
+          let sum = 0
+          let totalReviews = 0
+        for(let z=0; z<allReviews.length; z++){
+          if(allSpots[i].id === allReviews[z].spotId){
+            sum = sum + allReviews[z].stars
+            totalReviews++
+          }
+        }
+        let average = sum/totalReviews
+        insertableSpots[i].avgRating = average
+
+        for(let d=0; d<allImages.length; d++){
+          if(allSpots[i].id === allImages[d].imagableId){
+            insertableSpots[i].previewImage = allImages[d].url
+          }
+        }
+
+        if(!insertableSpots[i].previewImage){
+          insertableSpots[i].previewImage = null
+        }
+      }
+
+      let object = {Spots:insertableSpots}
+      res.json(object)
+      return
+        }
 
 
               minLng = parseInt(minLng) || -1000
@@ -312,65 +375,7 @@ const validateQuery= [
     // 666666666666666666666666666666666666666666666
 
     //all the queries do NOT exist all
-    // if(!minLat && !minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
-    //       //finds all the spots
-    //     const allSpots = await Spot.findAll({
-    //       attributes:[
-    //         'id', 'ownerId',
-    //         'address', 'city', 'state',
-    //         'country', 'lat', 'lng',
-    //         'name', 'description', 'price',
-    //         'createdAt', 'updatedAt'
-    //       ],
-    //       limit:size,
-    //       offset:page*size
-    //     })
 
-    //     // res.json(allSpots)
-
-    //     //gets all the reviews
-    //     const allReviews = await Review.findAll()
-    //     // res.json(allReviews)
-
-    //     console.log(allReviews.length, 'Reviews')
-    //     console.log(allSpots.length, 'Spots')
-
-
-    //     const allImages = await Image.findAll({
-    //       where:{imagableType:'Spot'}
-    //     })
-    //     console.log(allImages.length)
-
-
-    //     const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-    //     for(let i=0; i<allSpots.length; i++){
-    //         let sum = 0
-    //         let totalReviews = 0
-    //       for(let z=0; z<allReviews.length; z++){
-    //         if(allSpots[i].id === allReviews[z].spotId){
-    //           sum = sum + allReviews[z].stars
-    //           totalReviews++
-    //         }
-    //       }
-    //       let average = sum/totalReviews
-    //       insertableSpots[i].avgRating = average
-
-    //       for(let d=0; d<allImages.length; d++){
-    //         if(allSpots[i].id === allImages[d].imagableId){
-    //           insertableSpots[i].previewImage = allImages[d].url
-    //         }
-    //       }
-
-    //       if(!insertableSpots[i].previewImage){
-    //         insertableSpots[i].previewImage = null
-    //       }
-    //     }
-
-    //     let object = {Spots:insertableSpots, page:page, size:size}
-    //     res.json(object)
-    //     return
-    // }
 
     // //all the queries exist
     // if(minLat && minLng && minPrice && maxPrice && maxLng && maxLat){
