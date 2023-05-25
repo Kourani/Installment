@@ -102,14 +102,18 @@ const validateBooking= [
     // .isNumeric()
     .notEmpty()
     // .isDate()
-    .withMessage( "startDate required, must be in the following format yyyy-mm-dd"),
+    .withMessage( "startDate required")
+    .isDate()
+    .withMessage('startDate must be in the following format yyyy-mm-dd'),
 
     check('endDate')
     .exists({ checkFalsy: true })
     // .isNumeric()
     .notEmpty()
     // .isDate()
-    .withMessage( "endDate required, must be in the following format yyyy-mm-dd"),
+    .withMessage( "endDate required, must be in the following format yyyy-mm-dd")
+    .isDate()
+    .withMessage('endDate must be in the following format yyyy-mm-dd'),
 
     check('endDate').custom((value, { req }) => {
       if(new Date(value) <= new Date(req.body.startDate)) {
