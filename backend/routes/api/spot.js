@@ -5520,6 +5520,17 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
          //if the START year is the same but the month is different
         if( startYear[l] === bodyStart[0] && bodyEnd[0] === startYear[l] )
         {
+          if(bodyEnd[1] >= startMonth[l]){
+
+            res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+            statusCode: 403,
+            errors: [
+              "End date conflicts with an existing booking"]
+            })
+
+            return
+          }
+
           console.log('hereeeeeeeaaaaaa')
           console.log(bodyStart[1], 'insideeeeee')
           console.log(bodyEnd[1])
@@ -5544,10 +5555,25 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
               //if the END year is the same but the month is different
               if( endYear[l] === bodyStart[0] && bodyEnd[0] === endYear[l] )
               {
+
+                if(bodyStart[1] <= endMonth[l]){
+
+                  res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+                  statusCode: 403,
+                  errors: [
+                    "Start date conflicts with an existing booking"]
+                  })
+
+                  return
+                  
+                }
+
+
                 console.log('hereeeeeeeaaaaaa')
                 console.log(bodyStart[1], 'insideeeeee')
                 console.log(bodyEnd[1])
                 console.log(startMonth[l])
+
 
 
                 if((bodyStart[1] > endMonth[l] && bodyEnd[1] > endMonth[l])) {
