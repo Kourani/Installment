@@ -122,7 +122,6 @@ const validateBooking= [
       return true
   }),
 
-
   handleValidationErrors
 ];
 
@@ -5276,7 +5275,7 @@ router.get('/:id/bookings' ,requireAuth, async (req,res) =>{
       })
 
       let finalObj={Bookings:bookingInfo}
-      res.json(finalObj)
+      // res.json(finalObj)
     }
 
   const bookingSpot = await Booking.findAll({

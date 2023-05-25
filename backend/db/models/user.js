@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
 
       User.hasMany(
         models.Spot,
-        {foreignKey:'ownerId'}
+        {foreignKey:'ownerId',
+        OnDelete:"CASCADE"}
       ),
 
       User.hasMany(
@@ -75,7 +76,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'User',
     defaultScope: {
       attributes: {
-        exclude: ["hashedPassword", "createdAt", "updatedAt"] //email was excluded as well 
+        exclude: ["hashedPassword", "createdAt", "updatedAt"] //email was excluded as well
       }
     }
   });

@@ -17,8 +17,7 @@ module.exports = (sequelize, DataTypes) => {
 
       Spot.belongsTo(
         models.User,
-        {foreignKey:'ownerId',
-        OnDelete:"CASCADE"}
+        {foreignKey:'ownerId'} //spot deletion should NOT delete user 
       ),
 
       Spot.hasMany(
