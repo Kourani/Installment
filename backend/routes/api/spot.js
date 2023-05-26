@@ -209,7 +209,7 @@ const validateQuery= [
           //finds all the spots
           console.log('HEREEEEEEEEEEEEE')
 
-          page=0
+          page=1
           size=20
 
         const allSpots = await Spot.findAll({
@@ -221,7 +221,7 @@ const validateQuery= [
             'createdAt', 'updatedAt'
           ],
           limit:size,
-          offset:page*size
+          offset:(page-1)*size
         })
 
         // res.json(allSpots)
@@ -275,9 +275,9 @@ const validateQuery= [
     size = parseInt(size);
 
     //sets the page and size to default values
-    if(isNaN(page)) page =0
-    if(!page) page=0
-    if(page<0) page=0
+    if(isNaN(page)) page =1
+    if(!page) page=1
+    if(page<0) page=1
 
 
     if(isNaN(size)) size =20
@@ -331,7 +331,7 @@ const validateQuery= [
         },
 
         limit:size,
-        offset: size*(page)
+        offset: size*(page-1)
       })
 
 
