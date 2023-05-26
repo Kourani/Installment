@@ -4892,7 +4892,7 @@ router.get('/current', requireAuth, async(req,res)=>{
 
         if(average.length>0){
           for(let h=0; h<average.length; h++){
-            plainFirst[h].avgRating = average[h]
+            plainFirst[h].avgStarRating = average[h]
           }
         }
 
@@ -4910,9 +4910,9 @@ router.get('/current', requireAuth, async(req,res)=>{
 
 
         for(let i=0; i<plainFirst.length; i++){
-          if(!plainFirst[i].avgRating){
+          if(!plainFirst[i].avgStarRating){
             console.log('here')
-            plainFirst[i].avgRating=null
+            plainFirst[i].avgStarRating=null
           }
           if(!plainFirst[i].previewImage){
             plainFirst[i].previewImage=null
@@ -5014,7 +5014,7 @@ router.get('/:id' , async (req,res) =>{
     const plainFirst = all.map(x => x.get({ plain: true }))
 
     plainFirst[0].numReviews = total
-    plainFirst[0].avgRating = average
+    plainFirst[0].avgStarRating = average
 
 
     const lastly = await Spot.findAll({
@@ -5565,7 +5565,7 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
                   })
 
                   return
-                  
+
                 }
 
 
