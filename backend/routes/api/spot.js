@@ -5402,6 +5402,7 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
 
 
 
+      //if the current user owns the spot then do not create a booking 
       if(findSpot[0].ownerId === req.user.id) {
             return res.status(403).json({message:"Forbidden", statusCode:40})
           }
