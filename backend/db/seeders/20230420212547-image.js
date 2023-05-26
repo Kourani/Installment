@@ -23,21 +23,21 @@ module.exports = {
     options.tableName = 'Images';
     return queryInterface.bulkInsert(options, [
     {
-      url:'afhskafh',
+      url:'image url',
       preview:true,
       imagableType:'Spot',
       imagableId:1
 
     },
     {
-      url:'afhskafh',
+      url:'image url',
       preview:true,
       imagableType:'Review',
       imagableId:2
 
     },
     {
-      url:'afhskafh',
+      url:'image url',
       preview:true,
       imagableType:'Spot',
       imagableId:3
