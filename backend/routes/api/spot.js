@@ -204,6 +204,72 @@ const validateQuery= [
           maxPrice
     } = req.query
 
+         //if all the query params do NOT exist !
+         if(!minLat && !minLng && !minPrice && !maxPrice && !maxLng && !maxLat && !page && !size){
+          //finds all the spots
+          console.log('HEREEEEEEEEEEEEE')
+
+          page=0
+          size=20
+
+        const allSpots = await Spot.findAll({
+          attributes:[
+            'id', 'ownerId',
+            'address', 'city', 'state',
+            'country', 'lat', 'lng',
+            'name', 'description', 'price',
+            'createdAt', 'updatedAt'
+          ],
+          limit:size,
+          offset:page*size
+        })
+
+        // res.json(allSpots)
+
+        //gets all the reviews
+        const allReviews = await Review.findAll()
+        // res.json(allReviews)
+
+        console.log(allReviews.length, 'Reviews')
+        console.log(allSpots.length, 'Spots')
+
+
+        const allImages = await Image.findAll({
+          where:{imagableType:'Spot'}
+        })
+        console.log(allImages.length)
+
+
+        const insertableSpots = allSpots.map(x => x.get({ plain: true }))
+
+        for(let i=0; i<allSpots.length; i++){
+            let sum = 0
+            let totalReviews = 0
+          for(let z=0; z<allReviews.length; z++){
+            if(allSpots[i].id === allReviews[z].spotId){
+              sum = sum + allReviews[z].stars
+              totalReviews++
+            }
+          }
+          let average = sum/totalReviews
+          insertableSpots[i].avgRating = average
+
+          for(let d=0; d<allImages.length; d++){
+            if(allSpots[i].id === allImages[d].imagableId){
+              insertableSpots[i].previewImage = allImages[d].url
+            }
+          }
+
+          if(!insertableSpots[i].previewImage){
+            insertableSpots[i].previewImage = null
+          }
+        }
+
+        let object = {Spots:insertableSpots}
+        res.json(object)
+        return
+          }
+
     //converts page and size input to a number data type
     page = parseInt(page);
     size = parseInt(size);
@@ -222,67 +288,7 @@ const validateQuery= [
     console.log('size',size)
     console.log('offset', size*(page-1))
 
-       //if all the query params do NOT exist !
-       if(!minLat && !minLng && !minPrice && !maxPrice && !maxLng && !maxLat && !page && !size){
-        //finds all the spots
-        console.log('HEREEEEEEEEEEEEE')
-      const allSpots = await Spot.findAll({
-        attributes:[
-          'id', 'ownerId',
-          'address', 'city', 'state',
-          'country', 'lat', 'lng',
-          'name', 'description', 'price',
-          'createdAt', 'updatedAt'
-        ],
-        limit:size,
-        offset:page*size
-      })
 
-      // res.json(allSpots)
-
-      //gets all the reviews
-      const allReviews = await Review.findAll()
-      // res.json(allReviews)
-
-      console.log(allReviews.length, 'Reviews')
-      console.log(allSpots.length, 'Spots')
-
-
-      const allImages = await Image.findAll({
-        where:{imagableType:'Spot'}
-      })
-      console.log(allImages.length)
-
-
-      const insertableSpots = allSpots.map(x => x.get({ plain: true }))
-
-      for(let i=0; i<allSpots.length; i++){
-          let sum = 0
-          let totalReviews = 0
-        for(let z=0; z<allReviews.length; z++){
-          if(allSpots[i].id === allReviews[z].spotId){
-            sum = sum + allReviews[z].stars
-            totalReviews++
-          }
-        }
-        let average = sum/totalReviews
-        insertableSpots[i].avgRating = average
-
-        for(let d=0; d<allImages.length; d++){
-          if(allSpots[i].id === allImages[d].imagableId){
-            insertableSpots[i].previewImage = allImages[d].url
-          }
-        }
-
-        if(!insertableSpots[i].previewImage){
-          insertableSpots[i].previewImage = null
-        }
-      }
-
-      let object = {Spots:insertableSpots}
-      res.json(object)
-      return
-        }
 
 
               minLng = parseInt(minLng) || -1000
@@ -5402,7 +5408,7 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
 
 
 
-      //if the current user owns the spot then do not create a booking 
+      //if the current user owns the spot then do not create a booking
       if(findSpot[0].ownerId === req.user.id) {
             return res.status(403).json({message:"Forbidden", statusCode:40})
           }
