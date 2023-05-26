@@ -45,6 +45,7 @@ const validateSpot = [
       .exists({ checkFalsy: true })
       .isNumeric()
       .notEmpty()
+      // .optional()
       .withMessage("Latitude is not valid"),
 
     check('lng')
@@ -5275,7 +5276,7 @@ router.get('/:id/bookings' ,requireAuth, async (req,res) =>{
       })
 
       let finalObj={Bookings:bookingInfo}
-      // res.json(finalObj)
+      return res.json(finalObj)
     }
 
   const bookingSpot = await Booking.findAll({
