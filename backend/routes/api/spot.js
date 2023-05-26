@@ -223,7 +223,7 @@ const validateQuery= [
     console.log('offset', size*(page-1))
 
        //if all the query params do NOT exist !
-       if(!minLat && !minLng && !minPrice && !maxPrice && !maxLng && !maxLat){
+       if(!minLat && !minLng && !minPrice && !maxPrice && !maxLng && !maxLat && !page && !size){
         //finds all the spots
         console.log('HEREEEEEEEEEEEEE')
       const allSpots = await Spot.findAll({
@@ -5399,17 +5399,13 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
 
   //does not allow booking to be created if the current user is the owner of the spot
       //iterate through the array of objects of bookings
-      for(let i=0; i<findBooking.length; i++){
 
-        //iterate through the array of objects of spots
-        for(let h=0; h<findSpot.length; h++){
 
-        //if the spots owner id matches the bookings user id AND the bookings user id matches the current user id PREVENT booking
-        if((findSpot[h].ownerId === findBooking[i].userId) && findBooking[i].userId === req.user.id){
-          res.status(403).json({message:"Forbidden", statusCode:403})
-        }
-        }
-      }
+
+      if(findSpot[0].ownerId === req.user.id) {
+            return res.status(403).json({message:"Forbidden", statusCode:40})
+          }
+
 
 
 
