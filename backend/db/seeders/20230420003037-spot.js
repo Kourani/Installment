@@ -18,14 +18,14 @@ const userSpots = [
     lastName: 'Avenger',
 
     spots:[{
-    address:'afhskafh',
-    city:'dear',
-    state:'mich',
-    lat:564.45,
-    lng:432.32,
-    country:'aaa',
-    name:'last',
-    description:'fjsakfhjhe',
+    address:"123 Disney Lane",
+    city:"San Francisco",
+    state:'California',
+    lat: 37.7645358,
+    lng: -122.4730327,
+    country:"United States of America",
+    name:"App Academy",
+    description:"Place where web developers are created",
     price:5121.12}]
 },
 

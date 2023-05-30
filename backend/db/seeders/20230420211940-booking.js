@@ -25,23 +25,23 @@ module.exports = {
     options.tableName = 'Bookings';
     return queryInterface.bulkInsert(options, [
     {
-      startDate:'2024-6-25',
-      endDate:'2025-12-5',
+      startDate:'2010-01-15',
+      endDate:'2010-01-30',
       userId:1,
       spotId:1
 
     },
     {
-      startDate: '2024-6-25',
-      endDate:'2025-12-5',
+      startDate: '2010-01-15',
+      endDate:'2010-01-30',
       userId:2,
       spotId:3
 
 
     },
     {
-      startDate:'2024-5-1',
-      endDate:'2026-3-4',
+      startDate:'2010-01-15',
+      endDate:'2010-01-30',
       userId:3,
       spotId:2
 

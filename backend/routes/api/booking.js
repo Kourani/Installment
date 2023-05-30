@@ -28,6 +28,7 @@ const validateBooking= [
 //get all of the current users bookings
 router.get('/current', requireAuth, async(req,res)=>{
 
+    //find all the bookings that belong to the current user
     let allBookings = await Booking.findAll({
         where:{userId: req.user.id},
         // include:[
@@ -53,15 +54,6 @@ router.get('/current', requireAuth, async(req,res)=>{
         ]
     })
 
-    // res.json(BookingSpot)
-
-    //finding ALL the current user SPOTS with IMAGES
-    // const BookingSpotImage = await Spot.findAll({
-    //     where:{ownerId:req.user.id},
-    //     include:[{
-    //         model:Image,
-    //     }]
-    // })
 
     const BookingSpotImage = await Image.findAll({
         where:{imagableType:"Spot"},
@@ -215,12 +207,23 @@ router.delete('/:id', requireAuth, async(req,res) =>{
 //edit a booking
 router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
 
-    const {startDate, endDate}=req.body
+    //input
+    const {startDate, endDate} = req.body
 
+    //find the booking by its id
     let findBooking = await Booking.findByPk(req.params.id)
 
+
+    //if it does not exist ERROR
     if(!findBooking){
         res.status(404).json({message:"Booking couldn't be found", statusCode:404})
+        return
+    }
+
+    //if the current user did not book ERROR
+    if(findBooking.userId !== req.user.id)
+    {
+        res.status(403).json({message:'Forbidden', statusCode:403})
         return
     }
 
@@ -268,203 +271,466 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
             startRequest.push(start2)
         }
 
-        console.log(end)
-        console.log(today)
-        console.log(startRequest)
-        console.log(endRequest)
 
-    //if the year for booking is prior to todays year CANNOT edit booking
-    if(end[0] < today[0])
-    {
-        res.status(403).json({message:"Past bookings can't be modified", statusCode:403})
-        return
-    }
-
-    //if the year for booking and today are the same but the month is prior CANNOT edit booking
-    if(end[0] === today[0] && end[1]<today[1])
-    {
-        res.status(403).json({message:"Past bookings can't be modified", statusCode:403})
-        return
-    }
-
-      //if the year and month for booking and today are the same but the day is prior CANNOT edit booking
-    if(end[0] === today[0] && end[1] === today[1] && end[2] < today[2])
-    {
-        res.status(4003).send({message:"Past bookings can't be modified", statusCode:403})
-        return
-    }
-
-
-    console.log(end, 'endddd')
-    console.log(endRequest, 'req')
-
-        // if(
-        //     end[0] === endRequest[0] &&
-        //     end[1] === endRequest[1] &&
-        //     end[2] === endRequest[2] &&
-        //     start[0] === startRequest[0] &&
-        //     start[1] === startRequest[1] &&
-        //     start[2] === startRequest[2]
-        //     )
-        // {
-        //     // res.status(403).json({message:'Forbidden', status:403})
-        //     // return
-        // }
-
-
-
-        // if(endRequest[0] < start[0] < endRequest[0])
-        // {
-        //     res.status(403).json({message: "Start date conflicts with an existing booking"})
-        // }
-
-        // if(startRequest[0] === start[0] && startRequest[1] < start[1] < endRequest[1])
-        // {
-        //     res.status(403).json({message: "Start date conflicts with an existing booking"})
-        // }
-
-        // if(startRequest[0] === start[0] && startRequest[1] === start[1] && startRequest[2] < start[2] < endRequest[2])
-        // {
-        //     res.status(403).json({message: "Start date conflicts with an existing booking"})
-        // }
-
-
-        // let findBooking1 = await Booking.findAll({
-        //     where:{id:req.params.id},
-        //     // include:[
-        //     //     {
-        //     //     model:Spot,
-        //     //     }
-        //     // ]
-        //   })
-
-        //   res.json(findBooking1)
-
-        // let Datee = startDate.split('-')
-        // console.log(Datee)
-
-        // let enda = endDate.split('-')
-        // console.log(enda, 'end')
-
-        // for(let i=0; i<findBooking1.length; i++){
-
-
-
-        //   let insidee = findBooking1[i].startDate.split('-')
-        //   console.log(insidee, 'startttt')
-
-        //   let inside = findBooking1[i].endDate.split('-')
-        //   console.log(inside, 'startttt')
-
-        //   let insideDateI = parseInt(insidee[i])
-        //   let insideEndI=parseInt(inside)
-
-        //   let DateI = parseInt(Datee[i])
-        //   let endI = parseInt(enda[i])
-
-        //     if(insideDateI<DateI && DateI<insideEndI){
-        //       console.log(insideDateI, 'insideDateI')
-        //       console.log(DateI, 'DateI'),
-        //       console.log(insideEndI, 'insideEndI')
-
-        //       res.status(403).json({message: "Sorry, this spot is already booked for the specified dates", errors: ["Start date conflicts with an existing booking"], status:403})
-        //       return
-        //     }
-
-        //     if(insideDateI<endI && endI<insideEndI){
-        //       console.log(insideDateI, 'insideDateIeeeeeeee')
-        //       console.log(DateI, 'DateIeeeeeeeeee'),
-        //       console.log(endI, 'endIeeeeeeeeee'),
-        //       console.log(insideEndI, 'insideEndIeeeeeeeee')
-
-        //       res.status(403).json({message: "Sorry, this spot is already booked for the specified dates", errors: ["End date conflicts with an existing booking"],status:403})
-        //       return
-        //     }
-
-        //   if(findBooking1[i].startDate === startDate && findBooking1[i].endDate === endDate){
-        //     // res.status(403).send('Booking already exists for the spot on the selected dates')
-        //     res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", errors: [
-        //       "Start date conflicts with an existing booking",
-        //       "End date conflicts with an existing booking"
-        //     ], status:403})
-        //     return
-        //   }
-        // }
-
-
-        console.log(findBooking.spotId)
-        if(findBooking.spotId && findBooking.startDate && findBooking.endDate)
+        //if the year for booking is prior to todays year CANNOT edit booking
+        if(end[0] < today[0])
         {
-            // console.log((findBooking.startDate))
-            // console.log(startDate, 'rrrr')
-            if(findBooking.startDate === startDate && findBooking.endDate === endDate){
-
-                if(startRequest[0] < start[0] < endRequest[0])
-                {
-                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
-                    error:["Start date conflicts with an existing booking"]})
-                    return
-                }
-
-                if(startRequest[0] === start[0] && startRequest[1] < start[1] < endRequest[1])
-                {
-                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
-                    error:["Start date conflicts with an existing booking"]})
-                    return
-                }
-
-                if(startRequest[0] === start[0] && startRequest[1] === start[1] && startRequest[2] < start[2] < endRequest[2])
-                {
-                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
-                    error:["Start date conflicts with an existing booking"]})
-                    return
-                }
-
-
-
-
-                if(startRequest[0] < start[0] && start[0]< endRequest[0])
-                {
-                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
-                    error:["Start date conflicts with an existing booking"]})
-                    return
-                }
-
-                if(startRequest[0] === start[0] && startRequest[1] < start[1] < endRequest[1])
-                {
-                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
-                    error:["Start date conflicts with an existing booking"]})
-                    return
-                }
-
-                if(startRequest[0] === start[0] && startRequest[1] === start[1] && startRequest[2] < start[2] < endRequest[2])
-                {
-                    res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
-                    error:["Start date conflicts with an existing booking"]})
-                    return
-                }
-            }
+            res.status(403).json({message:"Past bookings can't be modified", statusCode:403})
+            return
         }
 
-    //only the owner of the booking can update the booking
-    if(findBooking.userId === req.user.id)
-    {
-        await findBooking.update({
+        //if the year for booking and today are the same but the month is prior CANNOT edit booking
+        if(end[0] === today[0] && end[1]<today[1])
+        {
+            res.status(403).json({message:"Past bookings can't be modified", statusCode:403})
+            return
+        }
+
+        //if the year and month for booking and today are the same but the day is prior CANNOT edit booking
+        if(end[0] === today[0] && end[1] === today[1] && end[2] < today[2])
+        {
+            res.status(403).send({message:"Past bookings can't be modified", statusCode:403})
+            return
+        }
+
+
+
+
+
+        let update
+        ///checks if the booking has started but NOT ended
+
+             //if the year for booking is prior to todays year CANNOT edit booking
+             if(start[0] < today[0])
+             {
+                 update = await findBooking.update({
+                  endDate
+                })
+
+                update.startDate = findBooking.startDate
+
+                return res.json(update)
+             }
+
+             //if the year for booking and today are the same but the month is prior CANNOT edit booking
+             if(start[0] === today[0] && start[1]<today[1])
+             {
+              update = await findBooking.update({
+                endDate
+              })
+
+              update.startDate = findBooking.startDate
+
+              return res.json(update)
+             }
+
+             //if the year and month for booking and today are the same but the day is prior CANNOT edit booking
+             if(start[0] === today[0] && start[1] === today[1] && start[2] < today[2])
+             {
+
+              update = await findBooking.update({
+                endDate
+              })
+
+              update.startDate = findBooking.startDate
+              return res.json(update)
+             }
+
+
+
+
+
+        // if(findBooking.spotId && findBooking.startDate && findBooking.endDate)
+        // {
+
+        //     if(findBooking.startDate === startDate && findBooking.endDate === endDate){
+
+        //         if(startRequest[0] < start[0] && start[0] < endRequest[0])
+        //         {
+        //             res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
+        //             error:["Start date conflicts with an existing booking"]})
+        //             return
+        //         }
+
+        //         if(startRequest[0] === start[0] && startRequest[1] < start[1] && start[1] < endRequest[1])
+        //         {
+        //             res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
+        //             error:["Start date conflicts with an existing booking"]})
+        //             return
+        //         }
+
+        //         if(startRequest[0] === start[0] && startRequest[1] === start[1] && startRequest[2] < start[2] && start[2] < endRequest[2])
+        //         {
+        //             res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
+        //             error:["Start date conflicts with an existing booking"]})
+        //             return
+        //         }
+
+        //         if(startRequest[0] < start[0] && start[0]< endRequest[0])
+        //         {
+        //             res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
+        //             error:["Start date conflicts with an existing booking"]})
+        //             return
+        //         }
+
+        //         if(startRequest[0] === start[0] && startRequest[1] < start[1] && start[1] < endRequest[1])
+        //         {
+        //             res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
+        //             error:["Start date conflicts with an existing booking"]})
+        //             return
+        //         }
+
+        //         if(startRequest[0] === start[0] && startRequest[1] === start[1] && startRequest[2] < start[2] && start[2] < endRequest[2])
+        //         {
+        //             res.status(403).json({message:"Sorry, this spot is already booked for the specified dates", statusCode:403,
+        //             error:["Start date conflicts with an existing booking"]})
+        //             return
+        //         }
+        //     }
+        // }
+
+        let bodyStart = startDate.split('-')
+        let bodyEnd = endDate.split('-')
+
+
+        let bookingStart = []
+        let bookingEnd = []
+
+        let startYear = []
+        let startMonth = []
+        let startDay = []
+
+        let endYear = []
+        let endMonth = []
+        let endDay = []
+
+
+
+        let allBooks1 = await Booking.findAll()
+        let allBooks = []
+        for(let z=0; z<allBooks1.length; z++){
+          // console.log('ggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
+          // console.log(allBooks1[z].id)
+          // console.log(parseInt(req.params.id))
+          if (allBooks1[z].id !== parseInt(req.params.id)){
+            allBooks.push(allBooks1[z])
+          }
+        }
+
+        // res.send(allBooks)
+
+        // res.json(allBooks)
+        // res.json(allBooks)
+
+    //creates an array of arraes for end and start
+        for(let k=0; k<allBooks.length; k++){
+        let books = allBooks[k].startDate.split('-')
+
+        bookingStart.push(books)
+
+        let bookEnd = allBooks[k].endDate.split('-')
+
+        bookingEnd.push(bookEnd)
+
+        }
+
+
+      //creates a 3 sepearte array for year month and day
+      for(let q=0; q<bookingStart.length; q++){
+
+        if(Array.isArray(bookingStart[q])){
+          console.log(q, 'hereeeeeeeeeeeeeeeeeeeeeeee')
+          startYear.push(bookingStart[q][0])
+          startMonth.push(bookingStart[q][1])
+          startDay.push(bookingStart[q][2])
+
+          endYear.push(bookingEnd[q][0])
+          endMonth.push(bookingEnd[q][1])
+          endDay.push(bookingEnd[q][2])
+        }
+      }
+
+
+      for ( l=0; l<startYear.length; l++){
+
+        // if the START year and month is the same BUT the day is different
+
+        //&& (bodyStart[2] < startDay[l] && bodyEnd[2] < startDay[l]) was included in the if statement below !!
+        if( (startYear[l] === bodyStart[0] && bodyEnd[0] <= startYear[l]) && (startMonth[l] === bodyStart[1] && bodyEnd[1] <= startMonth[l]) )
+        {
+
+          if(bodyStart[2] >= startDay[l]){
+
+            res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+              statusCode: 403,
+              errors: [
+                  "Start date conflicts with an existing booking",
+                  "End date conflicts with an existing booking "]
+                  })
+
+                  return
+
+          }
+
+          if(bodyEnd[2] >= startDay[l]){
+
+            res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+              statusCode: 403,
+              errors: [
+                  "End date conflicts with an existing booking "]
+                  })
+
+                  return
+
+          }
+
+        update = await findBooking.update({
             startDate,
             endDate
         })
 
-    res.json(findBooking)
-    return
-    }
+        return res.json(update)
+        }
+
+        // if the END year and month is the same BUT the day is different
+
+        // && (bodyStart[2] > endDay[l] && bodyEnd[2] > endDay[l]) was included in the if statement below !!
+        if( (endYear[l] === bodyStart[0] && bodyEnd[0] >= endYear[l]) && (endMonth[l] === bodyStart[1] && bodyEnd[1] >= endMonth[l])  )
+          {
+            // res.send('hereeeeeeeeee')
+
+            if(bodyStart[2] <= endDay[l] && bodyEnd[2] <=endDay[l]){
+
+              res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+                statusCode: 403,
+                errors: [
+                    "Start date conflicts with an existing booking",
+                    "End date conflicts with an existing booking"]
+                    })
+
+                    return
+
+                  }
 
 
-    res.status(403).json({message:'Forbidden', statusCode:403})
+            if(bodyStart[2] <= endDay[l]){
 
+              res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+                statusCode: 403,
+                errors: [
+                    "Start date conflicts with an existing booking"]
+                    })
+
+                    return
+
+                  }
+
+
+                  update = await findBooking.update({
+                    startDate,
+                    endDate
+                })
+
+                return res.json(update)
+        }
+
+
+
+
+        if(startYear[l] === bodyEnd[0] && bodyStart[0] <= startYear[l] && (startMonth[l] === bodyEnd[1] && bodyStart[1] <= startMonth[l]) ){
+
+          console.log('hhhhhhhhhhhhhaaaaaaaaaaahv')
+
+          if(bodyEnd[2] < startDay[l])
+          {
+
+            update = await findBooking.update({
+              startDate,
+              endDate
+          })
+
+          return res.json(update)
+
+          }
+        }
+
+
+
+         //if the START year is the same but the month is different
+        if( startYear[l] === bodyStart[0] && bodyEnd[0] <= startYear[l] )
+        {
+
+          if(bodyEnd[1] >= startMonth[l] && bodyStart[1] >= startMonth[l]){
+
+            res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+            statusCode: 403,
+            errors: [
+              "End date conflicts with an existing booking",
+              "Start date conflicts with an existing booking"]
+            })
+
+            return
+          }
+
+          if(bodyEnd[1] >= startMonth[l]){
+
+            res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+            statusCode: 403,
+            errors: [
+              "End date conflicts with an existing booking"]
+            })
+
+            return
+          }
+
+
+          if((bodyStart[1] < startMonth[l] && bodyEnd[1] < startMonth[l])) {
+
+
+            update = await findBooking.update({
+                startDate,
+                endDate
+            })
+
+            return res.json(update)
+
+          }
+
+        }
+
+        //if the END year is the same but the month is different
+        if( endYear[l] === bodyStart[0] && bodyEnd[0] >= endYear[l] )
+        {
+
+          if(bodyStart[1] <= endMonth[l] && bodyEnd[1] <= endMonth[l]){
+
+            res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+              statusCode: 403,
+              errors: [
+                  "Start date conflicts with an existing booking",
+                  "End date conflicts with an existing booking"]
+                  })
+
+                  return
+
+                }
+
+          if(bodyStart[1] <= endMonth[l]){
+
+            res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+              statusCode: 403,
+              errors: [
+                  "Start date conflicts with an existing booking"]
+                  })
+
+                  return
+
+                }
+
+                for(let z=0; z<endYear.length; z++){
+                  if(bodyStart[0]<=startYear[l] && bodyEnd[0]>=endYear[z]){
+                    res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+                    statusCode: 403,
+                    errors: [
+                        "End date conflicts with an existing booking"]
+                        })
+
+                        return
+                  }
+                }
+
+
+                if((bodyStart[1] > endMonth[l] && bodyEnd[1] > endMonth[l])) {
+
+
+                    update = await findBooking.update({
+                        startDate,
+                        endDate
+                    })
+
+                    return res.json(update)
+                }
+
+        }
+
+
+        if(startYear[l] === bodyEnd[0] && bodyStart[0] <= startYear[l] ){
+
+          console.log('hhhhhhhhhhhhhaaaaaaaaaaahv')
+
+          if(bodyEnd[1] < startMonth[l])
+          {
+
+            update = await findBooking.update({
+              startDate,
+              endDate
+          })
+
+          return res.json(update)
+
+          }
+        }
+
+
+        //COMPARE BASED ON YEAR ONLY !!!
+
+        //if the booking start and end falls between an existing booking ERROR
+        if((startYear[l] <= bodyEnd[0] && bodyEnd[0] <= endYear[l]) && (startYear[l] <= bodyStart[0] && bodyStart[0] <= endYear[l]) ){
+
+          res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+          statusCode: 403,
+          errors: [
+            "Start date conflicts with an existing booking",
+            "End date conflicts with an existing booking"
+          ]
+          })
+          return
+        }
+
+        //if the booking starts during an existing booking ERROR
+        if(startYear[l] <= bodyStart[0] && bodyStart[0] <= endYear[l]){
+
+          res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+          statusCode: 403,
+          errors: [
+            "Start date conflicts with an existing booking"
+          ]
+          })
+          return
+        }
+
+        //if the booking ends during an existing booking ERROR
+        if(startYear[l] <= bodyEnd[0] && bodyEnd[0] <= endYear[l]){
+
+          res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+          statusCode: 403,
+          errors: [
+            "End date conflicts with an existing booking"]
+          })
+          return
+        }
+
+        //if the booking length encapsulates a current booking error
+        if(bodyStart[0] < startYear[l] && bodyEnd[0] > startYear[l]){
+
+          res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+          statusCode: 403,
+          errors: [
+            "End date Conflicts with an existing booking"]
+          })
+          return
+        }
+
+      }
+
+
+      update = await findBooking.update({
+        startDate,
+        endDate
+    })
+
+    return res.json(update)
 })
-
-
-
 
 
 module.exports = router;

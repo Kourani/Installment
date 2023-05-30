@@ -23,11 +23,8 @@ const validateSignup = [
 
     check('username')
       .exists({ checkFalsy: true })
-      // .withMessage('Username is required')
-      .isLength({ min: 4 })
-      .withMessage('Please provide a username with at least 4 characters.'),
-
-    check('username')
+      .isLength({ min:4 })
+      .withMessage('Username is required, please provide a username with at least 4 characters.')
       .not()
       .isEmail()
       .withMessage('Username cannot be an email.'),
@@ -36,7 +33,7 @@ const validateSignup = [
       .exists({ checkFalsy: true })
       // .withMessage('Password is required')
       .isLength({ min: 6 })
-      .withMessage('Password must be 6 characters or more.'),
+      .withMessage('Password is required, password must be 6 characters or more.'),
 
     check('firstName')
       .exists({ checkFalsy: true })

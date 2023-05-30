@@ -81,10 +81,13 @@ const validateSpot = [
 
 const validateReview = [
   check('review')
-    // .exists({ checkFalsy: true })
+    .exists({ checkFalsy: true })
+    // .isEmpty()
     // .isAlphanumeric('en-US',{ignore: ' '})
-    .notEmpty()
+    // .isAlpha('en-US', {ignore: ' !'})
+    // .withMessage("Review text can only contain letters and !"),
     .withMessage("Review text is required"),
+
 
   check('stars')
     // .exists({ checkFalsy: true })
@@ -4899,7 +4902,7 @@ router.get('/current', requireAuth, async(req,res)=>{
 
         if(average.length>0){
           for(let h=0; h<average.length; h++){
-            plainFirst[h].avgStarRating = average[h]
+            plainFirst[h].avgRating = average[h]
           }
         }
 
@@ -4917,9 +4920,9 @@ router.get('/current', requireAuth, async(req,res)=>{
 
 
         for(let i=0; i<plainFirst.length; i++){
-          if(!plainFirst[i].avgStarRating){
+          if(!plainFirst[i].avgRating){
             console.log('here')
-            plainFirst[i].avgStarRating=null
+            plainFirst[i].avgRating=null
           }
           if(!plainFirst[i].previewImage){
             plainFirst[i].previewImage=null
@@ -4939,8 +4942,6 @@ router.get('/current', requireAuth, async(req,res)=>{
    // res.status(403).json({message:'Forbidden'})
   res.json([])
 })
-
-
 
 
 //get details for a spot from an id
@@ -5047,8 +5048,6 @@ router.get('/:id' , async (req,res) =>{
     res.json(plainFirst[0])
 
 })
-
-
 
 //create a spot
 router.post('/', requireAuth,  validateSpot, async(req,res) =>{
@@ -5333,7 +5332,10 @@ router.get('/:spotId/reviews' , async (req,res) =>{
   let findImageR = await Image.findAll({
     where:{imagableType:'Review'},
     attributes:['id', 'url', 'imagableId']
+
   })
+
+  // res.json(findImageR)
 
   let findImageRI = await Image.findAll({
     where:{imagableType:'Review'},
@@ -5343,33 +5345,99 @@ router.get('/:spotId/reviews' , async (req,res) =>{
 
   const plainFirst = all.map(x => x.get({ plain: true }))
 
+      let ReviewImagess = []
 
-  for(let t=0; t<findImageRI.length; t++){
-    for(let a=0; a<findImageRI.length; a++)
-    {
-      if(findImageR[t].id === findImageRI[a].id){
+  //iterate through the image array of objects twice
+        for(let t=0; t<findImageRI.length; t++){
+          for(let a=0; a<findImageRI.length; a++)
+          {
+            if(findImageR[t].id === findImageRI[a].id){
 
-        for(let i=0; i<all.length; i++){
-          for(let d=0; d<findImageR.length; d++){
+              for(let i=0; i<all.length; i++){
+                for(let d=0; d<findImageR.length; d++){
 
-            console.log(plainFirst[i].id, findImageR[d].imagableId)
-            if(plainFirst[i].id === findImageR[d].imagableId){
-              // res.json(findImageR)
-              // delete findImageR[d].preview
-              plainFirst[i].ReviewImages = findImageRI
+                  // console.log(plainFirst[i].id, findImageR[d].imagableId)
+                  if(plainFirst[i].id === findImageR[d].imagableId){
+                    // res.json(findImageR)
+                    // res.json(findImageR[d])
+
+                    console.log(plainFirst[i].id,'reviewssssssssssss')
+                    console.log(findImageR[d].imagableId)
+
+                    // if(!ReviewImages.length){
+                    //   ReviewImages.push(findImageRI[d])
+                    // }
+
+                    // for(let kink=0; kink<ReviewImages.length; kink++){
+                    //   // console.log(ReviewImages[kink].id,'pppppp')
+                    //   if(ReviewImages[kink].id !== findImageRI[d].id){
+                    //     console.log(ReviewImages[kink].id,'review Array')
+                    //     console.log(findImageRI[d].id, 'images')
+                    //     ReviewImages.push(findImageRI[d])
+                    //     plainFirst[i].ReviewImages = ReviewImages
+                    //   }
+                    // }
+
+                    // if(ReviewImages.length<10)
+                    // {
+                      ReviewImagess.push(findImageRI[d])
+                      plainFirst[i].ReviewImages = ReviewImagess
+                    // }
+
+                    // res.json(plainFirst[i])
+                  }
+                }
+              }
             }
           }
         }
 
-          for(j=0; j<plainFirst.length; j++){
-            if(!plainFirst[j].ReviewImages){
-              plainFirst[j].ReviewImages=[]
+      const seen = new Set();
+      const uniqueImages = ReviewImagess.filter(item => {
+      const duplicate = seen.has(item.id);
+        seen.add(item.id);
+        return !duplicate;
+      });
+
+      let v = uniqueImages.map(item => item)
+      // ["1", "2", "3"]
+
+      // console.log(v)
+      // res.json(v)
+
+
+
+
+
+       //iterate through the image array of objects twice
+       for(let t=0; t<findImageRI.length; t++){
+        for(let a=0; a<findImageRI.length; a++)
+        {
+          if(findImageR[t].id === findImageRI[a].id){
+
+            for(let i=0; i<all.length; i++){
+              for(let d=0; d<findImageR.length; d++){
+
+                // console.log(plainFirst[i].id, findImageR[d].imagableId)
+                if(plainFirst[i].id === findImageR[d].imagableId){
+                    plainFirst[i].ReviewImages = v
+
+                }
+              }
             }
           }
+        }
       }
-    }
 
-  }
+
+        for(let k=0; k<plainFirst.length; k++){
+
+          if(!plainFirst[k].ReviewImages)
+          {
+            plainFirst[k].ReviewImages = []
+          }
+
+        }
 
       let object = {Reveiws:plainFirst}
       res.json(object)
@@ -5381,43 +5449,45 @@ router.get('/:spotId/reviews' , async (req,res) =>{
 
 router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
 
-//returns an array of object of spots
-  let find = await Spot.findByPk(req.params.id)
+    //returns the desired spot ... an object
+      let findSpot = await Spot.findByPk(req.params.id)
 
-  //if the desired spot does not exist 404
-  if(!find){
-    res.status(404).json({message:"Spot couldn't be found", statusCode:404})
-    return
-  }
+      //if the desired spot does not exist 404
+      if(!findSpot){
+        res.status(404).json({message:"Spot couldn't be found", statusCode:404})
+        return
+      }
 
-  //find the bookings that match the spot id
-  let findBooking = await Booking.findAll({
-    where:{spotId:req.params.id}
-  })
-
-  //find the spot that match the spot id .... array length expected to be 1 id is unique
-  let findSpot = await Spot.findAll({
-    where:{id:req.params.id}
-  })
-
-  console.log(findSpot.length, 'spots')
-  console.log(findBooking.length, 'booking')
-
-  //does not allow booking to be created if the current user is the owner of the spot
-      //iterate through the array of objects of bookings
-
-
+      //find the bookings that match the spot id
+      let findBooking = await Booking.findAll({
+        where:{spotId:req.params.id}
+      })
 
       //if the current user owns the spot then do not create a booking
-      if(findSpot[0].ownerId === req.user.id) {
-            return res.status(403).json({message:"Forbidden", statusCode:40})
-          }
+      if(findSpot.ownerId === req.user.id) {
+            return res.status(403).json({message:"Forbidden", statusCode:403})
+      }
+
+      //gets the data
+      const {startDate, endDate} = req.body
 
 
+    //iterates through the findBooking array of objects throws error if BOOKING is being DUPLICATED
+    for(let j=0; j<findBooking.length; j++){
 
+      if(findBooking[j].startDate === startDate && findBooking[j].endDate === endDate){
+        res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+        statusCode: 403,
+        errors: [
+          "Start date conflicts with an existing booking",
+          "End date conflicts with an existing booking",
+          // "a duplicate booking"
+        ]
+        })
+        return
+      }
+    }
 
-    //gets the data
-    const {startDate, endDate} = req.body
 
     let bodyStart = startDate.split('-')
     let bodyEnd = endDate.split('-')
@@ -5437,7 +5507,7 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
     let endDay = []
 
 
-    //creates an array of arries for end and start
+    //creates an array of arraes for end and start
     for(let k=0; k<findBooking.length; k++){
 
       let books = findBooking[k].startDate.split('-')
@@ -5482,8 +5552,43 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
       for ( l=0; l<startYear.length; l++){
 
         // if the START year and month is the same BUT the day is different
-        if( (startYear[l] === bodyStart[0] && bodyEnd[0] === startYear[l]) && (startMonth[l] === bodyStart[1] && bodyEnd[1] === startMonth[l]) && (bodyStart[2] < startDay[l] && bodyEnd[2] < startDay[l]) )
+
+        //&& (bodyStart[2] < startDay[l] && bodyEnd[2] < startDay[l]) was included in the if statement below !!
+        if( (startYear[l] === bodyStart[0] && bodyEnd[0] <= startYear[l]) && (startMonth[l] === bodyStart[1] && bodyEnd[1] <= startMonth[l]) )
         {
+
+          if(bodyStart[2] >= startDay[l]){
+
+            res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+              statusCode: 403,
+              errors: [
+                  "Start date conflicts with an existing booking",
+                  "End date conflicts with an existing booking "]
+                  })
+
+                  return
+
+          }
+
+          console.log('confuseddddddddddddddddddddddddddddd')
+          console.log(bodyEnd[2])
+          console.log(startDay[l])
+
+
+          if(bodyEnd[2] >= startDay[l]){
+
+            res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+              statusCode: 403,
+              errors: [
+                  "End date conflicts with an existing booking "]
+                  })
+
+                  return
+
+          }
+
+
+          console.log('word')
           createBooking = await Booking.create({
             spotId:req.params.id,
             userId:req.user.id,
@@ -5494,38 +5599,102 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
           return res.json(createBooking)
         }
 
-                // if the END year and month is the same BUT the day is different
-                if( (endYear[l] === bodyStart[0] && bodyEnd[0] === endYear[l]) && (endMonth[l] === bodyStart[1] && bodyEnd[1] === endMonth[l]) && (bodyStart[2] > endDay[l] && bodyEnd[2] > endDay[l]) )
-                {
-                  createBooking = await Booking.create({
-                    spotId:req.params.id,
-                    userId:req.user.id,
-                    startDate,
-                    endDate,
-                  })
+        // if the END year and month is the same BUT the day is different
+
+        // && (bodyStart[2] > endDay[l] && bodyEnd[2] > endDay[l]) was included in the if statement below !!
+        if( (endYear[l] === bodyStart[0] && bodyEnd[0] >= endYear[l]) && (endMonth[l] === bodyStart[1] && bodyEnd[1] >= endMonth[l])  )
+          {
+            // res.send('hereeeeeeeeee')
+            console.log(endYear[l])
+            console.log(bodyStart[0])
+            console.log(bodyEnd[0])
+            console.log(endMonth[l])
+            console.log(bodyStart[1])
+            console.log(bodyEnd[1])
+            console.log(endMonth[l])
+
+            if(bodyStart[2] <= endDay[l] && bodyEnd[2] <=endDay[l]){
+
+              console.log('looooooooooooo')
+              console.log(bodyStart[2])
+              console.log(endDay[l])
+              console.log(bodyEnd[2])
+
+              res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+                statusCode: 403,
+                errors: [
+                    "Start date conflicts with an existing booking",
+                    "End date conflicts with an existing booking"]
+                    })
+
+                    return
+
+                  }
+
+            if(bodyStart[2] <= endDay[l]){
+
+
+              res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+                statusCode: 403,
+                errors: [
+                    "Start date conflicts with an existing booking"]
+                    })
+
+                    return
+
+                  }
+
+
+                  console.log('figure')
+            createBooking = await Booking.create({
+            spotId:req.params.id,
+            userId:req.user.id,
+            startDate,
+            endDate,
+            })
 
                   return res.json(createBooking)
-                }
+        }
 
+        if(startYear[l] === bodyEnd[0] && bodyStart[0] <= startYear[l] && (startMonth[l] === bodyEnd[1] && bodyStart[1] <= startMonth[l]) ){
 
+          console.log('hhhhhhhhhhhhhaaaaaaaaaaahv')
 
+          if(bodyEnd[2] < startDay[l])
+          {
+            console.log('asthma')
+            createBooking = await Booking.create({
+              spotId:req.params.id,
+              userId:req.user.id,
+              startDate,
+              endDate,
+            })
+            return res.json(createBooking)
 
-        console.log(bodyEnd,'ggggggggggggggggggg')
-        console.log(bodyEnd[0], 'year')
-        console.log(bodyEnd[1], 'month')
-        console.log(bodyEnd[2], 'day')
-
-        console.log(startYear[1])
-        console.log(startMonth[1])
-        console.log(startDay[1])
+          }
+        }
 
 
 
          //if the START year is the same but the month is different
         if( startYear[l] === bodyStart[0] && bodyEnd[0] === startYear[l] )
         {
-          if(bodyEnd[1] >= startMonth[l]){
 
+
+          if(bodyEnd[1] >= startMonth[l] && bodyStart[1] >= startMonth[l]){
+
+            res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+            statusCode: 403,
+            errors: [
+              "End date conflicts with an existing booking",
+              "Start date conflicts with an existing booking"]
+            })
+
+            return
+          }
+
+
+          if(bodyEnd[1] >= startMonth[l]){
             res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
             statusCode: 403,
             errors: [
@@ -5543,7 +5712,14 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
 
           if((bodyStart[1] < startMonth[l] && bodyEnd[1] < startMonth[l])) {
 
+            console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaagggggggggggggggggggggggggggg')
+            console.log(bodyStart[1])
+            console.log(startMonth[l])
+            console.log(bodyEnd[1])
+            console.log(startMonth[l])
 
+
+            console.log('bucket')
             createBooking = await Booking.create({
             spotId:req.params.id,
             userId:req.user.id,
@@ -5556,21 +5732,34 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
 
         }
 
-              //if the END year is the same but the month is different
-              if( endYear[l] === bodyStart[0] && bodyEnd[0] === endYear[l] )
-              {
+        //if the END year is the same but the month is different
+        if( endYear[l] === bodyStart[0] && bodyEnd[0] >= endYear[l] )
+        {
 
-                if(bodyStart[1] <= endMonth[l]){
+          if(bodyStart[1] <= endMonth[l] && bodyEnd[1] <= endMonth[l] && bodyEnd[0] === endYear[l]){
 
-                  res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
-                  statusCode: 403,
-                  errors: [
-                    "Start date conflicts with an existing booking"]
+            res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+              statusCode: 403,
+              errors: [
+                  "Start date conflicts with an existing booking",
+                  "End date conflicts with an existing booking"]
                   })
 
                   return
 
                 }
+
+          if(bodyStart[1] <= endMonth[l]){
+
+            res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+              statusCode: 403,
+              errors: [
+                  "Start date conflicts with an existing booking"]
+                  })
+
+                  return
+
+          }
 
 
                 console.log('hereeeeeeeaaaaaa')
@@ -5579,9 +5768,24 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
                 console.log(startMonth[l])
 
 
+                for(let z=0; z<endYear.length; z++){
+                  if(bodyStart[0]<=startYear[l] && bodyEnd[0]>=endYear[z]){
+                    res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+                    statusCode: 403,
+                    errors: [
+                        "End date conflicts with an existing booking"]
+                        })
+
+                        return
+                  }
+                }
+
 
                 if((bodyStart[1] > endMonth[l] && bodyEnd[1] > endMonth[l])) {
-
+                  console.log('toast')
+                  console.log(bodyStart[1])
+                  console.log(endMonth[l])
+                  console.log(bodyEnd[1])
 
                   createBooking = await Booking.create({
                   spotId:req.params.id,
@@ -5593,9 +5797,49 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
 
                 }
 
-              }
+        }
 
 
+
+        if(endYear[l] === bodyEnd[0] && bodyStart[0] <= endYear[l] ){
+
+          console.log('hhhhhhhhhhhhhaaaaaaaaaaahv')
+
+
+          if(bodyEnd[1] < startMonth[l])
+          {
+            createBooking = await Booking.create({
+              spotId:req.params.id,
+              userId:req.user.id,
+              startDate,
+              endDate,
+            })
+            return res.json(createBooking)
+
+          }
+
+        }
+
+        // if(startYear[l] === bodyEnd[0] && bodyStart[0] <= startYear[l] ){
+
+        //   console.log('hhhhhhhhhhhhhaaaaaaaaaaahv')
+
+        //   if(bodyEnd[1] < startMonth[l])
+        //   {
+        //     createBooking = await Booking.create({
+        //       spotId:req.params.id,
+        //       userId:req.user.id,
+        //       startDate,
+        //       endDate,
+        //     })
+        //     return res.json(createBooking)
+
+        //   }
+        // }
+
+        //COMPARE BASED ON YEAR ONLY
+
+        //if the booking start and end falls between an existing booking ERROR
         if((startYear[l] <= bodyEnd[0] && bodyEnd[0] <= endYear[l]) && (startYear[l] <= bodyStart[0] && bodyStart[0] <= endYear[l]) ){
 
           res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
@@ -5608,20 +5852,33 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
           return
         }
 
-
-
+        //if the booking starts during an existing booking ERROR
         if(startYear[l] <= bodyStart[0] && bodyStart[0] <= endYear[l]){
 
+
+          console.log('odd')
+          console.log(startYear[l])
+          console.log(startMonth[l])
+          console.log(startDay[l])
           res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
           statusCode: 403,
           errors: [
-            "Start date conflicts with an existing booking"
+            "Start date conflicts with an existing booking",
           ]
           })
           return
         }
 
+        console.log(startYear[l])
+        console.log(bodyEnd[0])
+        console.log(endYear[l])
+
+        //if the booking ends during an existing booking ERROR
         if(startYear[l] <= bodyEnd[0] && bodyEnd[0] <= endYear[l]){
+
+          console.log(startYear[l], 'iiiiiiiiiiiiiiiiiiiiiii')
+          console.log(bodyEnd[0])
+          console.log(endYear[l])
 
           res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
           statusCode: 403,
@@ -5631,6 +5888,7 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
           return
         }
 
+        //if the booking length encapsulates a current booking error
         if(bodyStart[0] < startYear[l] && bodyEnd[0] > startYear[l]){
 
           res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
@@ -5643,7 +5901,34 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
 
       }
 
+      // for(let m=0; m<startYear.length; m++){
 
+      //   console.log(mmmmmmmmmmmm)
+
+      //   if(bodyEnd[0] >= endYear[l])
+      //   {
+
+      //     for(let t=0; t<endYear.length; t++){
+      //       if(bodyStart[0] <= startYear[l]){
+
+      //         if(bodyStart[2] <= endDay[l] && bodyEnd[2] <=endDay[l]){
+
+      //           res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+      //             statusCode: 403,
+      //             errors: [
+      //                 "Start date conflicts with an existing booking",
+      //                 "End date conflicts with an existing booking",'aaaaaaaaaaaaa']
+      //                 })
+
+      //                 return}
+
+      //       }
+      //     }
+      //   }
+      // }
+
+
+      console.log('bloast')
     createBooking = await Booking.create({
       spotId:req.params.id,
       userId:req.user.id,
@@ -5652,9 +5937,6 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
     })
 
     res.json(createBooking)
-
-    // return res.json('nothing')
-
 })
 
 

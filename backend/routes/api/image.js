@@ -56,39 +56,86 @@ router.delete('/spot-images/:id', requireAuth, async(req,res)=>{
 //delete a review image
 router.delete('/review-images/:id', requireAuth, async(req,res)=>{
 
-    let imageReview = await Image.findByPk(req.params.id)
+    //get all reviews, include user
+    const all = await Review.findAll({
+        include:[
+          {
+            model:User,
+            attributes:['id', 'firstName', 'lastName']
+          },
+          // {
+          //   model:Image
+          // }
+        ]
+    })
 
-    // console.log(imageReview)
 
-    if(!imageReview)
-    {
+    //get all images that pertain to reviews with id url imagable id
+    let findImageR = await Image.findAll({
+      where:{imagableType:'Review'},
+      attributes:['id', 'url', 'imagableId']
+    })
+
+    let plainFirst = all.map(x => x.get({ plain: true })) //plain to be able to insert
+
+
+    for(let t=0; t<findImageR.length; t++){
+          for(let i=0; i<all.length; i++)
+              if(plainFirst[i].id === findImageR[t].imagableId){
+                plainFirst[i].ReviewImages = findImageR
+              }
+            }
+            for(j=0; j<plainFirst.length; j++){
+              if(!plainFirst[j].ReviewImages){
+                plainFirst[j].ReviewImages=[]
+              }
+            }
+        // }
+
+
+        console.log( req.params.id)
+    // res.json(plainFirst)
+
+    console.log(plainFirst.length)
+
+    let imageReview
+    for(let z=0; z<plainFirst.length; z++){
+
+        console.log(plainFirst[z].ReviewImages.length)
+
+        for(let y=0; y<plainFirst[z].ReviewImages.length; y++){
+
+            // console.log(plainFirst[z].ReviewImages[y].id ,'kkkkkkkkkkkkk')
+            console.log(req.params.id)
+            if(plainFirst[z].ReviewImages[y].id === parseInt(req.params.id)){
+                imageReview = await Image.findByPk(req.params.id)
+                // res.json(imageReview)
+            }
+        }
+    }
+
+    // return res.json(imageReview)
+    // return res.json(plainFirst)
+    // return res.json(imageReview)
+    // return res.json('nothing')
+
+    if(!imageReview){
         return res.status(404).json({message:"Review Image couldn't be found", statusCode:404})
     }
 
-    console.log(imageReview.imagableType, 'type')
-    console.log(imageReview.imagableId, 'id')
 
-    if(imageReview.imagableType === 'Review')
-    {
-        const findReview = await Review.findAll({
-            where:{id:imageReview.imagableId}
-        })
-
-        // res.json(findReview)
-
-        console.log(findReview[0].userId)
-
-        if(findReview[0].userId === req.user.id)
-        {
+    for(let q=0; q <plainFirst.length; q++){
+        if(plainFirst[q].userId === parseInt(req.user.id)){
             await imageReview.destroy()
             res.json({message:'Successfully Deleted', statusCode:200})
             return
         }
-
     }
 
-    // res.send('you did not write this review')
-    res.status(403).json({message:'Forbidden',statusCode:403})
+
+
+    return res.status(404).json({message:"Review Image couldn't be found", statusCode:404})
+
 
 })
 

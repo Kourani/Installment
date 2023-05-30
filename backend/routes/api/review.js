@@ -14,9 +14,10 @@ const { handleValidationErrors } = require('../../utils/validation');
 const validateReview = [
 
     check('review')
-    //   .exists({ checkFalsy: true })
+      .exists({ checkFalsy: true })
     //   .isAlphanumeric('en-US',{ignore: ' '})
-      .notEmpty()
+    // .isAlpha('en-US', {ignore: ' !'})
+    //   .notEmpty()
       .withMessage( "Review text is required"),
 
     check('stars')
@@ -193,21 +194,45 @@ router.put('/:id', requireAuth, validateReview, async(req,res)=>{
 //create an image for a review
 router.post('/:id/images', requireAuth, async(req,res)=>{
 
+    // the input
     const { id, url, preview } = req.body
 
+    //find the review by its id
     let find = await Review.findByPk(req.params.id)
 
+    //if the review does not exist ERROR
     if(!find){
         res.status(404).json({message:"Review couldn't be found", statusCode:404})
         return
     }
 
+    //if the review was not written by the current user ERROR
     if(find.userId !== req.user.id){
     //   res.send('you did not write this review')
     res.status(403).json({message:'Forbidden', statusCode:403})
       return
     }
 
+      //find the review and include the review Images array
+      let ImageCount = await Review.findAll({
+        where:{id:req.params.id},
+        include:[{
+            model:Image, as: 'ReviewImages',
+        }]
+    })
+
+
+    // res.json(ImageCount)
+    console.log(ImageCount[0].ReviewImages.length)
+
+
+    //if the 11th image is being created ERROR
+    if(ImageCount[0].ReviewImages.length > 9){
+        return res.status(403).json({message:"Maximum number of images for this resource was reached",statusCode:403})
+    }
+
+
+    //create an image
     let createImageReview = await Image.create({
         id,
         url,
@@ -216,24 +241,11 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
         imagableType:'Review'
     })
 
+    //find the created image
     let findCreatedImageReview = await Image.findAll({
         where:{id:createImageReview.id},
         attributes:{exclude:['preview','imagableId', 'imagableType', 'updatedAt', 'createdAt']}
       })
-
-    let ImageCount = await Review.findAll({
-        where:{id:req.params.id},
-        include:[{
-            model:Image, as: 'ReviewImages',
-        }]
-    })
-
-    // res.json(ImageCount)
-    console.log(ImageCount[0].ReviewImages.length)
-
-    if(ImageCount[0].ReviewImages.length > 10){
-        res.status(403).json({message:"Maximum number of images for this resource was reached",statusCode:403})
-    }
 
     res.json(findCreatedImageReview[0])
 })
