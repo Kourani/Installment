@@ -5381,7 +5381,7 @@ router.get('/:spotId/reviews' , async (req,res) =>{
                     // if(ReviewImages.length<10)
                     // {
                       ReviewImagess.push(findImageRI[d])
-                      plainFirst[i].ReviewImages = ReviewImagess
+                      // plainFirst[i].ReviewImages = ReviewImagess
                     // }
 
                     // res.json(plainFirst[i])
@@ -5401,9 +5401,6 @@ router.get('/:spotId/reviews' , async (req,res) =>{
 
       let v = uniqueImages.map(item => item)
       // ["1", "2", "3"]
-
-      // console.log(v)
-      // res.json(v)
 
 
 
@@ -5480,7 +5477,7 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
         statusCode: 403,
         errors: [
           "Start date conflicts with an existing booking",
-          "End date conflicts with an existing booking",
+          "End date conflicts with an existing booking"
           // "a duplicate booking"
         ]
         })
@@ -5768,6 +5765,17 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
                 console.log(startMonth[l])
 
 
+                if(bodyStart[1] > endMonth[l])
+                {
+                  createBooking = await Booking.create({
+                    spotId:req.params.id,
+                    userId:req.user.id,
+                    startDate,
+                    endDate,
+                  })
+                  return res.json(createBooking)
+                }
+                
                 for(let z=0; z<endYear.length; z++){
                   if(bodyStart[0]<=startYear[l] && bodyEnd[0]>=endYear[z]){
                     res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
