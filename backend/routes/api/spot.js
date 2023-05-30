@@ -5585,7 +5585,7 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
           }
 
 
-          console.log('word')
+          console.log('wordy')
           createBooking = await Booking.create({
             spotId:req.params.id,
             userId:req.user.id,
@@ -5674,7 +5674,7 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
 
 
          //if the START year is the same but the month is different
-        if( startYear[l] === bodyStart[0] && bodyEnd[0] === startYear[l] )
+        if( startYear[l] === bodyStart[0] && bodyEnd[0] >= startYear[l] )
         {
 
 
@@ -5759,23 +5759,26 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
           }
 
 
+
+
                 console.log('hereeeeeeeaaaaaa')
                 console.log(bodyStart[1], 'insideeeeee')
                 console.log(bodyEnd[1])
                 console.log(startMonth[l])
 
 
-                if(bodyStart[1] > endMonth[l])
-                {
-                  createBooking = await Booking.create({
-                    spotId:req.params.id,
-                    userId:req.user.id,
-                    startDate,
-                    endDate,
-                  })
-                  return res.json(createBooking)
+                for(let d =0; d<endYear.length; d++){
+                  if(bodyEnd[0]>=endYear[l]){
+                    if(bodyEnd[0] >= endYear[d]){
+                      res.status(403).json({message:"Sorry, this spot is already booked for the specified dates",
+                      statusCode:403,
+                      errors:["Start date conflicts with an existing booking"]})
+                      return 
+                    }
+                  }
                 }
-                
+
+
                 for(let z=0; z<endYear.length; z++){
                   if(bodyStart[0]<=startYear[l] && bodyEnd[0]>=endYear[z]){
                     res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
@@ -5786,6 +5789,26 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
 
                         return
                   }
+
+
+
+
+                    if(bodyStart[1] > endMonth[l] && bodyEnd[1] > endMonth[l])
+                    {
+
+                      console.log('createfluff')
+                      console.log(bodyStart[1])
+                      console.log(bodyEnd[1])
+                      console.log(endMonth[l])
+                      createBooking = await Booking.create({
+                        spotId:req.params.id,
+                        userId:req.user.id,
+                        startDate,
+                        endDate,
+                      })
+                      return res.json(createBooking)
+                    }
+
                 }
 
 
