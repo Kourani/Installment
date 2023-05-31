@@ -287,11 +287,13 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
           console.log(number, 'number')
 
 
-          console.log(findBooks.length)
+        
 
           for(let i=0; i<findBookings.length; i++){
 
+            console.log(findBookings[i].id, number , 'before')
             if(findBookings[i].id !== number){
+                console.log(findBookings[i].id, number , 'after')
 
                 console.log(findBookings[i].endDate , 'endDate')
                 console.log(currentTime, 'current !!!')
