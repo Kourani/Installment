@@ -248,14 +248,33 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
         let newEnd1 = new Date(endDate)
 
         let datee = newStart1.getDate();
+
+        if (datee < 10) {
+            datee = '0' + datee;
+          }
+
         let  montha = newStart1.getMonth() + 1; // Since getMonth() returns month from 0-11 not 1-12
+
+        if (montha < 10) {
+            montha= '0' + montha;
+          }
+
         let yeara = newStart1.getFullYear();
 
       let newStart = yeara + "-" + montha + "-" + datee;
+      
       console.log(newStart)
 
       let dayy = newEnd1.getDate();
+
+      if (dayy < 10) {
+        dayy = '0' + dayy;
+      }
       let monthh = newEnd1.getMonth() + 1; // Since getMonth() returns month from 0-11 not 1-12
+      if (monthh < 10) {
+        monthh = '0' + monthh;
+      }
+
       let yearr = newEnd1.getFullYear();
 
       let newEnd = yearr + "-" + monthh + "-" + dayy;

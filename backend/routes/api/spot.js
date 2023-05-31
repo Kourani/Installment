@@ -5474,24 +5474,74 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
       let newEnd1 = new Date(endDate)
 
       let date = newStart1.getDate();
+
+      if (date < 10) {
+        date =  '0' + date
+      }
+
       let  month = newStart1.getMonth() + 1; // Since getMonth() returns month from 0-11 not 1-12
+
+      console.log(month)
+      if (month < 10) {
+        month =  '0' + month
+      }
+
+      console.log(month,'llllllllllllll')
+
       let year = newStart1.getFullYear();
 
     let newStart = year + "-" + month + "-" + date;
+
     console.log(newStart)
 
+
     let day = newEnd1.getDate();
+
+    if (day < 10) {
+      day = '0' + monthh;
+    }
+
     let monthh = newEnd1.getMonth() + 1; // Since getMonth() returns month from 0-11 not 1-12
+
+    if (monthh < 10) {
+      monthh = '0' + monthh;
+    }
+
+    console.log(monthh, 'ggggggggggggggggggggggggggggg')
+
+
     let yearr = newEnd1.getFullYear();
 
     let newEnd = yearr + "-" + monthh + "-" + day;
 
-console.log(newEnd)
+
 
       for(let i=0; i<findBooking.length; i++){
 
+        console.log(newStart, newEnd)
+
+        if(newStart <= findBooking[i].endDate && newStart >= findBooking[i].startDate ){ //add
+          res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+          statusCode: 403,
+          errors: [
+              "Start date conflicts with an existing booking"]
+              })
+
+          return
+        }
+
+
+
 
         if(newStart >= findBooking[i].startDate && newStart <=findBooking[i].endDate){
+
+
+      console.log('first')
+      console.log(newStart)
+      console.log(newEnd)
+      console.log(findBooking[i].startDate)
+      console.log(findBooking[i].endDate)
+
           res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
           statusCode: 403,
           errors: [
@@ -5502,16 +5552,32 @@ console.log(newEnd)
         }
 
         if(newEnd >= findBooking[i].startDate && newStart <=findBooking[i].endDate){
+
+      console.log('second')
+      console.log(newStart)
+      console.log(newEnd)
+      console.log(findBooking[i].startDate)
+      console.log(findBooking[i].endDate)
+
+
           res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
           statusCode: 403,
           errors: [
               "End date conflicts with an existing booking"]
               })
-
               return
         }
 
         if(findBooking[i].startDate >= newStart && findBooking[i].endDate <= newEnd){
+
+
+      console.log('first')
+      console.log(newStart)
+      console.log(newEnd)
+      console.log(findBooking[i].startDate)
+      console.log(findBooking[i].endDate)
+
+
           res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
           statusCode: 403,
           errors: [
@@ -5551,8 +5617,11 @@ console.log(newEnd)
       //   }
       // }
 
-
       console.log('bloast')
+      console.log(newStart)
+      console.log(newEnd)
+
+
     createBooking = await Booking.create({
       spotId:req.params.id,
       userId:req.user.id,
