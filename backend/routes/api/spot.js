@@ -5477,23 +5477,16 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
       let  month = newStart1.getMonth() + 1; // Since getMonth() returns month from 0-11 not 1-12
       let year = newStart1.getFullYear();
 
-let newStart = year + "-" + month + "-" + date;
-console.log(newStart)
+    let newStart = year + "-" + month + "-" + date;
+    console.log(newStart)
 
-let day = newEnd1.getDate();
-let monthh = newEnd1.getMonth() + 1; // Since getMonth() returns month from 0-11 not 1-12
-let yearr = newEnd1.getFullYear();
+    let day = newEnd1.getDate();
+    let monthh = newEnd1.getMonth() + 1; // Since getMonth() returns month from 0-11 not 1-12
+    let yearr = newEnd1.getFullYear();
 
-let newEnd = yearr + "-" + monthh + "-" + day;
+    let newEnd = yearr + "-" + monthh + "-" + day;
 
 console.log(newEnd)
-
-
-
-
-
-
-
 
       for(let i=0; i<findBooking.length; i++){
 
