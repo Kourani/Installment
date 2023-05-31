@@ -5486,19 +5486,20 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
         month =  '0' + month
       }
 
-      console.log(month,'llllllllllllll')
 
       let year = newStart1.getFullYear();
 
     let newStart = year + "-" + month + "-" + date;
 
-    console.log(newStart)
+
+
+    console.log(newStart, 'test new start')
 
 
     let day = newEnd1.getDate();
 
     if (day < 10) {
-      day = '0' + monthh;
+      day = '0' + day;
     }
 
     let monthh = newEnd1.getMonth() + 1; // Since getMonth() returns month from 0-11 not 1-12
@@ -5507,31 +5508,20 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
       monthh = '0' + monthh;
     }
 
-    console.log(monthh, 'ggggggggggggggggggggggggggggg')
+
 
 
     let yearr = newEnd1.getFullYear();
 
     let newEnd = yearr + "-" + monthh + "-" + day;
 
+    console.log(newEnd, 'test new End')
+
 
 
       for(let i=0; i<findBooking.length; i++){
 
         console.log(newStart, newEnd)
-
-        if(newStart <= findBooking[i].endDate && newStart >= findBooking[i].startDate ){ //add
-          res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
-          statusCode: 403,
-          errors: [
-              "Start date conflicts with an existing booking"]
-              })
-
-          return
-        }
-
-
-
 
         if(newStart >= findBooking[i].startDate && newStart <=findBooking[i].endDate){
 

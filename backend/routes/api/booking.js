@@ -234,14 +234,7 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
         const year = currentTime.getFullYear()
         currentTime = year + '-' + month + '-' + day;
 
-        // let arr = findBooking.endDate.split('-')
-        // let arr2 = findBooking.startDate.split('-')
-        // let curr = currentTime.split('-')
-        // let end1 = endDate.split('-')
-        // let start1 = startDate.split('-')
-
-        // console.log(findBooking.endDate, 'aaa')
-        // console.log(endDate, 'bbbbbb')
+        console.log(currentTime,'weeeeeeeeeeeee')
 
 
         let newStart1 = new Date(startDate)
@@ -262,8 +255,10 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
         let yeara = newStart1.getFullYear();
 
       let newStart = yeara + "-" + montha + "-" + datee;
-      
+
       console.log(newStart)
+
+
 
       let dayy = newEnd1.getDate();
 
