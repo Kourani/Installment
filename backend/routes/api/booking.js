@@ -214,6 +214,8 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
     let findBooking = await Booking.findByPk(req.params.id)
 
 
+
+
     //if it does not exist ERROR
     if(!findBooking){
         res.status(404).json({message:"Booking couldn't be found", statusCode:404})
@@ -235,6 +237,11 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
         currentTime = year + '-' + month + '-' + day;
 
         console.log(currentTime,'weeeeeeeeeeeee')
+
+        if(findBooking.endDate < currentTime){
+            res.status(403).json({ message: "Past bookings can't be modified",statusCode: 403})
+            return
+          }
 
 
         let newStart1 = new Date(startDate)
@@ -276,11 +283,6 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
 
   console.log(newEnd)
 
-          if(newEnd < currentTime){
-            res.status(403).json({ message: "Past bookings can't be modified",statusCode: 403})
-            return
-          }
-
 
           let findBookings = await Booking.findAll({raw:true})
 
@@ -291,6 +293,10 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
           for(let i=0; i<findBookings.length; i++){
 
             if(findBooking.id !== number){
+
+                console.log(findBookings[i].endDate , 'endDate')
+                console.log(currentTime, 'current !!!')
+
 
               // console.log(findBookings[i].id, findBookings[i].id)
 
