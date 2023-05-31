@@ -288,52 +288,113 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
 
 
 
+          for(let i=0; i<findBookings.length; i++){
+
+            // console.log(findBookings[i].id, number , 'before')
+
+            if(findBookings[i].id === number)
+            {
+                         //     console.log(findBookings[i].id, number , 'after')
+
+                         console.log(findBookings[i].endDate , 'endDate')
+                         console.log(currentTime, 'current !!!')
+
+
+                       // console.log(findBookings[i].id, findBookings[i].id)
+
+                       if(findBookings[i].startDate >= newStart && findBookings[i].endDate <= newEnd){
+                         res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+                         statusCode: 403,
+                         errors: [
+                           "Start date conflicts with an existing booking",
+                             "End date conflicts with an existing booking"]
+                             })
+                             return
+                       }
+
+                       if(newStart >= findBookings[i].startDate && newStart <=findBookings[i].endDate){
+                         res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+                         statusCode: 403,
+                         errors: [
+                             "Start date conflicts with an existing booking"]
+                             })
+
+                         return
+                       }
+
+                       if(newEnd >= findBookings[i].startDate && newStart <=findBookings[i].endDate){
+                         console.log(newEnd)
+                         console.log(findBookings[i].startDate)
+                         console.log(newStart)
+                         console.log(findBookings[i].endDate)
+                         res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+                         statusCode: 403,
+                         errors: [
+                             "End date conflicts with an existing booking"]
+                             })
+
+                             return
+                       }
+
+            }
+          }
+
+
+
+
+
+
+
 
           for(let i=0; i<findBookings.length; i++){
 
             // console.log(findBookings[i].id, number , 'before')
 
-            //     console.log(findBookings[i].id, number , 'after')
+            if(findBookings[i].id !== number)
+            {
+                           //     console.log(findBookings[i].id, number , 'after')
 
-                console.log(findBookings[i].endDate , 'endDate')
-                console.log(currentTime, 'current !!!')
+                           console.log(findBookings[i].endDate , 'endDate')
+                           console.log(currentTime, 'current !!!')
 
 
-              // console.log(findBookings[i].id, findBookings[i].id)
+                         // console.log(findBookings[i].id, findBookings[i].id)
 
-              if(findBookings[i].startDate >= newStart && findBookings[i].endDate <= newEnd){
-                res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
-                statusCode: 403,
-                errors: [
-                  "Start date conflicts with an existing booking",
-                    "End date conflicts with an existing booking"]
-                    })
-                    return
-              }
+                         if(findBookings[i].startDate >= newStart && findBookings[i].endDate <= newEnd){
+                           res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+                           statusCode: 403,
+                           errors: [
+                             "Start date conflicts with an existing booking",
+                               "End date conflicts with an existing booking"]
+                               })
+                               return
+                         }
 
-              if(newStart >= findBookings[i].startDate && newStart <=findBookings[i].endDate){
-                res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
-                statusCode: 403,
-                errors: [
-                    "Start date conflicts with an existing booking"]
-                    })
+                         if(newStart >= findBookings[i].startDate && newStart <=findBookings[i].endDate){
+                           res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+                           statusCode: 403,
+                           errors: [
+                               "Start date conflicts with an existing booking"]
+                               })
 
-                return
-              }
+                           return
+                         }
 
-              if(newEnd >= findBookings[i].startDate && newStart <=findBookings[i].endDate){
-                console.log(newEnd)
-                console.log(findBookings[i].startDate)
-                console.log(newStart)
-                console.log(findBookings[i].endDate)
-                res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
-                statusCode: 403,
-                errors: [
-                    "End date conflicts with an existing booking"]
-                    })
+                         if(newEnd >= findBookings[i].startDate && newStart <=findBookings[i].endDate){
+                           console.log(newEnd)
+                           console.log(findBookings[i].startDate)
+                           console.log(newStart)
+                           console.log(findBookings[i].endDate)
+                           res.status(403).json({ message: "Sorry, this spot is already booked for the specified dates",
+                           statusCode: 403,
+                           errors: [
+                               "End date conflicts with an existing booking"]
+                               })
 
-                    return
-              }
+                               return
+                         }
+
+            }
           }
 
     //     let today = []
