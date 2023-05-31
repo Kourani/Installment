@@ -5795,21 +5795,21 @@ router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
 
 
 
-                    if(bodyStart[1] > endMonth[l] && bodyEnd[1] > endMonth[l])
-                    {
+                    // if(bodyStart[1] > endMonth[l] && bodyEnd[1] > endMonth[l])
+                    // {
 
-                      console.log('createfluff')
-                      console.log(bodyStart[1])
-                      console.log(bodyEnd[1])
-                      console.log(endMonth[l])
-                      createBooking = await Booking.create({
-                        spotId:req.params.id,
-                        userId:req.user.id,
-                        startDate,
-                        endDate,
-                      })
-                      return res.json(createBooking)
-                    }
+                    //   console.log('createfluff')
+                    //   console.log(bodyStart[1])
+                    //   console.log(bodyEnd[1])
+                    //   console.log(endMonth[l])
+                    //   createBooking = await Booking.create({
+                    //     spotId:req.params.id,
+                    //     userId:req.user.id,
+                    //     startDate,
+                    //     endDate,
+                    //   })
+                    //   return res.json(createBooking)
+                    // }
 
                 }
 
