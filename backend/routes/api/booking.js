@@ -213,9 +213,6 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
     //find the booking by its id
     let findBooking = await Booking.findByPk(req.params.id)
 
-
-
-
     //if it does not exist ERROR
     if(!findBooking){
         res.status(404).json({message:"Booking couldn't be found", statusCode:404})
@@ -292,7 +289,7 @@ router.put('/:id', requireAuth, validateBooking, async(req,res)=>{
 
           for(let i=0; i<findBookings.length; i++){
 
-            if(findBooking.id !== number){
+            if(findBookings.id !== number){
 
                 console.log(findBookings[i].endDate , 'endDate')
                 console.log(currentTime, 'current !!!')
