@@ -256,7 +256,7 @@ user's information.
 
 ### Get all Spots
 
-Returns all the spots.
+Returns all the spots. 
 
 * Require Authentication: false
 * Request
