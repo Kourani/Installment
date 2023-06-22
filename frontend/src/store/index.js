@@ -1,10 +1,14 @@
 
 import {createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import think from 'redux-thunk'
+import sessionReducer from './session'
 
 
 
-const rootReducer = combineReducer({})
+
+const rootReducer = combineReducers({
+    session:sessionReducer
+})
 
 let enhancer
 
@@ -22,5 +26,3 @@ const configureStore = (preloadedState) =>{
 }
 
 export default configureStore
-
-
