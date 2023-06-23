@@ -1,6 +1,6 @@
 
 import {createStore, combineReducers, applyMiddleware, compose } from 'redux'
-import think from 'redux-thunk'
+import thunk from 'redux-thunk'
 import sessionReducer from './session'
 
 
