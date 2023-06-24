@@ -4,6 +4,7 @@
   "description": "Site URL: https://airbnb-tay2.onrender.com",
   "main": "index.js",
   "scripts": {
+    "render-postbuild": "npm run build --prefix frontend",
     "test": "echo \"Error: no test specified\" && exit 1",
     "install": "npm --prefix backend install backend",
     "dev:backend": "npm install --prefix backend start",
