@@ -6,6 +6,8 @@ import {useSelector, useDispatch} from 'react-redux'
 import * as sessionActions from '../../store/session'
 import './Navigation.css'
 
+import ProfileButton from './profileButton'
+
 
 function Navigation ({isLoaded}){
     const sessionUser = useSelector(state=>state.session.user)
@@ -44,4 +46,4 @@ function Navigation ({isLoaded}){
     )
 }
 
-export default Navigation 
+export default Navigation
