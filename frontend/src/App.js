@@ -9,6 +9,8 @@ import SignupFormPage from "./components/SignUpFormPage";
 import * as sessionActions from "./store/session"
 import Navigation from './components/Navigation'
 
+import SpotDetail from "./components/SpotDetail";
+
 
 function App() {
 
@@ -24,7 +26,7 @@ function App() {
 
     <>
     <Navigation isLoaded={isLoaded}/>
-    
+
     {isLoaded && (
       <Switch>
       <Route path="/login">
@@ -33,6 +35,10 @@ function App() {
 
       <Route path="/signup">
         <SignupFormPage/>
+      </Route>
+
+      <Route path='/spots/:spotId'>
+        <SpotDetail/>
       </Route>
     </Switch>
     )}

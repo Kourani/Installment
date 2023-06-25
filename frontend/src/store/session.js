@@ -4,6 +4,7 @@ import {csrfFetch} from "./csrf"
 
 const SET_USER = "session/setUser"
 const REMOVE_USER = "session/removeUser"
+// const GET_SPOT = "session/getSpot"
 
 
 //action
@@ -19,6 +20,8 @@ function removeUser(){
         type: REMOVE_USER
     }
 }
+
+
 
 
 //thunk
@@ -46,7 +49,7 @@ export const logout = () => async (dispatch) =>{
     })
 
     dispatch(removeUser())
-    return response 
+    return response
 }
 
 
