@@ -8,7 +8,7 @@ import * as sessionActions from '../../store/session';
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
-  const [showMenu, setShowMenu] = useState(false);
+  const [showMenu, setShowMenu] = useState(true);
   const ulRef = useRef();
 
   const openMenu = () => {
@@ -35,6 +35,8 @@ function ProfileButton({ user }) {
     dispatch(sessionActions.logout());
   };
 
+  const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
+
   const Carrot = () => {
     return (
       <div style={{ color: "orange", fontSize: "100px" }}>
@@ -43,12 +45,16 @@ function ProfileButton({ user }) {
     );
   };
 
-  const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
+function button(){
+  if(showMenu){
+    return<Carrot/>
+  } else return <i className="fas fa-user-circle" />
+}
 
   return (
     <>
       <button onClick={openMenu}>
-        <i className="fas fa-user-circle" />
+        {button()}
       </button>
       <ul className={ulClassName} ref={ulRef}>
         <li>{user.username}</li>

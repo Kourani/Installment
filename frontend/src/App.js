@@ -10,6 +10,7 @@ import * as sessionActions from "./store/session"
 import Navigation from './components/Navigation'
 
 import SpotDetail from "./components/SpotDetail";
+import AllSpots from "./components/AllSpots";
 
 
 function App() {
@@ -40,6 +41,11 @@ function App() {
       <Route path='/spots/:spotId'>
         <SpotDetail/>
       </Route>
+
+      <Route path='/spots'>
+        <AllSpots/>
+      </Route>
+
     </Switch>
     )}
 

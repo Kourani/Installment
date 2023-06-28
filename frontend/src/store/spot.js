@@ -5,23 +5,49 @@
 import {csrfFetch} from "./csrf"
 
 
-const GET_SPOT = "spots/spotId"
+const GET_SPOTS = "spots/GET_SPOTS"
+const ONE_SPOT = "spots/SPOT_ID"
 
-//action
-function getSpotDetail(spotId) {
+//ACTIONS
+
+//FOR ALL THE SPOTS
+function loadSpots(spots) {
     return{
-        type: GET_SPOT,
-        spotId
+        type: GET_SPOTS,
+        spots
+    }
+}
+
+//FOR ONE SPOT
+function specificSpot(spotData){
+    return{
+        type: ONE_SPOT,
+        spotData
     }
 }
 
 //thunk
-export const spotDetail = (spotId) => async (dispatch) =>{
-    const response = await csrfFetch(`/api/spots/${spotId}`)
+
+export const getSpots = () => async dispatch =>{
+    const response = await fetch('/api/spots')
+
+    if(response.ok){
+        const loadedSpots = await response.json()
+        dispatch(loadSpots(loadedSpots))
+        return loadedSpots
+    }
+    return response
+}
+
+export const spotDetails = (spotId) => async (dispatch) =>{
+    const response = await fetch(`/api/spots/${spotId}`)
 
     if(response.ok){ //check for errors via statusCode before passing to reducer
         const data = await response.json()
-        dispatch(getSpotDetail(data))
+        // console.log('spotDetailsData',data)
+        dispatch(specificSpot(data)) //data.Spots
+
+        return data
     }
     return response
 }
@@ -30,13 +56,33 @@ export const spotDetail = (spotId) => async (dispatch) =>{
 const initialState = {}
 
 
+
+
 //reducer
 const spotReducer = (state=initialState, action) =>{
-    let newState
+
     switch (action.type){
-        case GET_SPOT:
-            newState = Object.assign({},state)
-            return newState
+
+        case ONE_SPOT:
+            const foundSpot = {...action.spotData}
+
+            return {
+                matched: foundSpot,
+                ...state
+            }
+
+        case GET_SPOTS:
+            const allSpots ={}
+            action.spots.Spots.forEach(element=>{
+                allSpots[element.id] = element
+            })
+
+            return {
+                ...allSpots,
+                ...state
+            }
+
+
 
         default:
             return state
