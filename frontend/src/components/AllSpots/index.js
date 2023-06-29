@@ -27,6 +27,7 @@ function AllSpots(){
     function spotTiles(){
         return values.map(element =>{
             return (
+                <>
                 <button key={`${element.id}`} onClick={()=> history.push(`/spots/${element.id}`)}>
 
                     <ul>
@@ -36,6 +37,8 @@ function AllSpots(){
                         <li> {element.price} Night</li>
                     </ul>
                 </button>
+                <div>{element.avgRating}</div>
+                </>
             )
         })
     }

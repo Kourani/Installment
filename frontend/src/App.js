@@ -7,10 +7,12 @@ import { useDispatch } from "react-redux";
 import LoginFormPage from "./components/LoginFormPage"
 import SignupFormPage from "./components/SignUpFormPage";
 import * as sessionActions from "./store/session"
-import Navigation from './components/Navigation'
 
+import Navigation from './components/Navigation'
 import SpotDetail from "./components/SpotDetail";
 import AllSpots from "./components/AllSpots";
+import CreateSpot from "./components/CreateSpot";
+import ManageSpots from "./components/ManageSpots";
 
 
 function App() {
@@ -30,6 +32,10 @@ function App() {
 
     {isLoaded && (
       <Switch>
+      <Route path='/spots/:spotId'>
+        <SpotDetail/>
+      </Route>
+
       <Route path="/login">
         <LoginFormPage />
       </Route>
@@ -38,11 +44,15 @@ function App() {
         <SignupFormPage/>
       </Route>
 
-      <Route path='/spots/:spotId'>
-        <SpotDetail/>
+      <Route path='/manageSpots'>
+        <ManageSpots/>
       </Route>
 
-      <Route path='/spots'>
+      <Route path='/newSpot'>
+        <CreateSpot/>
+      </Route>
+
+      <Route exact path='/'>
         <AllSpots/>
       </Route>
 
