@@ -13,6 +13,7 @@ import SpotDetail from "./components/SpotDetail";
 import AllSpots from "./components/AllSpots";
 import CreateSpot from "./components/CreateSpot";
 import ManageSpots from "./components/ManageSpots";
+import SpotReviews from "./components/SpotReviews";
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
       <Switch>
       <Route path='/spots/:spotId'>
         <SpotDetail/>
+        <SpotReviews/>
       </Route>
 
       <Route path="/login">

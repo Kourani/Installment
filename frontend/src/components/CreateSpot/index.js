@@ -27,29 +27,46 @@ function CreateSpot(){
     const [image, setImage]= useState()
 
     const [validationErrors, setValidationErrors] = useState({})
-    const [buttonOff, setButtonOff] = useState(true)
+    const [buttonOff, setButtonOff] = useState(false)
+    const [submitted, setSubmitted] = useState(false)
 
     //this use Effect checks for changes in the input parameters
     //if they are satisfactory ok if not they display the error message
-    useEffect(()=>{
+
+    // useEffect(()=>{
+    //     const errors = {}
+    //     if(!price) errors['price']='Price per night is required'
+    //     if(!country) errors['country']='Country is required'
+    //     if(!city) errors['city']='City is required'
+    //     if(!state) errors['state']='State is required'
+    //     if(!streetAddress) errors['streetAddress']='Street Address is required'
+    //     if(!image) errors['image']='Preview Image URL is required'
+    //     if(!description || (description && description.length<30)) errors['description']='Description needs 30 or more characters'
+
+    //     setValidationErrors(errors)
+    //     console.log('ERRORS', errors)
+    //     console.log('DESCRIPTION', description)
+    //     if(!Object.keys(errors).length) setButtonOff(false)
+
+    // }, [price, country, city, state, streetAddress, image, description])
+
+    async function handleSubmit (e){
+
+        e.preventDefault()
+
         const errors = {}
         if(!price) errors['price']='Price per night is required'
-        if(!country) errors[country]='Country is required'
-        if(!city) errors[city]='City is required'
-        if(!state) errors[state]='State is required'
-        if(!streetAddress) errors[streetAddress]='Street Address is required'
-        if(!image) errors[image]='Preview Image URL is required'
+        if(!country) errors['country']='Country is required'
+        if(!city) errors['city']='City is required'
+        if(!state) errors['state']='State is required'
+        if(!streetAddress) errors['streetAddress']='Street Address is required'
+        if(!image) errors['image']='Preview Image URL is required'
         if(!description || (description && description.length<30)) errors['description']='Description needs 30 or more characters'
 
         setValidationErrors(errors)
         console.log('ERRORS', errors)
         console.log('DESCRIPTION', description)
-        if(!Object.keys(errors).length) setButtonOff(false)
-
-    }, [price, country, city, state, streetAddress, image, description])
-
-    function handleSubmit(e){
-        e.preventDefault()
+        setSubmitted(true)
 
         const payload ={
             country,
@@ -60,8 +77,9 @@ function CreateSpot(){
         }
 
 
-        const createdSpot = dispatch(spotActions.createSpot(payload))
-        console.log('aa', createdSpot)
+
+        const created= await dispatch(spotActions.createSpot(payload))
+        console.log('created',created)
 
         //reset form values
         setCountry('')
@@ -100,7 +118,7 @@ function CreateSpot(){
             </label>
 
             <div className='error'>
-                {validationErrors.streetAddress && `*${validationErrors.streetAddress}`}
+                { submitted && validationErrors.streetAddress && `*${validationErrors.streetAddress}`}
             </div>
 
             <label>City
@@ -111,7 +129,7 @@ function CreateSpot(){
             </label>
 
             <div className='error'>
-                {validationErrors.city && `*${validationErrors.city}`}
+                {submitted && validationErrors.city && `*${validationErrors.city}`}
             </div>
 
             <label>State
@@ -122,7 +140,7 @@ function CreateSpot(){
             </label>
 
             <div className='error'>
-                {validationErrors.state && `*${validationErrors.state}`}
+                {submitted && validationErrors.state && `*${validationErrors.state}`}
             </div>
 
             <div>Describe your place to your guests</div>
@@ -132,7 +150,7 @@ function CreateSpot(){
             placeholder="Please write at least 30 characters"></textarea>
 
             <div className='error'>
-                {validationErrors?.description && `*${validationErrors.description}`}
+                {submitted && validationErrors?.description && `*${validationErrors.description}`}
             </div>
 
             <div>Create a title for your spot</div>
@@ -150,7 +168,7 @@ function CreateSpot(){
             placeholder="Price per night (USD)"></input>
 
             <div className='error'>
-                {validationErrors.price && `*${validationErrors.price}`}
+                {submitted && validationErrors.price && `*${validationErrors.price}`}
             </div>
 
             <div>Liven up your spot with photos</div>
@@ -161,7 +179,7 @@ function CreateSpot(){
             placeholder="Preview of Image URL"></input>
 
             <div className='error'>
-                {validationErrors.image && `*${validationErrors.image}`}
+                {submitted && validationErrors.image && `*${validationErrors.image}`}
             </div>
 
             <input placeholder="Image URL"></input>

@@ -3,15 +3,16 @@ import {createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import sessionReducer from './session'
 import spotReducer from './spot'
+import reviewReducer from './review'
 
 
 
 
 const rootReducer = combineReducers({
     session:sessionReducer,
-    spot:spotReducer
+    spot:spotReducer,
     // booking:bookingReducer,
-    // review:reviewReducer,
+    review:reviewReducer
     // image:imageReducer
 })
 

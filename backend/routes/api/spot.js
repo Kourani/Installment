@@ -5436,7 +5436,7 @@ router.get('/:spotId/reviews' , async (req,res) =>{
 
         }
 
-      let object = {Reveiws:plainFirst}
+      let object = {Reviews:plainFirst}
       res.json(object)
       return
 })

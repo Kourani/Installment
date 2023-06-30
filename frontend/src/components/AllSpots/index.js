@@ -1,25 +1,33 @@
 
+import './AllSpots.css'
+import { getSpots } from "../../store/spot";
+import * as reviewActions from '../../store/review'
 
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getSpots } from "../../store/spot";
-
-import './AllSpots.css'
-import { Redirect } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import { useParams } from 'react-router-dom';
 
 function AllSpots(){
 
     const dispatch = useDispatch()
+    const {spotId} = useParams()
+
+    console.log('spotId',spotId)
+
     const spotState = useSelector(state=>state.spot)
     console.log('SPOTSTATE',spotState)
 
+    const reviewState = useSelector(state=>state.review)
+    console.log('REVIEWSTATE', reviewState)
+
     useEffect(()=>{
         dispatch(getSpots())
+        dispatch(reviewActions.getReviews(spotId))
     },[dispatch])
 
     let values = Object.values(spotState)
-    console.log('VALUES',values)
+   
 
     const history = useHistory()
 
@@ -37,7 +45,7 @@ function AllSpots(){
                         <li> {element.price} Night</li>
                     </ul>
                 </button>
-                <div>{element.avgRating}</div>
+                <div>{`* ${element.avgRating}`}</div>
                 </>
             )
         })

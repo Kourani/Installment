@@ -5,9 +5,10 @@
 import {csrfFetch} from "./csrf"
 
 
-const GET_SPOTS = "spots/GET_SPOTS"
-const ONE_SPOT = "spots/SPOT_ID"
+const GET_SPOTS = "/spots/GET_SPOTS"
+const ONE_SPOT = "/spots/SPOT_ID"
 const NEW_SPOT = "/spots/NEW_SPOT"
+
 
 //ACTIONS
 
@@ -78,8 +79,8 @@ export const createSpot = (payload) => async (dispatch) =>{
         return matchedSpot
     }
 
-    return response.json()
-}
+    return response.json()}
+
 
 //set up of initial state
 const initialState = {}
@@ -114,7 +115,7 @@ const spotReducer = (state=initialState, action) =>{
         case NEW_SPOT:
             const createdSpot = {...action.newData}
             return{
-                latest: createdSpot,
+                createdSpots: createdSpot,
                 ...state
             }
 

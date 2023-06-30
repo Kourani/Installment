@@ -1,24 +1,23 @@
 
 
-import React, { useEffect } from "react";
+
 import './SpotDetail.css'
 import * as spotActions from '../../store/spot'
+// import * as reviewActions from '../../store/review'
 
-
+import React, { useEffect } from "react";
 import { useSelector, useDispatch} from "react-redux";
 import {useParams} from 'react-router-dom'
 
 function SpotDetail(){
-
-    let params = useParams()
-    console.log('plain Use', params)
-
     const {spotId} = useParams()
+    console.log('spotId', spotId)
 
     const dispatch = useDispatch()
 
     useEffect(()=>{
         dispatch(spotActions.spotDetails(spotId))
+        // dispatch(reviewActions.getReviews(spotId))
     },[dispatch])
 
     const specificSpot = useSelector((state)=>state.spot.matched)
@@ -43,6 +42,8 @@ function SpotDetail(){
                <button onClick={()=>submitButton()}>Reserve</button>
            </div>
        </>
+
+
 
     )
 }
