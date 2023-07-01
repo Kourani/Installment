@@ -29,6 +29,7 @@ function ManageSpots(){
         return values.map(element=>{
             if(element.ownerId === user.user.id){
                 return(
+                    <>
                     <button onClick={()=>{history.push(`/spots/${element.id}`)}}>
                         <ul>
                             <div>{element.previewImage}</div>
@@ -36,9 +37,11 @@ function ManageSpots(){
                             <li>{element.avgRating ? element.avgRating : 'New'}</li>
                             <li>{element.price} Night</li>
                         </ul>
-                        <button>Update</button>
-                        <button>Delete</button>
                     </button>
+                        <button onClick={()=>{history.push(`/spots/${element.id}/updateSpot`)}}>Update</button>
+                        <button>Delete</button>
+                    </>
+
                 )
             }
         })

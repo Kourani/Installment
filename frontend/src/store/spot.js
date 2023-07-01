@@ -109,7 +109,6 @@ const spotReducer = (state=initialState, action) =>{
 
             return {
                 ...allSpots,
-                ...state
             }
 
         case NEW_SPOT:
