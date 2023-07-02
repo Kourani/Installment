@@ -11,24 +11,38 @@ const {Spot, User, Review} = require('../models')
 
 const spotReviews = [
   {
-    name: 'App Academy',
+    name: 'Last',
     userId:1,
     reviews:[
-      {stars:5, review:'bbbbbbb'}
+      {stars:5, review:'user 1'}
     ]
   },
   {
     name: 'Sweet',
-    userId:2,
+    userId:1,
     reviews:[
-      {stars:5, review:'bbbbbbb'}
+      {stars:5, review:'user 1'}
+    ]
+  },
+  {
+    name: 'App Academy',
+    userId:1,
+    reviews:[
+      {stars:5, review:'user 1'}
     ]
   },
   {
     name: 'Last',
+    userId:2,
+    reviews:[
+      {stars:5, review:'user 2'}
+    ]
+  },
+  {
+    name: 'Sweet',
     userId:3,
     reviews:[
-      {stars:5, review:'bbbbbbb'}
+      {stars:5, review:'user 3'}
     ]
   },
 
