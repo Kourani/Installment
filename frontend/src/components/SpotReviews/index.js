@@ -2,10 +2,12 @@
 
 import './SpotReviews.css'
 import * as reviewActions from '../../store/review'
+import Modal from './../Modal'
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch} from "react-redux";
 import {useParams} from 'react-router-dom'
+
 
 function SpotReviews(){
 
@@ -65,6 +67,8 @@ function SpotReviews(){
 
     }
 
+    const [modal, setModal] = useState(false)
+
     //to obtain the actual reviews
     function reviewSpot(){
 
@@ -81,17 +85,6 @@ function SpotReviews(){
                 const year = postedDate.getFullYear()
                 postedDate = monthNames[parseInt(month)-1] + '-' + year;
 
-                // if(element?.User?.id === userState?.user?.id){
-                //     return (
-                //         <ul>
-                //             <li>{element?.User?.firstName}</li>
-                //             <li>{postedDate}</li>
-                //             <li>{element?.review}</li>
-                //             <button type='modal'>Delete</button>
-                //         </ul>
-                //     )
-                // }
-
                 return (
                     <ul>
                         { element?.User?.id === userState?.user?.id  ?
@@ -99,7 +92,8 @@ function SpotReviews(){
                             <li>{element?.User?.firstName}, {console.log('aaaaaaaaaaaa',element?.User?.id)}</li>
                             <li>{postedDate}</li>
                             <li>{element?.review}</li>
-                            <button type='modal'>Delete</button>
+                            <button className = "openModalBtn" onClick={()=>{setModal(true)}}>Delete</button>
+                            { modal && <Modal closeModal={setModal} />}
                             </>) :
 
                             <>
@@ -111,8 +105,6 @@ function SpotReviews(){
                        )
                 })
 
-            console.log('REVIEWSMAP', reviewsMap)
-            console.log('000000', reviewsMap[0])
             return reviewsMap
         }
 
@@ -137,10 +129,6 @@ function SpotReviews(){
             return `New`
         }
     }
-
-
-
-
 
     return(
         <>

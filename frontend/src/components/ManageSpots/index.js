@@ -2,12 +2,14 @@
 
 import './ManageSpots.css'
 import * as spotActions from '../../store/spot'
+import Modal from "./../Modal"
 
-import { React } from 'react'
+import { React, useState } from 'react'
 import { NavLink } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from 'react-router-dom';
+
 // import { useParams } from 'react-router-dom';
 
 function ManageSpots(){
@@ -19,15 +21,19 @@ function ManageSpots(){
     },[dispatch])
 
 
-
     const allSpots = useSelector(state=>state.spot)
     const values = Object.values(allSpots)
 
     const user = useSelector(userState=>userState.session)
 
+    const [modal, setModal] = useState(false)
+
+
+
     function userSpots(){
         return values.map(element=>{
             if(element.ownerId === user.user.id){
+
                 return(
                     <>
                     <button onClick={()=>{history.push(`/spots/${element.id}`)}}>
@@ -39,7 +45,8 @@ function ManageSpots(){
                         </ul>
                     </button>
                         <button onClick={()=>{history.push(`/spots/${element.id}/updateSpot`)}}>Update</button>
-                        <button>Delete</button>
+                        <button className = "openModalBtn" onClick={()=>setModal(true)}>Delete</button>
+                        { modal && <Modal closeModal={setModal} />}
                     </>
 
                 )
