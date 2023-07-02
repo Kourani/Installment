@@ -31,7 +31,7 @@ function SpotDetail(){
 
         <>
         <h1>{specificSpot?.name}</h1>
-           <h2>{specificSpot?.city}, {specificSpot?.country}</h2>
+           <h3>{specificSpot?.city}, {specificSpot?.state}, {specificSpot?.country}</h3>
            <text>Hosted By {specificSpot?.Owner?.firstName}, {specificSpot?.Owner?.lastName}</text>
            <p>{specificSpot?.description}</p>
 

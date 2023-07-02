@@ -19,7 +19,7 @@ const userSpots = [
 
     spots:[{
     address:"123 Disney Lane",
-    city:"San Francisco",
+    city:"San Jose",
     state:'California',
     lat: 37.7645358,
     lng: -122.4730327,
@@ -34,14 +34,14 @@ const userSpots = [
   lastName:'Avenger1',
 
   spots:[{
-  address:'afhskafh',
-  city:'dear',
-  state:'mich',
-  country:'aaa',
+  address:"123 Disney Lane",
+  city:'New York City',
+  state:'New York',
+  country:"United States of America",
   lat:564.65,
   lng:432.45,
-  name:'last',
-  description:'fjsakfhjhe',
+  name:'Sweet',
+  description:'one',
   price:5121.1}]
 },
 
@@ -50,14 +50,14 @@ const userSpots = [
   lastName:'Avenger2',
 
   spots:[{
-  address:'afhskafh',
-  city:'dear',
-  state:'mich',
-  country:'aaa',
+  address:"123 Disney Lane",
+  city:'Orlando',
+  state:'Florida',
+  country:"United States of America",
   lat:564.01,
   lng:432.22,
-  name:'last',
-  description:'fjsakfhjhe',
+  name:'Last',
+  description:'two',
   price:5121.12}]
 },
 

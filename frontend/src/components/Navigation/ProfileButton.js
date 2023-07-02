@@ -1,15 +1,16 @@
 
 
-
-
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from 'react-redux';
+
 import * as sessionActions from '../../store/session';
 
 function ProfileButton({ user }) {
+
   const dispatch = useDispatch();
-  const [showMenu, setShowMenu] = useState(true);
   const ulRef = useRef();
+  const [showMenu, setShowMenu] = useState(true);
+
 
   const openMenu = () => {
     if (showMenu) return;
@@ -55,7 +56,7 @@ function button(){
     <>
       <button onClick={openMenu}>
         {button()}
-      </button>
+
       <ul className={ulClassName} ref={ulRef}>
         <li>{user.username}</li>
         <li>{user.firstName} {user.lastName}</li>
@@ -64,6 +65,7 @@ function button(){
           <button onClick={logout}>Log Out</button>
         </li>
       </ul>
+      </button>
     </>
   );
 }

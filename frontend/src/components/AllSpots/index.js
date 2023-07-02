@@ -27,11 +27,20 @@ function AllSpots(){
     },[dispatch])
 
     let values = Object.values(spotState)
-   
+
 
     const history = useHistory()
 
+    const star = () => {
+        return (
+          <div style={{ color: "black", fontSize: "20px" }}>
+            <i className="fa-regular fa-star"></i>
+          </div>
+        );
+      };
 
+
+      console.log('ALLSPOTS...VALUES',values)
     function spotTiles(){
         return values.map(element =>{
             return (
@@ -40,12 +49,13 @@ function AllSpots(){
 
                     <ul>
                         <div>{element.previewImage}</div>
-                        <li> {element.city} {element.country}</li>
-                        <li>{element.avgRating ? element.avgRating : 'New'}</li>
+                        <li> {element.city}, {element.state}</li>
+                        <li>{element.avgRating ?  element.avgRating : 'New'}</li>
                         <li> {element.price} Night</li>
                     </ul>
                 </button>
-                <div>{`* ${element.avgRating}`}</div>
+
+                <div> {star()}{element.avgRating ?  element.avgRating : 'New'}</div>
                 </>
             )
         })
@@ -54,7 +64,6 @@ function AllSpots(){
 
     return(
         <>
-            <h1>SPOTSSS</h1>
             {spotTiles()}
         </>
     )

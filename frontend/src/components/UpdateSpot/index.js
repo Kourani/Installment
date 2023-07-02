@@ -14,13 +14,16 @@ function UpdateSpot(){
     const {spotId} = useParams()
 
     const spotState = useSelector(state=>state.spot)
+    console.log('UPDATE...SPOTSTATE', spotState)
+
+    useEffect(()=>{
+        dispatch(spotActions.getSpots())
+    },[dispatch])
 
     const [country, setCountry] = useState(spotState[spotId]?.country)
-
     const [streetAddress, setStreetAddress] = useState(spotState[spotId]?.address)
     const [city, setCity] = useState(spotState[spotId]?.city)
     const [state, setState] = useState(spotState[spotId]?.state)
-
     const [price, setPrice] = useState(spotState[spotId]?.price)
     const [description, setDescription]=useState(spotState[spotId]?.description)
     const [name, setName] = useState(spotState[spotId]?.name)
@@ -30,9 +33,22 @@ function UpdateSpot(){
     const [buttonOff, setButtonOff] = useState(false)
     const [submitted, setSubmitted] = useState(false)
 
-    useEffect(()=>{
-        dispatch(spotActions.getSpots())
-    },[dispatch])
+
+    const payload ={
+        country,
+        streetAddress,
+        city,
+        state,
+        price
+    }
+
+    console.log('UPADATE...PAYLOAD COUNTRY',payload.country)
+    console.log('UPDATE...STATE COUNTRY',country)
+
+
+
+
+
 
     async function handleSubmit (e){
         e.preventDefault()
@@ -45,23 +61,18 @@ function UpdateSpot(){
         if(!streetAddress) errors['streetAddress']='Street Address is required'
         if(!image) errors['image']='Preview Image URL is required'
         if(!description || (description && description.length<30)) errors['description']='Description needs 30 or more characters'
+        if(name.length>50) errors['name'] = 'Name should be less than 50 characters'
 
         setValidationErrors(errors)
         console.log('ERRORS', errors)
         console.log('DESCRIPTION', description)
         setSubmitted(true)
 
-        const payload ={
-            country,
-            streetAddress,
-            city,
-            state,
-            price
-        }
 
 
-        const created= await dispatch(spotActions.createSpot(payload))
-        console.log('created',created)
+
+        const created = dispatch(spotActions.createSpot(payload))
+        console.log('UPDATE...CREATED', created)
 
         //reset form values
         setCountry(spotState[spotId]?.country)

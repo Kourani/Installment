@@ -11,21 +11,21 @@ const {Spot, User, Review} = require('../models')
 
 const spotReviews = [
   {
-    name: 'last',
+    name: 'App Academy',
     userId:1,
     reviews:[
       {stars:5, review:'bbbbbbb'}
     ]
   },
   {
-    name: 'last',
+    name: 'Sweet',
     userId:2,
     reviews:[
       {stars:5, review:'bbbbbbb'}
     ]
   },
   {
-    name: 'last',
+    name: 'Last',
     userId:3,
     reviews:[
       {stars:5, review:'bbbbbbb'}
@@ -44,11 +44,19 @@ module.exports = {
         where:{name}
       }) //find the spot by name
 
+      // console.log('spotted',spot)
+      // console.log('NAME', name)
+      // console.log('REVIEWS', reviews)
+      // console.log('userId', userId)
+
 
       for(let reviewIdx = 0; reviewIdx < reviews.length; reviewIdx++ ){ //creates index review loop
         const review = reviews[reviewIdx] //create variable equal to reviews array at review index
 
-        await Review.create({...review, spotId: spot.id, userId}) //create a new review connected with spotId
+        // console.log('SPOT',Spot)
+        // console.log('PLESASE',Spot.id)
+        // console.log('SECOND', spot.id)
+        await Review.create({...review, spotId:spot.id, userId}) //create a new review connected with spotId
       }
     }
 

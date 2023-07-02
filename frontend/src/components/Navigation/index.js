@@ -25,7 +25,8 @@ function Navigation({ isLoaded }){
     sessionLinks = (
       <li>
         <ProfileButton user={sessionUser} />
-        <button onClick={logout}>Log Out</button>
+        <NavLink to="/newSpot"><button>Create a New Spot</button></NavLink>
+        {/* <button onClick={logout}>Log Out</button> */}
       </li>
     );
 
@@ -41,7 +42,6 @@ function Navigation({ isLoaded }){
   return (
     <ul>
       <li>
-      <NavLink to="/newSpot"><button>Create a New Spot</button></NavLink>
       <NavLink to='/manageSpots'>Manage Spots</NavLink>
       <NavLink exact to="/">Home</NavLink>
       </li>

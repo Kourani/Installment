@@ -130,9 +130,17 @@ function SpotReviews(){
         }
     }
 
+    const star = () => {
+        return (
+          <div style={{ color: "black", fontSize: "20px" }}>
+            <i className="fa-regular fa-star"></i>
+          </div>
+        );
+      };
+
     return(
         <>
-        <div>{numberOfReviews()}</div>
+        <div> {star()} {numberOfReviews()}</div>
         <div>* {avgReviewsRating()}</div>
         {reviewSpot()}
         </>
