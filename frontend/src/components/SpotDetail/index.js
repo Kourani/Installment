@@ -33,14 +33,13 @@ function SpotDetail(){
     const reviewState = useSelector(state=>state.review)
     console.log('SPOTDETAIL...reviewState',reviewState)
 
-
     const star = () => {
         return (
           <div style={{ color: "black", fontSize: "20px" }}>
             <i className="fa-regular fa-star"></i>
           </div>
         );
-      };
+    };
 
     function submitButton(){
         return window.alert('Feature coming soon')
@@ -61,7 +60,7 @@ function SpotDetail(){
       'December'
     ]
 
-//to obtain the average rating of the reviews
+    //to obtain the average rating of the reviews
     function avgReviewsRating(){
         let averageRating = 0
 
@@ -80,19 +79,18 @@ function SpotDetail(){
         return (averageRating/reviewState?.Reviews.length)}
     }
 
-//to obtain the actual reviews
+    //to obtain the actual reviews
     function reviewSpot(){
         if(reviewState?.Reviews?.length > 0){
-            reviewState?.Reviews.map(element=>{
+            console.log('inside the first if!')
+            return reviewState?.Reviews.map(element=>{
 
-//sets the current date in the following format example '2023-1-25' with january being 0
+            //sets the current date in the following format example '2023-1-25' with january being 0
 
             let  postedDate = new Date(element.createdAt)
             const  month = String(postedDate.getMonth() + 1).padStart(2, '0');
             const year = postedDate.getFullYear()
             postedDate = monthNames[parseInt(month)-1] + '-' + year;
-
-            console.log('SPOTREVIEWS...ELEMENT',element?.User.id)
 
             function deleteButton(){
                 if(userState.user !== null){
@@ -107,6 +105,8 @@ function SpotDetail(){
                 }
             }
 
+            console.log('SPOTDETAIL...deleteButton', deleteButton())
+
             function reviewBySpot(){
                 if(parseInt(element?.spotId) === parseInt(spotId)){
                     return(
@@ -120,9 +120,7 @@ function SpotDetail(){
                 }
             }
 
-
-
-            console.log('SPOTREVIEWS...REVIEWBYSPOT', reviewBySpot())
+            console.log('SPOTDETAIL...reviewBySpot',reviewBySpot())
 
             return(
                 <ul>
@@ -144,7 +142,9 @@ function SpotDetail(){
         }
     }
 
-//to obtain the number of reviews
+    console.log('SPOTDETAIL...reviewSpot', reviewSpot())
+
+    //to obtain the number of reviews
     function numberOfReviews(){
           if(reviewState?.Reviews?.length === 1){
               return `${reviewState?.Reviews?.length} Review`
@@ -169,6 +169,7 @@ function SpotDetail(){
                 <p></p>
                <button onClick={()=>submitButton()}>Reserve</button>
             </div>
+
 
             <div> Number of Reviews {star()} {numberOfReviews()}</div>
             <div>Average Review Star Rating {star()} {avgReviewsRating()} </div>
