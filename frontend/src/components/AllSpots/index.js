@@ -36,35 +36,43 @@ function AllSpots(){
 
     function spotTiles(){
         return spotValues.map(element =>{
+            console.log('ELEMENTTTTTT',element)
 
             function onClicked(){
                 history.push(`/spots/${element.id}`)
                 dispatch(reviewActions.getSpotReviews(element.id))
                 return
               }
-              
+
             return (
                 <>
                 <button key='spotTile' onClick={()=>onClicked()}>
+                <div>
+                <div className="imageContainer">
+                    <img src={element.previewImage} alt='Spot Preview' />
+                </div>
 
                     <ul key='listedItems'>
-                        <div key='image'>{element.previewImage}</div>
                         <li key='cityState'> {element.city}, {element.state}</li>
                         <li key='rating'>Average Spot Rating: {element.avgRating ?  element.avgRating : 'New'}</li>
                         <li key='price'> {element.price} Night</li>
+                        <li key='spot-name'>{element.name}</li>
                     </ul>
+                    
+                    Average Spot Rating: {element.avgRating ?  element.avgRating : 'New'}
+                </div>
                 </button>
 
-                <div key='ratingBelow'> {star()}Average Spot Rating:{element.avgRating ?  element.avgRating : 'New'}</div>
+
                 </>
             )
         })
     }
 
     return(
-        <>
-            {spotTiles()}
-        </>
+            <div className='spotGrid'>
+                {spotTiles()}
+            </div>
     )
 
 }

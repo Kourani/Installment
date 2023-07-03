@@ -40,8 +40,8 @@ function ProfileButton({ user }) {
 
   const Carrot = () => {
     return (
-      <div style={{ color: "orange", fontSize: "100px" }}>
-        <i className="fas fa-carrot"></i>
+      <div style={{ color: "BLACK", fontSize: "20px" }}>
+        <i className="fa-regular fa-user"></i>
       </div>
     );
   };

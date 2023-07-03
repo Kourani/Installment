@@ -37,8 +37,10 @@ function ManageSpots(){
                 return(
                     <>
                     <button onClick={()=>{history.push(`/spots/${element.id}`)}}>
+                        <div className="imageContainer">
+                            <img src={element.previewImage} alt='Spot Preview' />
+                        </div>
                         <ul>
-                            <div>{element.previewImage}</div>
                             <li>{element.city}, {element.country}</li>
                             <li>{element.avgRating ? element.avgRating : 'New'}</li>
                             <li>{element.price} Night</li>

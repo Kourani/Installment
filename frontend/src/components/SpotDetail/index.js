@@ -20,9 +20,8 @@ function SpotDetail(){
 
     useEffect(()=>{
       dispatch(spotActions.spotDetails(spotId))
-      dispatch(spotActions.getSpots())
       dispatch(reviewActions.getSpotReviews(spotId))
-  },[dispatch, spotId])
+    },[dispatch, spotId])
 
     //to know who is logged in or if no one is logged in
     const userState = useSelector(state=>state.session)
@@ -164,16 +163,17 @@ function SpotDetail(){
       }
   }
 
+  console.log('HELLO',spotState?.matched?.Owner?.firstName)
     return(
 
         <>
-        <h1>{spotState?.name}</h1>
-           <h3>{spotState?.city}, {spotState?.state}, {spotState?.country}</h3>
-           <text>Hosted By {spotState?.Owner?.firstName}, {spotState?.Owner?.lastName}</text>
-           <p>{spotState?.description}</p>
+        <h1>{spotState?.matched?.name}</h1>
+           <h3>{spotState?.matched?.city}, {spotState?.matched?.state}, {spotState?.matched?.country}</h3>
+           <text>Hosted By {spotState?.matched?.Owner?.firstName}, {spotState?.matched?.Owner?.lastName}</text>
+           <p>{spotState?.matched?.description}</p>
 
            <div>
-               <label>{spotState?.price}  Night</label>
+               <label>{spotState?.matched?.price}  Night</label>
                <p></p>
 
                <button onClick={()=>submitButton()}>Reserve</button>
