@@ -1,8 +1,10 @@
 
 
 import './SpotReviews.css'
-import * as reviewActions from '../../store/review'
 import Modal from './../Modal'
+
+import * as reviewActions from '../../store/review'
+import * as spotActions from '../../store/spot'
 
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch} from "react-redux";
@@ -13,23 +15,27 @@ function SpotReviews(){
 
     const dispatch = useDispatch()
     const {spotId} = useParams()
+    console.log('SPOTREVIEWS...SPOTID',spotId)
+
+    const [modal, setModal] = useState(false)
 
     useEffect(()=>{
-        dispatch(reviewActions.getReviews(spotId))
-    },[dispatch]
-    )
+        dispatch(reviewActions.getSpotReviews(spotId))
+        dispatch(spotActions.getSpots())
+    },[dispatch], [spotId])
+
 
     //to know who is logged in or if no one is logged in
     const userState = useSelector(state=>state.session)
-    console.log('USERSTATE', userState)
+    console.log('SPOTREVIEWS...USERSTATE', userState)
 
     //to obtain access to the reviews state
     const spotReviews = useSelector((state)=>state.review)
-    console.log('SPOTREVIEWS', spotReviews)
+    console.log('SPOTREVIEWS...SPOTREVIEWS', spotReviews)
 
     //to obtain access to the the spots state
     const spotState = useSelector(state=>state.spot)
-    console.log('SPOTSTATE',spotState)
+    console.log('SPOTREVIEWS...SPOTSTATE',spotState)
 
     const monthNames = [
         'Janurary',
@@ -67,29 +73,50 @@ function SpotReviews(){
 
     }
 
-    const [modal, setModal] = useState(false)
+
 
     //to obtain the actual reviews
     function reviewSpot(){
 
         if(spotReviews?.Reviews?.length > 0){
-            console.log('INSIDE THE FIRST IF')
-            const theArray = spotReviews?.Reviews
 
-            let reviewsMap = theArray.map(element=>{
-                console.log('MAP')
-                console.log(element,'iiiiiiiiiii')
+            let theArray = spotReviews?.Reviews
+            console.log('SPOTREVIEWS...THE ARRAY', theArray)
+
+            return theArray.map(element=>{
+
                 //sets the current date in the following format example '2023-1-25' with january being 0
                 let  postedDate = new Date(element.createdAt)
                 const  month = String(postedDate.getMonth() + 1).padStart(2, '0');
                 const year = postedDate.getFullYear()
                 postedDate = monthNames[parseInt(month)-1] + '-' + year;
 
+                console.log('SPOTREVIEWS...ELEMENT',element?.User.id)
+                console.log('SPOTREVIWS...USERID',userState?.user.id)
+
+                function reviewBySpot(){
+                    console.log('SPOTREVIEWS...ELEMENT ID',element.spotId)
+                    console.log('SPOTREVIEWS...SPOTID',spotId)
+                    if(parseInt(element?.spotId) === parseInt(spotId))
+                    {
+                        return (
+
+                                    <>
+                                    <li>{element?.User?.firstName}</li>
+                                    <li>{postedDate}</li>
+                                    <li>{element?.review}</li>
+                                    </>
+
+                               )
+                    }}
+
+                console.log('SPOTREVIEWS...REVIEWBYSPOT', reviewBySpot())
+
                 return (
                     <ul>
-                        { element?.User?.id === userState?.user?.id  ?
+                        { (element?.User?.id === userState?.user?.id)  && (parseInt(element?.spotId) === parseInt(spotId)) ?
                             (<>
-                            <li>{element?.User?.firstName}, {console.log('aaaaaaaaaaaa',element?.User?.id)}</li>
+                            <li>{element?.User?.firstName}</li>
                             <li>{postedDate}</li>
                             <li>{element?.review}</li>
                             <button className = "openModalBtn" onClick={()=>{setModal(true)}}>Delete</button>
@@ -97,15 +124,12 @@ function SpotReviews(){
                             </>) :
 
                             <>
-                            <li>{element?.User?.firstName}</li>
-                            <li>{postedDate}</li>
-                            <li>{element?.review}</li>
+                           {reviewBySpot()}
                             </>}
-                    </ul>
-                       )
+                    </ul>)
+
                 })
 
-            return reviewsMap
         }
 
         if(spotState?.matched?.ownerId !== userState?.user?.id && userState?.user !== null && spotReviews?.Reviews?.length===0)
@@ -140,11 +164,12 @@ function SpotReviews(){
 
     return(
         <>
-        <div> {star()} {numberOfReviews()}</div>
-        <div>* {avgReviewsRating()}</div>
+        <div> Number of Reviews {star()} {numberOfReviews()}</div>
+        <div>Average Review Star Rating {star()} {avgReviewsRating()} </div>
         {reviewSpot()}
         </>
     )
+
 }
 
 export default SpotReviews

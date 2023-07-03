@@ -41,7 +41,6 @@ function App() {
 
       <Route path='/spots/:spotId'>
         <SpotDetail/>
-        <SpotReviews/>
       </Route>
 
 

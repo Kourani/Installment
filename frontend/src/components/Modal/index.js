@@ -27,7 +27,7 @@ function Modal({closeModal}){
     const spotStateValues = Object.values(spotState)
 
     useEffect(()=>{
-        dispatch(reviewActions.getReviews(spotId))
+        dispatch(reviewActions.getSpotReviews(spotId))
     },[dispatch])
 
     function obtainReview(){
