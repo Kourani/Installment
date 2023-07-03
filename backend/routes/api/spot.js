@@ -5443,7 +5443,6 @@ router.get('/:spotId/reviews' , async (req,res) =>{
 
 
 //create a booking based on spot id
-
 router.post('/:id/bookings', requireAuth, validateBooking, async(req,res)=>{
 
     //returns the desired spot ... an object

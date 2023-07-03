@@ -25,7 +25,7 @@ const spotReviews = [
     ]
   },
   {
-    name: 'App Academy',
+    name: 'Sour',
     userId:1,
     reviews:[
       {stars:5, review:'user 1'}

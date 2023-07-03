@@ -24,7 +24,7 @@ const userSpots = [
     lat: 37.7645358,
     lng: -122.4730327,
     country:"United States of America",
-    name:"App Academy",
+    name:"Sour",
     description:"Place where web developers are created",
     price:5121.12}]
 },
