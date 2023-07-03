@@ -48,7 +48,9 @@ function Modal({closeModal}){
 
     function obtainSpot(){
         if(spotStateValues.length && !spotId){
+
             let foundSpot
+            
             spotStateValues.forEach(element=>{
                 if(element?.ownerId === userState?.user?.id){
                     foundSpot = element

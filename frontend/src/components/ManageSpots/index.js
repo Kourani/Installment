@@ -20,7 +20,6 @@ function ManageSpots(){
         dispatch(spotActions.getSpots())
     },[dispatch])
 
-
     const allSpots = useSelector(state=>state.spot)
     const values = Object.values(allSpots)
 
@@ -28,24 +27,24 @@ function ManageSpots(){
 
     const [modal, setModal] = useState(false)
 
-
-
     function userSpots(){
         return values.map(element=>{
             if(element.ownerId === user.user.id){
 
                 return(
                     <>
-                    <button onClick={()=>{history.push(`/spots/${element.id}`)}}>
-                        <div className="imageContainer">
-                            <img src={element.previewImage} alt='Spot Preview' />
-                        </div>
-                        <ul>
-                            <li>{element.city}, {element.country}</li>
-                            <li>{element.avgRating ? element.avgRating : 'New'}</li>
-                            <li>{element.price} Night</li>
-                        </ul>
-                    </button>
+                        <button onClick={()=>{history.push(`/spots/${element.id}`)}}>
+                            <div className="imageContainer">
+                                <img src={element.previewImage} alt='Spot Preview' />
+                            </div>
+
+                            <ul>
+                                <li>{element.city}, {element.country}</li>
+                                <li>{element.avgRating ? element.avgRating : 'New'}</li>
+                                <li>{element.price} Night</li>
+                            </ul>
+                        </button>
+
                         <button onClick={()=>{history.push(`/spots/${element.id}/updateSpot`)}}>Update</button>
                         <button className = "openModalBtn" onClick={()=>setModal(true)}>Delete</button>
                         { modal && <Modal closeModal={setModal} />}
@@ -60,16 +59,17 @@ function ManageSpots(){
         if(userSpots().length){
             return userSpots()
         }
-        else{
-            return <div>nothing</div>
-        }
+
+        // else{
+        //     return <div>nothing</div>
+        // }
     }
 
     return(
         <>
-        <h1>Manage Spots</h1>
-        <NavLink to='/newSpot'>Create a Spot</NavLink>
-        <div>{user.user !=null ? check() : 'You must be logged in to manage your spots'}</div>
+            <h1>Manage Spots</h1>
+            <NavLink to='/newSpot'>Create a Spot</NavLink>
+            <div>{user.user !=null ? check() : 'You must be logged in to manage your spots'}</div>
         </>
     )
 
