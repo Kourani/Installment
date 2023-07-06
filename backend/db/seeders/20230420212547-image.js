@@ -80,7 +80,7 @@ module.exports = {
     },
 
     {
-      url:'https://images.pexels.com/photos/3801458/pexels-photo-3801458.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+      url:'https://images.pexels.com/photos/788434/pexels-photo-788434.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
       preview:true,
       imagableType:'Spot',
       imagableId:3
