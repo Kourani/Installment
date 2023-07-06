@@ -13,7 +13,6 @@ import SpotDetail from "./components/SpotDetail";
 import AllSpots from "./components/AllSpots";
 import CreateSpot from "./components/CreateSpot";
 import ManageSpots from "./components/ManageSpots";
-import SpotReviews from "./components/SpotReviews";
 import UpdateSpot from "./components/UpdateSpot";
 
 

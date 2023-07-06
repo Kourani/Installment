@@ -88,107 +88,120 @@ function UpdateSpot(){
 
     return(
         <>
-            <h2>Update your Spot</h2>
-            <div>Where's your place located?</div>
-            <div>Guests will only get your exact address once they booked a reservation</div>
 
-        <form onSubmit={handleSubmit}>
+            <form className='updateForm' onSubmit={handleSubmit}>
 
-            <label>Country
-                <input type='text'
+                <div className='group'>
+                <h2 className='updatePageTitle'>Update your Spot</h2>
+                    <div className='title'>Where's your place located?</div>
+                    <div>Guests will only get your exact address once they booked a reservation</div>
 
-                defaultValue={country}
-                onChange={(e)=>setCountry(e.target.defaultValue)}>
-                </input>
-            </label>
+                    <label> Country
+                        <input className='inputField' type='text'
+                        defaultValue={country}
+                        onChange={(e)=>setCountry(e.target.defaultValue)}>
+                        </input>
+                    </label>
 
-            <div className='error'>
-                {validationErrors.country}
-            </div>
+                    <div className='error'>
+                        {validationErrors.country}
+                    </div>
 
-            <label> Street Address
-                <input type='Address'
-                defaultValue={spotState[spotId]?.address}
-                onChange={(e)=>setStreetAddress(e.target.defaultValue)}>
-                </input>
-            </label>
+                    <label> Street Address
+                        <input className='inputField' type='Address'
+                        defaultValue={spotState[spotId]?.address}
+                        onChange={(e)=>setStreetAddress(e.target.defaultValue)}>
+                        </input>
+                    </label>
 
-            <div className='error'>
-                { submitted && validationErrors.streetAddress && `*${validationErrors.streetAddress}`}
-            </div>
+                    <div className='error'>
+                        { submitted && validationErrors.streetAddress && `*${validationErrors.streetAddress}`}
+                    </div>
 
-            <label>City
-                <input type='city'
-                defaultValue={spotState[spotId]?.city}
-                onChange={(e)=>setCity(e.target.defaultValue)}>
-                </input>
-            </label>
+                    <label>City
+                        <input type='city'
+                        defaultValue={spotState[spotId]?.city}
+                        onChange={(e)=>setCity(e.target.defaultValue)}>
+                        </input>
+                    </label>
 
-            <div className='error'>
-                {submitted && validationErrors.city && `*${validationErrors.city}`}
-            </div>
+                    <div className='error'>
+                        {submitted && validationErrors.city && `*${validationErrors.city}`}
+                    </div>
 
-            <label>State
-                <input type='state'
-                defaultValue={spotState[spotId]?.state}
-                onChange={(e)=>setState(e.target.defaultValue)}>
-                </input>
-            </label>
+                    <label>State
+                        <input type='state'
+                        defaultValue={spotState[spotId]?.state}
+                        onChange={(e)=>setState(e.target.defaultValue)}>
+                        </input>
+                    </label>
 
-            <div className='error'>
-                {submitted && validationErrors.state && `*${validationErrors.state}`}
-            </div>
+                    <div className='error'>
+                        {submitted && validationErrors.state && `*${validationErrors.state}`}
+                    </div>
 
-            <div>Describe your place to your guests</div>
-            <div>Mention the best features of your space and any special amentities like fast wifi or parking, and what you love about the neighborhood</div>
-            <textarea defaultValue={spotState[spotId]?.description}
-            onChange={(e)=>setDescription(e.target.defaultValue)}
-            placeholder="Please write at least 30 characters"></textarea>
+                </div>
 
-            <div className='error'>
-                {submitted && validationErrors?.description && `*${validationErrors.description}`}
-            </div>
+                <div className='group'>
+                    <div className='title'>Describe your place to your guests</div>
+                    <div>Mention the best features of your space and any special amentities like fast wifi or parking, and what you love about the neighborhood</div>
+                    <textarea className='inputField' defaultValue={spotState[spotId]?.description}
+                    onChange={(e)=>setDescription(e.target.defaultValue)}
+                    placeholder="Please write at least 30 characters"></textarea>
 
-            <div>Create a title for your spot</div>
-            <div> Catch guests' attention with a spot title that highlights what makes your place special</div>
-            <input
-            defaultValue={spotState[spotId]?.name}
-            onChange={(e)=>setName(e.target.defaultValue)}
-            placeholder="Name of your spot"></input>
+                    <div className='error'>
+                        {submitted && validationErrors?.description && `*${validationErrors.description}`}
+                    </div>
+                </div>
 
-            <div>Set a base price for your spot</div>
-            <div>Competitive pricing can help your listing stand out and rank higher in search results</div>
-            <input
-            defaultValue={spotState[spotId]?.price}
-            onChange={(e)=>setPrice(e.target.defaultValue)}
-            placeholder="Price per night (USD)"></input>
+                <div className='group'>
+                    <div className='title'>Create a title for your spot</div>
+                    <div> Catch guests' attention with a spot title that highlights what makes your place special</div>
+                    <input className='inputField'
+                    defaultValue={spotState[spotId]?.name}
+                    onChange={(e)=>setName(e.target.defaultValue)}
+                    placeholder="Name of your spot"></input>
+                </div>
 
-            <div className='error'>
-                {submitted && validationErrors.price && `*${validationErrors.price}`}
-            </div>
+                <div className='group'>
+                    <div className='title'>Set a base price for your spot</div>
+                    <div>Competitive pricing can help your listing stand out and rank higher in search results</div>
+                    <input className='inputField'
+                    defaultValue={spotState[spotId]?.price}
+                    onChange={(e)=>setPrice(e.target.defaultValue)}
+                    placeholder="Price per night (USD)"></input>
 
-            <div>Liven up your spot with photos</div>
-            <div>Submit a link to at lest one photo to publish your spot</div>
-            <input
-            defaultValue={spotState[spotId]?.previewImage}
-            onChange={(e)=>setImage(e.target.defaultValue)}
-            placeholder='Preview Image'></input>
+                    <div className='error'>
+                        {submitted && validationErrors.price && `*${validationErrors.price}`}
+                    </div>
+                </div>
 
-            <div className='error'>
-                {submitted && validationErrors.image && `*${validationErrors.image}`}
-            </div>
+                <div className='group'>
+                    <div className='title'>Liven up your spot with photos</div>
+                    <div>Submit a link to at lest one photo to publish your spot</div>
+                    <input className='inputField'
+                    defaultValue={spotState[spotId]?.previewImage}
+                    onChange={(e)=>setImage(e.target.defaultValue)}
+                    placeholder='Preview Image'></input>
 
-            <input placeholder="Image URL"></input>
-            <input placeholder="Image URL"></input>
-            <input placeholder="Image URL"></input>
-            <input placeholder="Image URL"></input>
+                    <div className='error'>
+                        {submitted && validationErrors.image && `*${validationErrors.image}`}
+                    </div>
+
+                    <input className='inputField' placeholder="Image URL"></input>
+                    <input className='inputField' placeholder="Image URL"></input>
+                    <input className='inputField' placeholder="Image URL"></input>
+                    <input className='inputField' placeholder="Image URL"></input>
+                </div>
 
 
-            <button type='newSpot' disabled={buttonOff} onClick={()=>{history.push(`spots/${spotId}`)}}>
-                Update your Spot
-            </button>
+                <div className='outerUpdate'>
+                    <button className='updateButton' type='newSpot' disabled={buttonOff} onClick={()=>{history.push(`spots/${spotId}`)}}>
+                        Update your Spot
+                    </button>
+                </div>
 
-        </form>
+            </form>
 
         </>
     )

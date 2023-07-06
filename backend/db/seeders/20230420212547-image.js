@@ -69,13 +69,21 @@ module.exports = {
 
     },
 
+    {
+      url:'https://images.pexels.com/photos/1672813/pexels-photo-1672813.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:2
+
+    },
+
 
 
     {
       url:'   https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
       preview:true,
       imagableType:'Spot',
-      imagableId:2
+      imagableId:4
 
     },
 

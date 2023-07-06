@@ -50,7 +50,7 @@ function Modal({closeModal}){
         if(spotStateValues.length && !spotId){
 
             let foundSpot
-            
+
             spotStateValues.forEach(element=>{
                 if(element?.ownerId === userState?.user?.id){
                     foundSpot = element
@@ -66,17 +66,13 @@ function Modal({closeModal}){
     console.log('SPOT',obtainSpot())
 
 
-    // useEffect(()=>{
-    //     dispatch(reviewActions.reviewDelete(obtainReview()))
-    //     dispatch(spotActions.deleteSpot(obtainReview()))
-    // },[dispatch])
 
     function location(){
         if(spotId){
-            return 'Review'
+            return 'review'
         }
         else {
-            return 'Spot'
+            return 'spot'
         }
     }
 
@@ -99,11 +95,11 @@ function Modal({closeModal}){
                 </div>
 
                 <div className='title'>
-                    <h1>Title: Confirm Delete</h1>
+                    <h1>Confirm Delete</h1>
                 </div>
 
                 <div className='body'>
-                    <p>Message: Are you sure you want to remove this {location()}?</p>
+                    <p>Are you sure you want to remove this {location()} from the listings?</p>
                 </div>
 
                 <div className='footer'>

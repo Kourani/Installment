@@ -33,32 +33,41 @@ function AllSpots(){
 
     function spotTiles(){
         return spotValues.map(element =>{
-            console.log('ELEMENTTTTTT',element)
-
             function onClicked(){
                 history.push(`/spots/${element.id}`)
                 dispatch(reviewActions.getSpotReviews(element.id))
                 return
             }
 
+            function checkRating(){
+                if(element.avgRating%1===0){
+                    return `${element.avgRating}.0`
+                }
+            }
+
+
             return(
                 <>
-                    <button key='spotTile' onClick={()=>onClicked()}>
+                    <div>
+                        <button className='spotTileButton' key='spotTile' onClick={()=>onClicked()}>
+                                <div className="imageContainer">
+                                    <img src={element.previewImage} alt='Spot Preview' />
+                                </div>
+
+                                <ul key='listedItems'>
+                                    <li key='cityState'> {element.city}, {element.state}</li>
+                                    <li key='rating'>Average Spot Rating: {element.avgRating ?  checkRating() : 'New'}</li>
+                                    <li key='price'> {element.price} Night</li>
+                                </ul>
+                        </button>
+
                         <div>
-                            <div className="imageContainer">
-                                <img src={element.previewImage} alt='Spot Preview' />
-                            </div>
-
-                            <ul key='listedItems'>
-                                <li key='cityState'> {element.city}, {element.state}</li>
-                                <li key='rating'>Average Spot Rating: {element.avgRating ?  element.avgRating : 'New'}</li>
-                                <li key='price'> {element.price} Night</li>
-                                <li key='spot-name'>{element.name}</li>
-                            </ul>
-
-                            Average Spot Rating: {element.avgRating ?  element.avgRating : 'New'}
+                            <div className='elementName'>{element.name}</div>
+                            <div className='averageRating'>{element.avgRating ? checkRating() : 'New'}</div>
+                            <div className='starFunction'>{star()}</div>
                         </div>
-                    </button>
+
+                    </div>
                 </>
             )
         })

@@ -1,6 +1,7 @@
 
 import './SpotDetail.css'
-import Modal from './../Modal'
+import ReviewModal from './../ReviewModal'
+import Modal from '../Modal'
 
 import * as spotActions from '../../store/spot'
 import * as reviewActions from '../../store/review'
@@ -41,6 +42,14 @@ function SpotDetail(){
         );
     };
 
+    const dot = () => {
+        return (
+          <div style={{ color: "black", fontSize: "8px" }}>
+            <i className="fa-solid fa-circle"></i>
+          </div>
+        );
+    };
+
     function submitButton(){
         return window.alert('Feature coming soon')
     }
@@ -62,6 +71,7 @@ function SpotDetail(){
 
     //to obtain the average rating of the reviews
     function avgReviewsRating(){
+
         let averageRating = 0
 
         if(reviewState?.Reviews){
@@ -72,11 +82,12 @@ function SpotDetail(){
             console.log('AVERAGE',averageRating)
             console.log('LENGTH',reviewState?.Reviews.length)
 
-            if(averageRating===0){
-              return averageRating
+            if(averageRating%reviewState?.Reviews.length === 0){
+                return (`${(averageRating/reviewState?.Reviews.length)}.0`)
             }
 
-        return (averageRating/reviewState?.Reviews.length)}
+            return ( averageRating !== 0 ? averageRating/reviewState?.Reviews.length : 'New')
+        }
     }
 
     //to obtain the actual reviews
@@ -90,14 +101,14 @@ function SpotDetail(){
             let  postedDate = new Date(element.createdAt)
             const  month = String(postedDate.getMonth() + 1).padStart(2, '0');
             const year = postedDate.getFullYear()
-            postedDate = monthNames[parseInt(month)-1] + '-' + year;
+            postedDate = monthNames[parseInt(month)-1] + ' ' +year;
 
             function deleteButton(){
                 if(userState.user !== null){
                     if((element?.User?.id === userState?.user?.id)  && (parseInt(element?.spotId) === parseInt(spotId))){
                         return(
                             <>
-                                <button className = "openModalBtn" onClick={()=>{setModal(true)}}>Delete</button>
+                                <button className = "deleteButton" onClick={()=>{setModal(true)}}>Delete</button>
                                 { modal && <Modal closeModal={setModal} />}
                             </>
                         )
@@ -111,10 +122,27 @@ function SpotDetail(){
                 if(parseInt(element?.spotId) === parseInt(spotId)){
                     return(
                         <>
-                            <li>{element?.User?.firstName}</li>
-                            <li>{postedDate}</li>
-                            <li>{element?.review}</li>
-                            {deleteButton()}
+                        <div className='Reviews'>
+                            <div className='firstName'>
+                                {element?.User?.firstName}
+
+                            </div>
+
+                            <div className='date'>
+                                {postedDate}
+                            </div>
+
+                            <div className='review'>
+                                {element?.review}
+                            </div>
+
+                            <div className='deleteButton'>
+                                {deleteButton()}
+                            </div>
+
+
+                            <p></p>
+                        </div>
                         </>
                     )
                 }
@@ -123,9 +151,9 @@ function SpotDetail(){
             console.log('SPOTDETAIL...reviewBySpot',reviewBySpot())
 
             return(
-                <ul>
+                <>
                 {reviewBySpot()}
-                </ul>
+                </>
             )
 
             })
@@ -135,9 +163,9 @@ function SpotDetail(){
         if(spotState?.matched?.ownerId !== userState?.user?.id && userState?.user !== null && reviewState?.Reviews?.length===0){
             console.log('INSIDE THE ELSE !! BE THE FIRST')
             return(
-                <ul>
-                    <li>Be the first to post a review!</li>
-                </ul>
+
+                    <div>Be the first to post a review!</div>
+
             )
         }
     }
@@ -156,26 +184,144 @@ function SpotDetail(){
       }
     }
 
+    //the first image for that spot
+    function spotImage(){
+        return (
+            <div className='imageContainerImage'>
+                <img src={spotState?.matched?.SpotImages[0].url} alt='Spot Preview'/>
+            </div>
+        )
+    }
+
+    //the other images for that spot
+    function spotImages(){
+
+        return spotState?.matched?.SpotImages.map(element=>{
+
+            if(element !== spotState?.matched?.SpotImages[0]){
+                return (
+                    <>
+                    <div className='imageContainerImages'>
+                        <img src={element.url} alt='Spot Preview' />
+                    </div>
+                    </>
+                )
+            }
+
+        })
+    }
+
+    function checkReview(){
+        if(userState.user !== null){
+
+            let decide = 'No Review'
+
+            if(spotState?.matched?.ownerId !== userState?.user?.id){
+                for(let i=0; i<reviewState?.Reviews?.length; i++){
+                    if(reviewState?.Reviews[i]?.userId === userState?.user?.id){
+                        decide='Has Review'
+                        return decide
+                    }
+                }
+            }
+
+            return decide
+        }
+
+    }
+
+    console.log('SPOTDETAIL....CHECKREVIEW', checkReview())
+
+    function postButton(){
+
+        if(checkReview() === 'No Review'){
+            return(
+                <>
+                    <button className = "postReviewButton" onClick={()=>{setModal(true)}}>Post a Review</button>
+                    { modal && <ReviewModal closeModal={setModal} />}
+                </>
+            )
+        }
+    }
+    console.log('hereaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', checkReview())
+
+
+
 
     return(
         <>
+
             <h1>{spotState?.matched?.name}</h1>
             <h3>{spotState?.matched?.city}, {spotState?.matched?.state}, {spotState?.matched?.country}</h3>
-            <text>Hosted By {spotState?.matched?.Owner?.firstName}, {spotState?.matched?.Owner?.lastName}</text>
-            <p>{spotState?.matched?.description}</p>
 
-            <div>
-                <label>{spotState?.matched?.price}  Night</label>
-                <p></p>
-               <button onClick={()=>submitButton()}>Reserve</button>
+            <div className='grids'>
+                {spotImage()}
+                <div className='spotGridsImages'>{spotImages()}</div>
             </div>
 
 
-            <div> Number of Reviews {star()} {numberOfReviews()}</div>
-            <div>Average Review Star Rating {star()} {avgReviewsRating()} </div>
+            <div className='solidLine'>
+
+                <div className='hostedBy'>
+                    <text className='host'>Hosted By {spotState?.matched?.Owner?.firstName}, {spotState?.matched?.Owner?.lastName}</text>
+                    <p>{spotState?.matched?.description}</p>
+                </div>
+
+                <div className='callOutInformationBox'>
+
+                    <div className='information'>
+                        ${spotState?.matched?.price} night
+                        {avgReviewsRating() !==0 ?
+
+                            <>
+                                <div className='star'>{star()}</div>
+                                <label>{spotState?.matched?.avgStarRating%1 === 0 ? `${(spotState?.matched?.avgStarRating)}.0` : spotState?.matched?.avgStarRating}</label>
+                                <div className='dot'>{dot()}</div>
+                                <label className='numberOfReviews'>{numberOfReviews()}</label>
+                            </>
+                            :
+                            <>
+                                <div className='star'>{star()}</div>
+                                <label>{spotState?.matched?.avgStarRating%1 === 0 ? `${(spotState?.matched?.avgStarRating)}.0` : spotState?.matched?.avgStarRating}</label>
+                            </>
+                        }
+                    </div>
+
+                    <div className='outerSubmit'>
+                        <button className='submitButton' onClick={()=>submitButton()}>Reserve</button>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+            <div className='reviewSummary'>
+
+                    {avgReviewsRating() !=='New' ?
+
+                        <>
+                        {star()}
+                        {avgReviewsRating()}
+                        {dot()}
+                        {numberOfReviews()}
+                        </>
+                        :
+                        <>
+                        {star()}
+                        {avgReviewsRating()}
+                        </>
+                    }
+
+            </div>
+
+            {postButton()}
+
+            <p></p>
             {reviewSpot()}
+
        </>
     )
 }
-
 export default SpotDetail

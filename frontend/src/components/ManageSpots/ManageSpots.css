@@ -1,0 +1,33 @@
+
+
+.manageTileButton{
+    cursor: pointer;
+}
+.manageDeleteButton{
+    cursor: pointer;
+}
+
+.manageUpdateButton{
+    cursor: pointer;
+}
+
+.createButton{
+    cursor: pointer;
+}
+
+
+.firstLine{
+    display: flex;
+    flex-direction: row;
+}
+
+.spotInformation{
+    display: flex;
+    flex-direction: column;
+}
+
+.spots{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+}

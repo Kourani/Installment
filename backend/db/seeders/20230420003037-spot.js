@@ -26,7 +26,19 @@ const userSpots = [
     country:"United States of America",
     name:"Sour",
     description:"Place where web developers are created",
-    price:5121.12}]
+    price:5121.12},
+
+    {
+      address:"123 Disney Lane",
+      city:"Tusayan",
+      state:'Arizona',
+      lat: 37.7645358,
+      lng: -122.4730327,
+      country:"United States of America",
+      name:"Land",
+      description:"Place where web developers are created",
+      price:5121.12}
+  ]
 },
 
 {

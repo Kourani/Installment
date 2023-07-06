@@ -138,8 +138,8 @@ const spotReducer = (state=initialState, action) =>{
         case NEW_SPOT:
             const createdSpot = {...action.newData}
             return{
-                createdSpots: createdSpot,
-                ...state
+                ...state,
+                ...createdSpot
             }
 
         case DELETE_SPOT:
