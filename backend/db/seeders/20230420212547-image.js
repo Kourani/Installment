@@ -28,6 +28,40 @@ module.exports = {
 
     },
     {
+      url:`https://images.pexels.com/photos/443446/pexels-photo-443446.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2`,
+      preview:true,
+      imagableType:'Spot',
+      imagableId:1
+
+    },
+    {
+      url:`https://images.pexels.com/photos/443446/pexels-photo-443446.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2`,
+      preview:true,
+      imagableType:'Spot',
+      imagableId:1
+
+    },
+    {
+      url:`https://images.pexels.com/photos/443446/pexels-photo-443446.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2`,
+      preview:true,
+      imagableType:'Spot',
+      imagableId:1
+
+    },
+    {
+      url:`https://images.pexels.com/photos/443446/pexels-photo-443446.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2`,
+      preview:true,
+      imagableType:'Spot',
+      imagableId:1
+
+    },
+
+
+
+
+
+
+    {
       url:'https://images.pexels.com/photos/65865/dawn-sun-mountain-landscape-65865.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
       preview:true,
       imagableType:'Review',

@@ -10,13 +10,13 @@ if (process.env.NODE_ENV === 'production') {
 const {Spot, User, Review} = require('../models')
 
 const spotReviews = [
-  {
-    name: 'Last',
-    userId:1,
-    reviews:[
-      {stars:5, review:'user 1'}
-    ]
-  },
+  // {
+  //   name: 'Last',
+  //   userId:1,
+  //   reviews:[
+  //     {stars:5, review:'user 1'}
+  //   ]
+  // },
   {
     name: 'Sweet',
     userId:1,
@@ -31,13 +31,13 @@ const spotReviews = [
       {stars:5, review:'user 1'}
     ]
   },
-  {
-    name: 'Last',
-    userId:2,
-    reviews:[
-      {stars:5, review:'user 2'}
-    ]
-  },
+  // {
+  //   name: 'Last',
+  //   userId:2,
+  //   reviews:[
+  //     {stars:5, review:'user 2'}
+  //   ]
+  // },
   {
     name: 'Sweet',
     userId:3,
