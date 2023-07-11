@@ -7,6 +7,7 @@ import {csrfFetch} from "./csrf"
 //action type
 const GET_SPOT_REVIEWS ='/spots/GET_SPOT_REVIEWS'
 const DELETE_REVIEW = './spots/DELETE_REVIEW'
+const POST_REVIEW='./spots/spotId/POST_REVIEW'
 
 //action
 function loadSpotReviews(thunkData){
@@ -23,8 +24,16 @@ function deleteReview(thunkData){
     }
 }
 
-//thunk
+function createReview(thunkData){
+    return {
+        type:POST_REVIEW,
+        thunkData
+    }
+}
 
+
+
+//thunk
 
 export const getSpotReviews = (spotId) => async (dispatch) => {
     const response = await fetch(`/api/spots/${spotId}/reviews`)
@@ -53,6 +62,27 @@ export const reviewDelete = (reviewId) => async(dispatch) =>{
     return await response.json()
 }
 
+export const postReview = (spotId, payload) => async (dispatch) => {
+    const response = await csrfFetch(`/api/spots/${spotId}/reviews`, {
+        method:'POST',
+        headers:{
+            'Content-Type': 'application/json'
+        },
+        body:JSON.stringify(payload)
+    })
+
+    if(response.ok){
+        const reviewed = await response.json()
+        createReview(reviewed)
+        console.log('INSIDE THE POSTREVIEW THUNK', reviewed)
+        return reviewed
+    }
+
+    const errorResponse = await response.json()
+    console.log('THUNK NOT OKAY', errorResponse)
+    return  errorResponse
+}
+
 //reducer
 export const reviewReducer = (state={},action)=>{
     switch(action.type){
@@ -68,6 +98,12 @@ export const reviewReducer = (state={},action)=>{
             const ReviewState={...action.thunkData}
             return{
                 ...ReviewState,
+                ...state
+            }
+        case POST_REVIEW:
+            const reviewCreated={...action.thunkData}
+            return{
+                newReview:reviewCreated,
                 ...state
             }
 

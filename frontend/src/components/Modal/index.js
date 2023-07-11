@@ -15,19 +15,21 @@ function Modal({closeModal}){
 
     const dispatch = useDispatch()
     const {spotId} = useParams()
+    console.log('MODEL...SPOTID',spotId)
 
     const reviewState = useSelector(state=>state.review)
-    console.log('REVIEWSTATE',reviewState)
+    console.log('MODEL...REVIEWSTATE',reviewState)
 
     const userState = useSelector(state=>state.session)
-    console.log('USERSTATE',userState)
+    console.log('MODAL...USERSTATE',userState)
 
     const spotState = useSelector(state=>state.spot)
-    console.log('SPOTSTATE', spotState)
+    console.log('MODAL...SPOTSTATE', spotState)
     const spotStateValues = Object.values(spotState)
 
     useEffect(()=>{
         dispatch(reviewActions.getSpotReviews(spotId))
+        dispatch(spotActions.spotDetails(spotId))
     },[dispatch])
 
     function obtainReview(){
@@ -46,42 +48,42 @@ function Modal({closeModal}){
         }
     }
 
-    function obtainSpot(){
-        if(spotStateValues.length && !spotId){
+    // function obtainSpot(){
+    //     if(spotStateValues.length && !spotId){
 
-            let foundSpot
+    //         let foundSpot
 
-            spotStateValues.forEach(element=>{
-                if(element?.ownerId === userState?.user?.id){
-                    foundSpot = element
-                }
-            })
+    //         spotStateValues.forEach(element=>{
+    //             if(element?.ownerId === userState?.user?.id){
+    //                 foundSpot = element
+    //             }
+    //         })
 
-            console.log('FOUNDSPOT',foundSpot.id)
-            return foundSpot.id
-        }
-    }
+    //         console.log('FOUNDSPOT',foundSpot.id)
+    //         return foundSpot.id
+    //     }
+    // }
 
-    console.log('REVEIW',obtainReview())
-    console.log('SPOT',obtainSpot())
+    console.log('MODAL...REVEIW',obtainReview())
+    // console.log('SPOT',obtainSpot())
 
 
 
-    function location(){
-        if(spotId){
-            return 'review'
-        }
-        else {
-            return 'spot'
-        }
-    }
+    // function location(){
+    //     if(spotId){
+    //         return 'review'
+    //     }
+    //     else {
+    //         return 'spot'
+    //     }
+    // }
 
     function onButtonClick(){
         closeModal(false)
 
        if(obtainReview()!== undefined) {dispatch(reviewActions.reviewDelete(obtainReview()))}
 
-        if(obtainSpot() !== undefined) {dispatch(spotActions.deleteSpot(obtainSpot()))}
+        // if(obtainSpot() !== undefined) {dispatch(spotActions.deleteSpot(obtainSpot()))}
 
         return
     }
@@ -99,12 +101,12 @@ function Modal({closeModal}){
                 </div>
 
                 <div className='body'>
-                    <p>Are you sure you want to remove this {location()} from the listings?</p>
+                    <p>Are you sure you want to remove this review from the listings?</p>
                 </div>
 
                 <div className='footer'>
-                    <button onClick={()=> onButtonClick()}> Yes (Delete {location()})</button>
-                    <button id ='grayButton' onClick={() =>{closeModal(false)}} >No (Keep {location()})</button>
+                    <button onClick={()=> onButtonClick()}> Yes (Delete Review)</button>
+                    <button id ='grayButton' onClick={() =>{closeModal(false)}} >No (Keep Review)</button>
                 </div>
 
             </div>

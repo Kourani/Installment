@@ -11,132 +11,186 @@ function CreateSpot(){
     const history = useHistory()
     const dispatch = useDispatch()
 
-    const [country, setCountry] = useState()
-    const [streetAddress, setStreetAddress] = useState()
-    const [city, setCity] = useState()
-    const [state, setState] = useState()
+    const [country, setCountry] = useState('')
+    const [address, setStreetAddress] = useState('')
+    const [city, setCity] = useState('')
+    const [state, setState] = useState('')
 
-    const [price, setPrice] = useState()
-    const [description, setDescription]=useState()
-    const [name, setName] = useState()
-    const [image, setImage]= useState()
+    const [price, setPrice] = useState('')
+    const [description, setDescription]=useState('')
+    const [name, setName] = useState('')
+    const [image, setImage]= useState('')
+
+    const [lat, setLatitude] = useState('')
+    const [lng, setLongitude] = useState('')
 
     const [validationErrors, setValidationErrors] = useState({})
-    const [buttonOff, setButtonOff] = useState(false)
+
     const [submitted, setSubmitted] = useState(false)
+    const [buttonOff, setButtonOff] = useState(true)
 
-    //this use Effect checks for changes in the input parameters
-    //if they are satisfactory ok if not they display the error message
+    useEffect(()=>{
+        if(country && address && city && state && price && description
+            && name && image){
+                setButtonOff(false)
+            }
+    },[dispatch, country, address, city, state, price, description, name, image])
 
-    // useEffect(()=>{
-    //     const errors = {}
-    //     if(!price) errors['price']='Price per night is required'
-    //     if(!country) errors['country']='Country is required'
-    //     if(!city) errors['city']='City is required'
-    //     if(!state) errors['state']='State is required'
-    //     if(!streetAddress) errors['streetAddress']='Street Address is required'
-    //     if(!image) errors['image']='Preview Image URL is required'
-    //     if(!description || (description && description.length<30)) errors['description']='Description needs 30 or more characters'
-
-    //     setValidationErrors(errors)
-    //     console.log('ERRORS', errors)
-    //     console.log('DESCRIPTION', description)
-    //     if(!Object.keys(errors).length) setButtonOff(false)
-
-    // }, [price, country, city, state, streetAddress, image, description])
 
     async function handleSubmit (e){
         e.preventDefault()
 
-        const errors = {}
-        if(!price) errors['price']='Price per night is required'
-        if(!country) errors['country']='Country is required'
-        if(!city) errors['city']='City is required'
-        if(!state) errors['state']='State is required'
-        if(!streetAddress) errors['streetAddress']='Street Address is required'
-        if(!image) errors['image']='Preview Image URL is required'
-        if(!description || (description && description.length<30)) errors['description']='Description needs 30 or more characters'
-
-        setValidationErrors(errors)
-        console.log('ERRORS', errors)
-        console.log('DESCRIPTION', description)
         setSubmitted(true)
 
         const payload ={
             country,
-            streetAddress,
+            address,
             city,
             state,
-            price
+            description,
+            name,
+            price,
+            image,
+            lat,
+            lng
         }
 
-        const created= await dispatch(spotActions.createSpot(payload))
-        console.log('created',created)
+        try {
+            const created = await dispatch(spotActions.createSpot(payload));
+            console.log('TRY BLOCK....CREATED',created)
 
-        //reset form values
+            history.push(`/spots/${created.id}`)
+            return created
+
+        }
+        catch (created) {
+
+            const information = await created.json()
+            console.log('CATCH BLOCK....CATCHME',information)
+
+            if(information.statusCode===400){
+                console.log('error IF')
+                const errors = {}
+                if(!price) errors['price']='Price per night is required'
+                if(!country) errors['country']='Country is required'
+                if(!city) errors['city']='City is required'
+                if(!state) errors['state']='State is required'
+                if(!address) errors['streetAddress']='Street Address is required'
+                if(!image) errors['image']='Preview Image URL is required'
+                if(!description || (description && description.length<30)) errors['description']='Description needs 30 or more characters'
+                if(!name) errors['name'] ='Spot name must be less than 50 characters'
+                setValidationErrors(errors)
+
+            }
+        }
+
+
+        // reset form values
         setCountry('')
+        setStreetAddress('')
         setCity('')
-        setValidationErrors({})
-        setButtonOff(true)
+        setState('')
+        setLatitude('')
+        setLongitude('')
+        setDescription('')
+        setName('')
+        setImage('')
     }
 
-    const spotState = useSelector(state=>state.spot)
-    console.log('spotState', spotState)
-
+    console.log('insideCatch',validationErrors)
     return(
         <>
-
             <form className='createForm' onSubmit={handleSubmit}>
 
 
                 <div className='section'>
 
                 <h2 className='pageTitle'>Create a New Spot</h2>
-                
+
                     <div className='titles'>Where's your place located?</div>
                     <div>Guests will only get your exact address once they booked a reservation</div>
-                    <label>Country
+
+                    <div className='country'>
+
+                        <label className='sweet'> Country
+                            <div className='error'>
+                                {submitted && validationErrors.country}
+                            </div>
+
+                        </label>
                         <input className='input' type='text' value={country} onChange={(e)=>setCountry(e.target.value)}/>
-                    </label>
 
-                    <div className='error'>
-                        {validationErrors.country}
+
                     </div>
 
-                    <label> Street Address
-                        <input className='input' type='Address' value={streetAddress} onChange={(e)=>setStreetAddress(e.target.value)}/>
-                    </label>
+                    <div className='country'>
+                        <label className='sweet'> Street Address
+                        <div className='error'>
+                            {submitted && validationErrors.streetAddress}
+                        </div>
 
-                    <div className='error'>
-                        { submitted && validationErrors.streetAddress && `*${validationErrors.streetAddress}`}
+                        </label>
+                        <input className='input' type='Address' value={address} onChange={(e)=>setStreetAddress(e.target.value)}/>
+
+
                     </div>
 
-                    <label>City
-                        <input className='input' type='city' value={city} onChange={(e)=>setCity(e.target.value)}/>
-                    </label>
+                    <div className='country'>
+                        <label>City
+                            <input className='input' type='city' value={city} onChange={(e)=>setCity(e.target.value)}/>
+                        </label>
 
-                    <div className='error'>
-                        {submitted && validationErrors.city && `*${validationErrors.city}`}
+                        <div className='error'>
+                            {submitted && validationErrors.city}
+                        </div>
                     </div>
 
-                    <label>State
-                        <input className='input' type='state' value={state} onChange={(e)=>setState(e.target.value)}/>
-                    </label>
 
-                    <div className='error'>
-                        {submitted && validationErrors.state && `*${validationErrors.state}`}
+                    <div className='country'>
+                        <label>State
+                            <input className='input' type='state' value={state} onChange={(e)=>setState(e.target.value)}/>
+                        </label>
+
+                        <div className='error'>
+                            {submitted && validationErrors.state}
+                        </div>
                     </div>
+
+
+                    <div className='country'>
+                        <label>Latitude
+                            <input className='input' type='latitude' value={lat} onChange={(e)=>setLatitude(e.target.value)}/>
+                        </label>
+
+                        <div className='error'>
+                            {submitted && validationErrors.lat}
+                        </div>
+                    </div>
+
+                    <div className='country'>
+                        <label>Longitude
+                            <input className='input' type='longitude' value={lng} onChange={(e)=>setLongitude(e.target.value)}/>
+                        </label>
+
+                        <div className='error'>
+                            {submitted && validationErrors.lng}
+                        </div>
+                    </div>
+
+
                 </div>
 
 
                 <div className='section'>
                     <div className='titles'>Describe your place to your guests</div>
+
                     <div className='subs'>Mention the best features of your space and any special amentities like fast wifi or parking, and what you love about the neighborhood</div>
                     <textarea value={description} onChange={(e)=>setDescription(e.target.value)} placeholder="Please write at least 30 characters"></textarea>
 
                     <div className='error'>
-                        {submitted && validationErrors?.description && `*${validationErrors.description}`}
+                        {submitted && validationErrors.description}
                     </div>
+
                 </div>
 
                 <div className='section'>
@@ -145,13 +199,17 @@ function CreateSpot(){
                     <input className='input' value={name} onChange={(e)=>setName(e.target.value)} placeholder="Name of your spot"/>
                 </div>
 
+                <div className='error'>
+                        {submitted && validationErrors.name}
+                </div>
+
                 <div className='section'>
                     <div className='titles'>Set a base price for your spot</div>
                     <div className='subs'>Competitive pricing can help your listing stand out and rank higher in search results</div>
                     <input className='input' value={price} onChange={(e)=>setPrice(e.target.value)} placeholder="Price per night (USD)"/>
 
                     <div className='error'>
-                        {submitted && validationErrors.price && `*${validationErrors.price}`}
+                        {submitted && validationErrors.price}
                     </div>
                 </div>
 
@@ -161,7 +219,7 @@ function CreateSpot(){
                     <input className='input' value={image} onChange={(e)=>setImage(e.target.value)} placeholder="Preview of Image URL"/>
 
                     <div className='error'>
-                        {submitted && validationErrors.image && `*${validationErrors.image}`}
+                        {submitted && validationErrors.image}
                     </div>
 
                     <input className='input' placeholder="Image URL"/>
@@ -171,7 +229,7 @@ function CreateSpot(){
                 </div>
 
 
-                <button className='createButton' type='newSpot' disabled={buttonOff}>
+                <button className='createButton' type='newSpot' disabled={buttonOff} >
                     Create Spot
                 </button>
             </form>

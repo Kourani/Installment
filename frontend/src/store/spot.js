@@ -6,9 +6,10 @@ import {csrfFetch} from "./csrf"
 
 
 const GET_SPOTS = "/spots/GET_SPOTS"
-const ONE_SPOT = "/spots/SPOT_ID"
-const NEW_SPOT = "/spots/NEW_SPOT"
+const ONE_SPOT = "/spots/SPOT_DETAIL"
+const CREATE_SPOT = "/spots/NEW_SPOT"
 const DELETE_SPOT ="/spots/DELETE_SPOT"
+const UPDATE_SPOT ="/spots/UPDATE_SPOT"
 
 
 //ACTIONS
@@ -31,7 +32,7 @@ function specificSpot(spotData){
 
 function newSpot(newData){
     return{
-        type: NEW_SPOT,
+        type: CREATE_SPOT,
         newData
     }
 }
@@ -40,6 +41,13 @@ function deleteSpotData(thunkData){
     return{
         type: DELETE_SPOT,
         thunkData
+    }
+}
+
+function editSpot(updateSpotThunkData){
+    return {
+        type:UPDATE_SPOT,
+        updateSpotThunkData
     }
 }
 
@@ -79,15 +87,16 @@ export const createSpot = (payload) => async (dispatch) =>{
     })
 
     if(response.ok){
-        // console.log('createSpotThunk',response.json())
-
         const matchedSpot = await response.json()
-        console.log(matchedSpot)
         dispatch(newSpot(matchedSpot))
+
+        console.log('Inside createSpot Thunk',matchedSpot)
         return matchedSpot
     }
 
-    return response.json()}
+    return response.json()
+}
+
 
 export const deleteSpot = (spotId) => async (dispatch) => {
 
@@ -105,12 +114,33 @@ export const deleteSpot = (spotId) => async (dispatch) => {
 
 }
 
+export const updateSpot = (spotId,payload) => async(dispatch) =>{
+    const response = await csrfFetch(`/api/spots/${spotId}`, {
+        method:'PUT',
+        headers:{
+            'Content-Type' : 'application.json'
+        },
+        body:JSON.stringify(payload)
+    })
+
+    if(response.ok){
+        const spotUpdate = await response.json()
+        dispatch(editSpot(spotUpdate))
+
+        console.log('Inside createSpot Thunk',spotUpdate)
+        return spotUpdate
+    }
+
+    return response.json()
+}
+
+
+
+
+
 
 //set up of initial state
 const initialState = {}
-
-
-
 
 //reducer
 const spotReducer = (state=initialState, action) =>{
@@ -135,11 +165,11 @@ const spotReducer = (state=initialState, action) =>{
                 ...allSpots,
             }
 
-        case NEW_SPOT:
+        case CREATE_SPOT:
+
             const createdSpot = {...action.newData}
             return{
-                ...state,
-                ...createdSpot
+                createdSpot
             }
 
         case DELETE_SPOT:
@@ -147,6 +177,12 @@ const spotReducer = (state=initialState, action) =>{
             return{
                 ...deletedSpot,
                 ...state
+            }
+
+        case UPDATE_SPOT:
+            const fixedSpot = {...action.updateSpotThunkData}
+            return{
+                updatedSpot:fixedSpot
             }
 
         default:

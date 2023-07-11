@@ -34,56 +34,75 @@ function UpdateSpot(){
     const [submitted, setSubmitted] = useState(false)
 
 
-    const payload ={
-        country,
-        streetAddress,
-        city,
-        state,
-        price
-    }
+
 
     console.log('UPADATE...PAYLOAD COUNTRY',payload.country)
     console.log('UPDATE...STATE COUNTRY',country)
 
 
 
-
-
-
     async function handleSubmit (e){
         e.preventDefault()
 
-        const errors = {}
-        if(!price) errors['price']='Price per night is required'
-        if(!country) errors['country']='Country is required'
-        if(!city) errors['city']='City is required'
-        if(!state) errors['state']='State is required'
-        if(!streetAddress) errors['streetAddress']='Street Address is required'
-        if(!image) errors['image']='Preview Image URL is required'
-        if(!description || (description && description.length<30)) errors['description']='Description needs 30 or more characters'
-        if(name.length>50) errors['name'] = 'Name should be less than 50 characters'
+        // const errors = {}
+        // if(!price) errors['price']='Price per night is required'
+        // if(!country) errors['country']='Country is required'
+        // if(!city) errors['city']='City is required'
+        // if(!state) errors['state']='State is required'
+        // if(!streetAddress) errors['streetAddress']='Street Address is required'
+        // if(!image) errors['image']='Preview Image URL is required'
+        // if(!description || (description && description.length<30)) errors['description']='Description needs 30 or more characters'
+        // if(name.length>50) errors['name'] = 'Name should be less than 50 characters'
 
-        setValidationErrors(errors)
-        console.log('ERRORS', errors)
-        console.log('DESCRIPTION', description)
-        setSubmitted(true)
-
-
+        // setValidationErrors(errors)
+        // console.log('ERRORS', errors)
+        // console.log('DESCRIPTION', description)
+        // setSubmitted(true)
 
 
-        const created = dispatch(spotActions.createSpot(payload))
-        console.log('UPDATE...CREATED', created)
+        const payload ={
+            country,
+            streetAddress,
+            city,
+            state,
+            description,
+            name,
+            price,
+            image
+        }
+
+        setCountry(payload.country)
+        setStreetAddress(payload.streetAddress)
+        setCity(payload.city)
+        setState(payload.state)
+        setDescription(payload.description)
+        setName(payload.name)
+        setPrice(payload.price)
+        setImage(payload.image)
+
+
+        try{
+            const created = await dispatch(spotActions.updateSpot(spotId,payload))
+            console.log('UPDATE SPOT....INSIDE TRY',created)
+            return created
+        }
+        catch(created){
+            const information = await created.json()
+            console.log('UPDATE SPOT...INSIDE CATCH',information)
+        }
+
+
 
         //reset form values
-        setCountry(spotState[spotId]?.country)
-        setStreetAddress(spotState[spotId]?.address)
-        setCity(spotState[spotId]?.city)
-        setPrice(spotState[spotId]?.price)
-        setName(spotState[spotId]?.name)
-        setImage(spotState[spotId]?.image)
+        // setCountry(spotState[spotId]?.country)
+        // setStreetAddress(spotState[spotId]?.address)
+        // setCity(spotState[spotId]?.city)
+        // setPrice(spotState[spotId]?.price)
+        // setName(spotState[spotId]?.name)
+        // setImage(spotState[spotId]?.image)
 
-        setValidationErrors({})
-        setButtonOff(true)
+        // setValidationErrors({})
+        // setButtonOff(true)
     }
 
     return(

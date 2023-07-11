@@ -1,10 +1,11 @@
 
 
 import './ManageSpots.css'
-import * as spotActions from '../../store/spot'
-import Modal from "./../Modal"
+import SpotModal from "./../SpotModal"
 
-import { React, startTransition, useState } from 'react'
+import * as spotActions from '../../store/spot'
+
+import { React, useState } from 'react'
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from 'react-router-dom';
@@ -12,19 +13,24 @@ import { useHistory } from 'react-router-dom';
 // import { useParams } from 'react-router-dom';
 
 function ManageSpots(){
+
     const dispatch = useDispatch()
     const history = useHistory()
 
-    useEffect(()=>{
-        dispatch(spotActions.getSpots())
-    },[dispatch])
+
 
     const [modal, setModal] = useState(false)
+    const [deleteId, setDeleteId] = useState('')
+
 
     const spotState = useSelector(state=>state.spot)
     const spotStateValues = Object.values(spotState)
 
     const userState = useSelector(userState=>userState.session)
+
+    useEffect(()=>{
+        dispatch(spotActions.getSpots())
+    },[dispatch])
 
     const star = () => {
         return (
@@ -34,14 +40,31 @@ function ManageSpots(){
         );
     };
 
+
     function userSpots(){
+
+        function states(element){
+            return(
+
+            setDeleteId(element?.id),
+
+            setModal(true)
+            )
+
+        }
+
         return spotStateValues.map(element=>{
 
             if(element?.ownerId === userState?.user?.id){
 
+
+
+                console.log('MANAGESPOT...DELETEID',deleteId)
+
                 return(
                     <>
                         <div>
+
                             <button className='manageTileButton' onClick={()=>{history.push(`/spots/${element.id}`)}}>
 
                                 <div className='imageContainer'>
@@ -61,8 +84,7 @@ function ManageSpots(){
 
                                     <div className='spotButtons'>
                                         <button className='manageUpdateButton' onClick={()=>{history.push(`/spots/${element.id}/updateSpot`)}}>Update</button>
-                                        <button className = "manageDeleteButton" onClick={()=>setModal(true)}>Delete</button>
-                                        { modal && <Modal closeModal={setModal} />}
+                                        <button className = "manageDeleteButton" onClick={()=>states(element)}>Delete {element.id}</button>
                                     </div>
 
                             </div>
@@ -90,9 +112,14 @@ function ManageSpots(){
             <button className='createButton' onClick={()=>history.push(`/newSpot`)}>Create a New Spot</button>
             <div>{userState?.user !=null ? check() : 'You must be logged in to manage your spots'}</div>
             </div>
+
+            { modal && <SpotModal closeModal={setModal} toDelete={deleteId}/>}
         </>
     )
 
 }
 
 export default ManageSpots
+
+
+// { modal && <Modal closeModal={setModal} />}

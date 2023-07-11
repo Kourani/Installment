@@ -48,23 +48,28 @@ function AllSpots(){
 
             return(
                 <>
-                    <div>
+                    <div className='one'>
                         <button className='spotTileButton' key='spotTile' onClick={()=>onClicked()}>
                                 <div className="imageContainer">
-                                    <img src={element.previewImage} alt='Spot Preview' />
+                                    <img className='imageTile' src={element.previewImage} alt='Spot Preview' />
                                 </div>
-
-                                <ul key='listedItems'>
-                                    <li key='cityState'> {element.city}, {element.state}</li>
-                                    <li key='rating'>Average Spot Rating: {element.avgRating ?  checkRating() : 'New'}</li>
-                                    <li key='price'> {element.price} Night</li>
-                                </ul>
                         </button>
 
-                        <div>
-                            <div className='elementName'>{element.name}</div>
-                            <div className='averageRating'>{element.avgRating ? checkRating() : 'New'}</div>
-                            <div className='starFunction'>{star()}</div>
+                        <div className='tileInformation'>
+
+                            <div className='line1'>
+                                <div className='elementCity'>{element.city}, {element.state}</div>
+
+                                <div className='starter'>
+                                    <div className='starFunction'>{star()}</div>
+                                    <div className='averageRating'>{element.avgRating ? checkRating() : 'New'}</div>
+                                </div>
+                            </div>
+
+                            <div className='pirce'>
+                                ${element.price}night
+                            </div>
+
                         </div>
 
                     </div>

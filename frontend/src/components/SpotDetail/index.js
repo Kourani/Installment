@@ -19,11 +19,6 @@ function SpotDetail(){
 
     const [modal, setModal] = useState(false)
 
-    useEffect(()=>{
-      dispatch(spotActions.spotDetails(spotId))
-      dispatch(reviewActions.getSpotReviews(spotId))
-    },[dispatch, spotId])
-
     //to know who is logged in or if no one is logged in
     const userState = useSelector(state=>state.session)
     console.log('SPOTREVIEWS...USERSTATE', userState)
@@ -33,6 +28,11 @@ function SpotDetail(){
 
     const reviewState = useSelector(state=>state.review)
     console.log('SPOTDETAIL...reviewState',reviewState)
+
+    useEffect(()=>{
+        dispatch(spotActions.spotDetails(spotId))
+        dispatch(reviewActions.getSpotReviews(spotId))
+      },[dispatch, spotId, modal])
 
     const star = () => {
         return (
@@ -109,7 +109,7 @@ function SpotDetail(){
                         return(
                             <>
                                 <button className = "deleteButton" onClick={()=>{setModal(true)}}>Delete</button>
-                                { modal && <Modal closeModal={setModal} />}
+                                { element?.spotId && modal && <Modal closeModal={setModal} />}
                             </>
                         )
                     }
@@ -188,7 +188,7 @@ function SpotDetail(){
     function spotImage(){
         return (
             <div className='imageContainerImage'>
-                <img src={spotState?.matched?.SpotImages[0].url} alt='Spot Preview'/>
+                <img src={spotState?.matched?.SpotImages[0]?.url} alt='Spot Preview'/>
             </div>
         )
     }
@@ -238,15 +238,12 @@ function SpotDetail(){
             return(
                 <>
                     <button className = "postReviewButton" onClick={()=>{setModal(true)}}>Post a Review</button>
-                    { modal && <ReviewModal closeModal={setModal} />}
+                    { checkReview() && modal && <ReviewModal closeModal={setModal} />}
                 </>
             )
         }
     }
     console.log('hereaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', checkReview())
-
-
-
 
     return(
         <>
@@ -316,10 +313,15 @@ function SpotDetail(){
 
             </div>
 
+            <div>
             {postButton()}
+            </div>
 
             <p></p>
+
+            <div>
             {reviewSpot()}
+            </div>
 
        </>
     )
