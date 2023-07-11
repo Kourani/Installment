@@ -1,9 +1,12 @@
 
 
-import React, { useState, useEffect, useRef } from "react";
-import { useDispatch } from 'react-redux';
 
 import * as sessionActions from '../../store/session';
+
+import React, { useState, useEffect, useRef } from "react";
+import { useDispatch } from 'react-redux';
+import { NavLink } from "react-router-dom";
+
 
 function ProfileButton({ user }) {
 
@@ -54,18 +57,28 @@ function button(){
 
   return (
     <>
-      <button onClick={openMenu}>
+      <div className='wholeHalfNav'>
+
+
+       <NavLink to="/newSpot"><button className='createSpotButtonNav'>Create a New Spot</button></NavLink>
+
+
+      <button className='profileClick' onClick={openMenu}>
         {button()}
 
-      <ul className={ulClassName} ref={ulRef}>
-        <li>{user.username}</li>
-        <li>{user.firstName} {user.lastName}</li>
-        <li>{user.email}</li>
-        <li>
-          <button onClick={logout}>Log Out</button>
-        </li>
-      </ul>
+
+      <div>
+        <div>Hello, {user.firstName}</div>
+        <div>{user.email}</div>
+        <div className='manageSpotsButton'>
+          <NavLink to='/manageSpots'>Manage Spots</NavLink>
+        </div>
+        <button className='logoutButton' onClick={logout}>Log Out</button>
+      </div>
+
+
       </button>
+      </div>
     </>
   );
 }

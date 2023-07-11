@@ -47,7 +47,7 @@ const userSpots = [
 
   spots:[{
   address:"123 Disney Lane",
-  city:'New York City',
+  city:'New York',
   state:'New York',
   country:"United States of America",
   lat:564.65,

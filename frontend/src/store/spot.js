@@ -97,7 +97,6 @@ export const createSpot = (payload) => async (dispatch) =>{
     return response.json()
 }
 
-
 export const deleteSpot = (spotId) => async (dispatch) => {
 
     const response = await csrfFetch(`/api/spots/${spotId}`,{
@@ -118,7 +117,7 @@ export const updateSpot = (spotId,payload) => async(dispatch) =>{
     const response = await csrfFetch(`/api/spots/${spotId}`, {
         method:'PUT',
         headers:{
-            'Content-Type' : 'application.json'
+            'Content-Type' : 'application/json'
         },
         body:JSON.stringify(payload)
     })
@@ -127,11 +126,11 @@ export const updateSpot = (spotId,payload) => async(dispatch) =>{
         const spotUpdate = await response.json()
         dispatch(editSpot(spotUpdate))
 
-        console.log('Inside createSpot Thunk',spotUpdate)
+        console.log('Inside Update Spot Thunk',spotUpdate)
         return spotUpdate
     }
 
-    return response.json()
+    return await response.json()
 }
 
 
@@ -182,7 +181,8 @@ const spotReducer = (state=initialState, action) =>{
         case UPDATE_SPOT:
             const fixedSpot = {...action.updateSpotThunkData}
             return{
-                updatedSpot:fixedSpot
+                updatedSpot:fixedSpot,
+                state
             }
 
         default:

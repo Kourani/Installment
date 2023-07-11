@@ -83,6 +83,17 @@ export const postReview = (spotId, payload) => async (dispatch) => {
     return  errorResponse
 }
 
+
+// const initialState={
+//     thunkData:[],
+//     types:{}
+// }
+// const sortList =(thunkData)=>{
+//     return thunkData.sort((reviewA,reviewB) =>{
+//         return reviewA.id - reviewB.id
+//     }).map((review)=>review.id)
+// }
+
 //reducer
 export const reviewReducer = (state={},action)=>{
     switch(action.type){
@@ -91,7 +102,7 @@ export const reviewReducer = (state={},action)=>{
             const newState={...action.thunkData}
 
             return{
-                ...newState,
+                ...newState
             }
 
         case DELETE_REVIEW:

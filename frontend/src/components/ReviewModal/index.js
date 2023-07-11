@@ -89,55 +89,70 @@ function ReviewModal({closeModal}){
 
         <>
 
-            <div className='contain'>
-                <div className='inner'>
-                    <div>How was your Stay?</div>
+            <div className='modalBackgroundPost'>
+                <div className='modalContainerPost'>
 
-                    <div className='error'>
-                        {validationErrors.review}
-                    </div>
+                    {/* <div className='titleCloseBtnPost'>
+                        <button onClick={()=>closeModal(false)}>X</button>
+                    </div> */}
 
-                    <div className='error'>
-                        {validationErrors.stars}
-                    </div>
-
-                    <div className='error'>
-                        {validationErrors.three}
+                    <div className='titlePost'>
+                        How was your Stay?
                     </div>
 
 
-                    <textarea className='review' value={review} onChange={(e)=>setReview(e.target.value)} placeholder="Leave your review here..."></textarea>
+                    <div className='bodyPost'>
 
-
-
-
-
-                    <div className='starDirection'>
-                        <input className='Rating' value={stars} onChange={(e)=>setStars(e.target.value)} placeholder='star Rating'/>
-
-                        <div className="filled" >
-                            <i className="fa fa-star"></i>
+                        <div className='error'>
+                            {validationErrors.review}
                         </div>
 
-                        <div className="empty" >
-                            <i className="fa fa-star"></i>
+                        <div className='error'>
+                            {validationErrors.stars}
                         </div>
 
-                        <div className="filled" >
-                            <i className="fa fa-star"></i>
+                        <div className='error'>
+                            {validationErrors.three}
                         </div>
 
-                        <div className="filled" >
-                            <i className="fa fa-star"></i>
+                        <div className='inputPost'>
+                            <textarea className='reviewInput' value={review} onChange={(e)=>setReview(e.target.value)} placeholder="Leave your review here..."></textarea>
+
+                            <input className='Rating' value={stars} onChange={(e)=>setStars(e.target.value)} placeholder='star Rating'/>
                         </div>
 
-                        <div className="filled" >
-                            <i className="fa fa-star"></i>
+                        <div className='starDirection'>
+
+                            <div className="filled" >
+                                <i className="fa fa-star"></i>
+                            </div>
+
+                            <div className="empty" >
+                                <i className="fa fa-star"></i>
+                            </div>
+
+                            <div className="filled" >
+                                <i className="fa fa-star"></i>
+                            </div>
+
+                            <div className="filled" >
+                                <i className="fa fa-star"></i>
+                            </div>
+
+                            <div className="filled" >
+                                <i className="fa fa-star"></i>
+                            </div>
+                            Stars
+
                         </div>
+
 
                     </div>
 
-                    <button className='submitReviewButton' id='modalSubmit' onClick={()=>onSubmit()}>Submit your Review</button>
+
+                    <div className='footerPost'>
+                        <button className='submitReviewButton' id='modalSubmit' onClick={()=>onSubmit()}>Submit your Review</button>
+                    </div>
                 </div>
             </div>
         </>

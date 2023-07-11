@@ -17,7 +17,8 @@ function SpotDetail(){
     const {spotId} = useParams()
     console.log('SPOTDETAIL...SPOTID',spotId)
 
-    const [modal, setModal] = useState(false)
+    const [postModal, setPostModal] = useState(false)
+    const [deleteModal, setDeleteModal] = useState(false)
 
     //to know who is logged in or if no one is logged in
     const userState = useSelector(state=>state.session)
@@ -32,7 +33,7 @@ function SpotDetail(){
     useEffect(()=>{
         dispatch(spotActions.spotDetails(spotId))
         dispatch(reviewActions.getSpotReviews(spotId))
-      },[dispatch, spotId, modal])
+      },[dispatch, spotId, postModal, deleteModal])
 
     const star = () => {
         return (
@@ -108,8 +109,8 @@ function SpotDetail(){
                     if((element?.User?.id === userState?.user?.id)  && (parseInt(element?.spotId) === parseInt(spotId))){
                         return(
                             <>
-                                <button className = "deleteButton" onClick={()=>{setModal(true)}}>Delete</button>
-                                { element?.spotId && modal && <Modal closeModal={setModal} />}
+                                <button className = "deleteButton" onClick={()=>{setDeleteModal(true)}}>Delete</button>
+                                {deleteModal && <Modal closeModal={setDeleteModal} />}
                             </>
                         )
                     }
@@ -237,8 +238,8 @@ function SpotDetail(){
         if(checkReview() === 'No Review'){
             return(
                 <>
-                    <button className = "postReviewButton" onClick={()=>{setModal(true)}}>Post a Review</button>
-                    { checkReview() && modal && <ReviewModal closeModal={setModal} />}
+                    <button className = "postReviewButton" onClick={()=>{setPostModal(true)}}>Post a Review</button>
+                    {postModal && <ReviewModal closeModal={setPostModal} />}
                 </>
             )
         }
@@ -264,31 +265,38 @@ function SpotDetail(){
                     <p>{spotState?.matched?.description}</p>
                 </div>
 
+
                 <div className='callOutInformationBox'>
 
-                    <div className='information'>
-                        ${spotState?.matched?.price} night
-                        {avgReviewsRating() !==0 ?
+                        <div className='information'>
+                            <div className='priceBox'>
+                                ${spotState?.matched?.price} night
+                            </div>
 
-                            <>
-                                <div className='star'>{star()}</div>
-                                <label>{spotState?.matched?.avgStarRating%1 === 0 ? `${(spotState?.matched?.avgStarRating)}.0` : spotState?.matched?.avgStarRating}</label>
-                                <div className='dot'>{dot()}</div>
-                                <label className='numberOfReviews'>{numberOfReviews()}</label>
-                            </>
-                            :
-                            <>
-                                <div className='star'>{star()}</div>
-                                <label>{spotState?.matched?.avgStarRating%1 === 0 ? `${(spotState?.matched?.avgStarRating)}.0` : spotState?.matched?.avgStarRating}</label>
-                            </>
-                        }
-                    </div>
+                            <div className='ratingBox'>
+                                {avgReviewsRating() !==0 ?
 
-                    <div className='outerSubmit'>
-                        <button className='submitButton' onClick={()=>submitButton()}>Reserve</button>
-                    </div>
+                                    <>
+                                        <div className='star'>{star()}</div>
+                                        <label>{spotState?.matched?.avgStarRating%1 === 0 ? `${(spotState?.matched?.avgStarRating)}.0` : spotState?.matched?.avgStarRating}</label>
+                                        <div className='dot'>{dot()}</div>
+                                        <label className='numberOfReviews'>{numberOfReviews()}</label>
+                                    </>
+                                    :
+                                    <>
+                                        <div className='star'>{star()}</div>
+                                        <label>{spotState?.matched?.avgStarRating%1 === 0 ? `${(spotState?.matched?.avgStarRating)}.0` : spotState?.matched?.avgStarRating}</label>
+                                    </>
+                                }
+                            </div>
+                        </div>
+
+                        <div className='outerSubmit'>
+                            <button className='submitButton' onClick={()=>submitButton()}>Reserve</button>
+                        </div>
 
                 </div>
+
 
 
 

@@ -14,14 +14,14 @@ function UpdateSpot(){
     const {spotId} = useParams()
 
     const spotState = useSelector(state=>state.spot)
-    console.log('UPDATE...SPOTSTATE', spotState)
+    // console.log('UPDATE...SPOTSTATE', spotState)
 
     useEffect(()=>{
         dispatch(spotActions.getSpots())
     },[dispatch])
 
     const [country, setCountry] = useState(spotState[spotId]?.country)
-    const [streetAddress, setStreetAddress] = useState(spotState[spotId]?.address)
+    const [address, setStreetAddress] = useState(spotState[spotId]?.address)
     const [city, setCity] = useState(spotState[spotId]?.city)
     const [state, setState] = useState(spotState[spotId]?.state)
     const [price, setPrice] = useState(spotState[spotId]?.price)
@@ -36,73 +36,65 @@ function UpdateSpot(){
 
 
 
-    console.log('UPADATE...PAYLOAD COUNTRY',payload.country)
-    console.log('UPDATE...STATE COUNTRY',country)
-
-
 
     async function handleSubmit (e){
         e.preventDefault()
-
-        // const errors = {}
-        // if(!price) errors['price']='Price per night is required'
-        // if(!country) errors['country']='Country is required'
-        // if(!city) errors['city']='City is required'
-        // if(!state) errors['state']='State is required'
-        // if(!streetAddress) errors['streetAddress']='Street Address is required'
-        // if(!image) errors['image']='Preview Image URL is required'
-        // if(!description || (description && description.length<30)) errors['description']='Description needs 30 or more characters'
-        // if(name.length>50) errors['name'] = 'Name should be less than 50 characters'
-
-        // setValidationErrors(errors)
-        // console.log('ERRORS', errors)
-        // console.log('DESCRIPTION', description)
-        // setSubmitted(true)
-
-
-        const payload ={
-            country,
-            streetAddress,
-            city,
-            state,
-            description,
-            name,
-            price,
-            image
-        }
-
-        setCountry(payload.country)
-        setStreetAddress(payload.streetAddress)
-        setCity(payload.city)
-        setState(payload.state)
-        setDescription(payload.description)
-        setName(payload.name)
-        setPrice(payload.price)
-        setImage(payload.image)
-
+        setSubmitted(true)
 
         try{
+            const payload ={
+                country,
+                address,
+                city,
+                state,
+                description,
+                name,
+                price,
+                image
+            }
+
+
+    console.log('UPDATESPOTS...PAYLOAD',payload)
+
             const created = await dispatch(spotActions.updateSpot(spotId,payload))
             console.log('UPDATE SPOT....INSIDE TRY',created)
-            return created
+            // return created
         }
         catch(created){
             const information = await created.json()
             console.log('UPDATE SPOT...INSIDE CATCH',information)
+
+            if(information.statusCode===400){
+                const errors={}
+
+                if(!country) errors['country']='Country is required'
+                if(!address) errors['address']='Address is required'
+                if(!city) errors['city']='City is required'
+                if(!state) errors['state']='State is required'
+                if(!description || description.length<30) errors['description']='Description must be 30 or more characters'
+                if(!name) errors['name']='Name is required'
+                if(name.length>50) errors['name']='Name must be less than 50 characters'
+                if(!price) errors['price']='Price is required'
+                if(!image) errors['image']='Preview image is required'
+
+                setValidationErrors(errors)
+            }
         }
 
 
 
-        //reset form values
-        // setCountry(spotState[spotId]?.country)
-        // setStreetAddress(spotState[spotId]?.address)
-        // setCity(spotState[spotId]?.city)
-        // setPrice(spotState[spotId]?.price)
-        // setName(spotState[spotId]?.name)
-        // setImage(spotState[spotId]?.image)
+        // reset form values
+        // setCountry(country)
+        // setStreetAddress(address)
+        // setCity(city)
+        // setPrice(price)
+        // setName(name)
+        // setImage(image)
 
         // setValidationErrors({})
         // setButtonOff(true)
+
+        history.push(`spots/${spotId}`)
     }
 
     return(
@@ -117,8 +109,8 @@ function UpdateSpot(){
 
                     <label> Country
                         <input className='inputField' type='text'
-                        defaultValue={country}
-                        onChange={(e)=>setCountry(e.target.defaultValue)}>
+                        value={country}
+                        onChange={(e)=>setCountry(e.target.value)}>
                         </input>
                     </label>
 
@@ -128,8 +120,8 @@ function UpdateSpot(){
 
                     <label> Street Address
                         <input className='inputField' type='Address'
-                        defaultValue={spotState[spotId]?.address}
-                        onChange={(e)=>setStreetAddress(e.target.defaultValue)}>
+                        value={address}
+                        onChange={(e)=>setStreetAddress(e.target.value)}>
                         </input>
                     </label>
 
@@ -139,8 +131,8 @@ function UpdateSpot(){
 
                     <label>City
                         <input type='city'
-                        defaultValue={spotState[spotId]?.city}
-                        onChange={(e)=>setCity(e.target.defaultValue)}>
+                        value={city}
+                        onChange={(e)=>setCity(e.target.value)}>
                         </input>
                     </label>
 
@@ -150,8 +142,8 @@ function UpdateSpot(){
 
                     <label>State
                         <input type='state'
-                        defaultValue={spotState[spotId]?.state}
-                        onChange={(e)=>setState(e.target.defaultValue)}>
+                        value={state}
+                        onChange={(e)=>setState(e.target.value)}>
                         </input>
                     </label>
 
@@ -164,8 +156,8 @@ function UpdateSpot(){
                 <div className='group'>
                     <div className='title'>Describe your place to your guests</div>
                     <div>Mention the best features of your space and any special amentities like fast wifi or parking, and what you love about the neighborhood</div>
-                    <textarea className='inputField' defaultValue={spotState[spotId]?.description}
-                    onChange={(e)=>setDescription(e.target.defaultValue)}
+                    <textarea className='inputField' value={description}
+                    onChange={(e)=>setDescription(e.target.value)}
                     placeholder="Please write at least 30 characters"></textarea>
 
                     <div className='error'>
@@ -177,8 +169,8 @@ function UpdateSpot(){
                     <div className='title'>Create a title for your spot</div>
                     <div> Catch guests' attention with a spot title that highlights what makes your place special</div>
                     <input className='inputField'
-                    defaultValue={spotState[spotId]?.name}
-                    onChange={(e)=>setName(e.target.defaultValue)}
+                    value={name}
+                    onChange={(e)=>setName(e.target.value)}
                     placeholder="Name of your spot"></input>
                 </div>
 
@@ -186,8 +178,8 @@ function UpdateSpot(){
                     <div className='title'>Set a base price for your spot</div>
                     <div>Competitive pricing can help your listing stand out and rank higher in search results</div>
                     <input className='inputField'
-                    defaultValue={spotState[spotId]?.price}
-                    onChange={(e)=>setPrice(e.target.defaultValue)}
+                    value={price}
+                    onChange={(e)=>setPrice(e.target.value)}
                     placeholder="Price per night (USD)"></input>
 
                     <div className='error'>
@@ -198,10 +190,14 @@ function UpdateSpot(){
                 <div className='group'>
                     <div className='title'>Liven up your spot with photos</div>
                     <div>Submit a link to at lest one photo to publish your spot</div>
-                    <input className='inputField'
-                    defaultValue={spotState[spotId]?.previewImage}
-                    onChange={(e)=>setImage(e.target.defaultValue)}
-                    placeholder='Preview Image'></input>
+
+                    <input
+                        className='inputField'
+                        value={image}
+                        onChange={(e)=>setImage(e.target.value)}
+                        placeholder='Preview Image'
+                    />
+
 
                     <div className='error'>
                         {submitted && validationErrors.image && `*${validationErrors.image}`}
@@ -215,7 +211,7 @@ function UpdateSpot(){
 
 
                 <div className='outerUpdate'>
-                    <button className='updateButton' type='newSpot' disabled={buttonOff} onClick={()=>{history.push(`spots/${spotId}`)}}>
+                    <button className='updateButton' type='newSpot' disabled={buttonOff} >
                         Update your Spot
                     </button>
                 </div>

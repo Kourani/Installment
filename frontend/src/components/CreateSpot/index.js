@@ -97,7 +97,7 @@ function CreateSpot(){
         setImage('')
     }
 
-    console.log('insideCatch',validationErrors)
+    
     return(
         <>
             <form className='createForm' onSubmit={handleSubmit}>

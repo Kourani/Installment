@@ -1,54 +1,87 @@
 
 
 
-.review{
-    width: 100%;
+
+
+
+
+.reviewInput{
+    background-color: lightblue;
+    border: 3px solid black;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    width:100%;
     height: 100%;
 }
-
-
-
-.submitReviewButton{
-    color: white;
-    background-color: orangered;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    border: 2px solid black;
-    box-shadow: 1px 1px black;
-
-
-}
-.filled{
-    color: orange;
-}
-
-.empty{
-    color: bisque
-}
-
-.contain{
-    background-color: #00000088;
-    display: flex;
-    justify-content: center;
+  .modalBackgroundPost {
+    display:flex;
     align-items: center;
-    position:fixed;
-    top: 0;
-    /* bottom:0; */
+    justify-content: center;
+    background-color: #00000088;
+    position: fixed;
+    bottom:0%;
     width:100%;
     height:100%;
-}
+  }
 
-.starDirection{
-    display: flex;
-}
-
-.inner{
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    font-weight: bold;
+  .modalContainerPost{
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     background-color: white;
+    border: 3px solid black;
+    border-radius: 5%;
+    gap:15px;
+  }
 
+  .inputPost{
+    display: flex;
+    flex-direction: column;
+    gap:15px;
+  }
+
+  .modalContainerPost .titlePost {
+    display: inline-block;
+    text-align: center;
+    margin-top: 10px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 100%;
+  }
+
+  .titleCloseBtnPost {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .titleCloseBtnPost button {
+    background-color: transparent;
+    border: none;
+    font-size: 25px;
+    cursor: pointer;
+  }
+
+
+.starDirection{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
+
+  .modalContainerPost .footerPost {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modalContainerPost .footerPost button {
+    width: 300px;
+    height: 50px;
+    margin: 10px;
+    border: none;
+    color: gray;
+    border: 3px solid gray;
+    box-shadow: 3px 3px 0px gray;
+    font-size: 20px;
+    cursor: pointer;
+  }
