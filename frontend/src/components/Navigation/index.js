@@ -8,10 +8,13 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import ProfileButton from './ProfileButton';
+import { useState } from 'react';
 
 function Navigation({ isLoaded }){
   const sessionUser = useSelector(state => state.session.user);
   const dispatch = useDispatch();
+  const [clickState, setClickState]=useState(false)
+  console.log('NAVIGATION....CLICKSTATE',clickState)
 
     //creates the star icon
     const person = () => {
@@ -33,23 +36,25 @@ function Navigation({ isLoaded }){
 
   function choices(){
     return (
-      <button>
-      <div>
+
+      <div className='choices'>
+
         <div>
-          <NavLink to="/login">Log In</NavLink>
+          <NavLink to="/signup">Sign up</NavLink>
         </div>
 
         <div>
-          <NavLink to="/signup">Sign Up</NavLink>
+          <NavLink to="/login">Log in</NavLink>
         </div>
 
-        <div>
-          <NavLink to='/manageSpots'>Manage Spots</NavLink>
-        </div>
       </div>
-
-      </button>
     )
+  }
+
+  function clicked(){
+    if(clickState){
+      return choices()
+    }
   }
 
   const logout = (e) => {
@@ -72,21 +77,17 @@ function Navigation({ isLoaded }){
   } else {
     sessionLinks = (
 
-      <button className='mainButton' onClick={()=>choices()}>
-          {bars()}
-          {person()}
-          <div>
-        <div>
-          <NavLink to="/login">Log In</NavLink>
+      <>
+
+        <div className='leftSide'>
+          <button className='mainButton' onClick={()=>setClickState(!clickState)}>
+              {bars()}
+              {person()}
+          </button>
+
+          {clicked()}
         </div>
-
-        <div>
-          <NavLink to="/signup">Sign Up</NavLink>
-        </div>
-      </div>
-
-      </button>
-
+      </>
 
     );
   }

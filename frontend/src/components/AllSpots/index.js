@@ -66,7 +66,7 @@ function AllSpots(){
                                 </div>
                             </div>
 
-                            <div className='pirce'>
+                            <div className='price'>
                                 ${element.price}night
                             </div>
 
