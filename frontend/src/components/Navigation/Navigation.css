@@ -1,4 +1,8 @@
 
+
+
+
+
 /*styles the button that opens the drop down menu*/
 .mainButton{
     display: flex;
@@ -10,7 +14,7 @@
     background-color: white;
 }
 
-/*styles the drop down box*/
+/*styles the drop down box BEFORE user login*/
 .choices{
     border: 2px solid black;
     display: flex;
@@ -31,7 +35,7 @@
     gap:10px;
 }
 
-/*styles the create a new spot button*/
+/*styles the create a new spot button once the user is logged in*/
 .createSpotButtonNav{
     background-color: white;
     border: none;
@@ -40,7 +44,7 @@
     cursor: pointer;
 }
 
-/*styles the box once the user is logged in*/
+/*styles the box that opens the drop down menu once the user is logged in*/
 .profileClick{
     background-color: white;
     cursor: pointer;
@@ -50,7 +54,7 @@
 }
 
 
-
+/*styles the drop down box AFTER user login*/
 .listChoicesBox{
     border: 2px solid black;
     display: flex;
@@ -62,33 +66,30 @@
     margin:2px;
 }
 
+/*styles the manage spots button in the drop down menu*/
 .manageSpotsButton{
     border-top: 2px solid black;
     border-bottom: 2px solid black;
     color: black;
 }
 
+/*styles the log out button in the drop down menu*/
 .logoutButton{
     border-radius: 30%;
     background-color: gray;
     color:white;
     cursor: pointer;
 }
+
+/* styles the entire navigation bar */
 .whole{
-    /* position: fixed;
-
-    left:0;
-    right:0;
-    width: 100%;
-    z-index: 9999; */
-
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 3px solid lightgrey;
-
 }
 
+/* styles the left half of the navigation bar */
 .roseButton{
     display: flex;
     align-items: center;
@@ -97,6 +98,7 @@
     color: red;
 }
 
+/*styles the image button on the left half of the navigation bar*/
 .roseButton img{
     border-radius: 50px;
 }

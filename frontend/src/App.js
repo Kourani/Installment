@@ -4,8 +4,8 @@
 import React, { useState, useEffect } from "react"
 import {Route, Switch} from 'react-router-dom'
 import { useDispatch } from "react-redux";
-import LoginFormPage from "./components/LoginFormPage"
-import SignupFormPage from "./components/SignUpFormPage";
+import LoginModal from "./components/LoginModal"
+import SignupModal from "./components/SignupModal";
 import * as sessionActions from "./store/session"
 
 import Navigation from './components/Navigation'
@@ -45,11 +45,11 @@ function App() {
 
 
       <Route path="/login">
-        <LoginFormPage />
+        <LoginModal />
       </Route>
 
       <Route path="/signup">
-        <SignupFormPage/>
+        <SignupModal/>
       </Route>
 
       <Route path='/manageSpots'>

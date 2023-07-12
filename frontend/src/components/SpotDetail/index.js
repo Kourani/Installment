@@ -70,26 +70,17 @@ function SpotDetail(){
       'December'
     ]
 
-    //to obtain the average rating of the reviews
-    function avgReviewsRating(){
 
-        let averageRating = 0
+    console.log('HERE',typeof spotState?.matched?.avgStarRating)
+    console.log('toFixed', spotState?.matched?.avgStarRating?.toFixed(1))
 
-        if(reviewState?.Reviews){
-            reviewState.Reviews?.forEach(element=>{
-            averageRating +=element.stars
-            })
 
-            console.log('AVERAGE',averageRating)
-            console.log('LENGTH',reviewState?.Reviews.length)
-
-            if(averageRating%reviewState?.Reviews.length === 0){
-                return (`${(averageRating/reviewState?.Reviews.length)}.0`)
-            }
-
-            return ( averageRating !== 0 ? averageRating/reviewState?.Reviews.length : 'New')
-        }
+    function avgRating(){
+        return ( spotState?.matched?.avgStarRating ? (spotState?.matched?.avgStarRating)?.toFixed(1) : 'New')
     }
+
+
+    console.log('SPOTDETAIL...RATING',avgRating())
 
     //to obtain the actual reviews
     function reviewSpot(){
@@ -137,7 +128,7 @@ function SpotDetail(){
                                 {element?.review}
                             </div>
 
-                            <div className='deleteButton'>
+                            <div>
                                 {deleteButton()}
                             </div>
 
@@ -244,8 +235,7 @@ function SpotDetail(){
             )
         }
     }
-    console.log('hereaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', checkReview())
-
+  
     return(
         <>
 
@@ -261,7 +251,7 @@ function SpotDetail(){
             <div className='solidLine'>
 
                 <div className='hostedBy'>
-                    <text className='host'>Hosted By {spotState?.matched?.Owner?.firstName}, {spotState?.matched?.Owner?.lastName}</text>
+                    <text className='host'>Hosted By {spotState?.matched?.Owner?.firstName} {spotState?.matched?.Owner?.lastName}</text>
                     <p>{spotState?.matched?.description}</p>
                 </div>
 
@@ -269,66 +259,72 @@ function SpotDetail(){
                 <div className='callOutInformationBox'>
 
                         <div className='information'>
+
                             <div className='priceBox'>
                                 ${spotState?.matched?.price} night
                             </div>
 
                             <div className='ratingBox'>
-                                {avgReviewsRating() !==0 ?
+                                { spotState?.matched?.avgStarRating ?
 
                                     <>
-                                        <div className='star'>{star()}</div>
-                                        <label>{spotState?.matched?.avgStarRating%1 === 0 ? `${(spotState?.matched?.avgStarRating)}.0` : spotState?.matched?.avgStarRating}</label>
-                                        <div className='dot'>{dot()}</div>
-                                        <label className='numberOfReviews'>{numberOfReviews()}</label>
+                                        <div className='star'>
+                                            {star()}
+                                        </div>
+
+                                        <label>
+                                            {spotState?.matched?.avgStarRating?.toFixed(1)}
+                                        </label>
+
+                                        <div className='dot'>
+                                            {dot()}
+                                        </div>
+
+                                        <label className='numberOfReviews'>
+                                            {numberOfReviews()}
+                                        </label>
                                     </>
                                     :
                                     <>
                                         <div className='star'>{star()}</div>
-                                        <label>{spotState?.matched?.avgStarRating%1 === 0 ? `${(spotState?.matched?.avgStarRating)}.0` : spotState?.matched?.avgStarRating}</label>
+                                        <label>{spotState?.matched?.avgStarRating?.toFixed(1)}</label>
                                     </>
                                 }
                             </div>
                         </div>
 
-                        <div className='outerSubmit'>
-                            <button className='submitButton' onClick={()=>submitButton()}>Reserve</button>
-                        </div>
-
+                        <button className='submitButton' onClick={()=>submitButton()}>Reserve</button>
                 </div>
-
-
-
 
             </div>
 
             <div className='reviewSummary'>
 
-                    {avgReviewsRating() !=='New' ?
+                    {avgRating() !=='New' ?
 
                         <>
                         {star()}
-                        {avgReviewsRating()}
+                        {avgRating()}
                         {dot()}
                         {numberOfReviews()}
                         </>
                         :
                         <>
                         {star()}
-                        {avgReviewsRating()}
+                        {avgRating()}
                         </>
                     }
 
             </div>
 
             <div>
-            {postButton()}
+                {postButton()}
             </div>
 
             <p></p>
 
             <div>
-            {reviewSpot()}
+                {reviewSpot()}
             </div>
 
        </>

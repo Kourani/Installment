@@ -57,7 +57,12 @@ function ManageSpots(){
 
             if(element?.ownerId === userState?.user?.id){
 
-
+                function elementRating(){
+                    if(element?.avgRating%1===0){
+                        return (`${element.avgRating}.0`)
+                    }
+                    return element.avgRating
+                }
 
                 console.log('MANAGESPOT...DELETEID',deleteId)
 
@@ -67,24 +72,28 @@ function ManageSpots(){
 
                             <button className='manageTileButton' onClick={()=>{history.push(`/spots/${element.id}`)}}>
 
-                                <div className='imageContainer'>
                                     <img src={element.previewImage} alt='Spot Preview' />
-                                </div>
                             </button>
 
                             <div className='spotInformation'>
 
                                     <div className='firstLine'>
                                         {element.city}, {element.state}
-                                        {star()}
-                                        {element.avgRating ? element.avgRating : 'New'}
+
+                                        <div className='manageStarRating'>
+                                            {star()}
+                                            {element.avgRating ? elementRating() : 'New'}
+                                        </div>
                                     </div>
 
-                                    {element.price}night
+                                    <div className='secondLine'>
+                                        <div className='secondLinePrice'>${element.price}</div>
+                                        night
+                                    </div>
 
                                     <div className='spotButtons'>
                                         <button className='manageUpdateButton' onClick={()=>{history.push(`/spots/${element.id}/updateSpot`)}}>Update</button>
-                                        <button className = "manageDeleteButton" onClick={()=>states(element)}>Delete {element.id}</button>
+                                        <button className = "manageDeleteButton" onClick={()=>states(element)}>Delete</button>
                                     </div>
 
                             </div>
@@ -108,7 +117,7 @@ function ManageSpots(){
         <>
 
             <div className='wale'>
-            <div>Manage Your Spots</div>
+            <div className='manageSpotsTitle'>Manage Your Spots</div>
             <button className='createButton' onClick={()=>history.push(`/newSpot`)}>Create a New Spot</button>
             <div>{userState?.user !=null ? check() : 'You must be logged in to manage your spots'}</div>
             </div>

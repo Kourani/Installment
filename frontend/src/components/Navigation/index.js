@@ -2,6 +2,8 @@
 
 
 import './Navigation.css';
+import LoginModal from './../LoginModal'
+import SignupModal from './../SignupModal'
 import * as sessionActions from '../../store/session';
 
 import React from 'react';
@@ -11,13 +13,19 @@ import ProfileButton from './ProfileButton';
 import { useState } from 'react';
 
 function Navigation({ isLoaded }){
-  const sessionUser = useSelector(state => state.session.user);
+
   const dispatch = useDispatch();
+
+  const sessionUser = useSelector(state => state.session.user);
+
   const [clickState, setClickState]=useState(false)
   console.log('NAVIGATION....CLICKSTATE',clickState)
 
-    //creates the star icon
-    const person = () => {
+  const [loginModal, setLoginModal]=useState(false)
+  const [signupModal, setSignupModal]=useState(false)
+
+
+  const person = () => {
       return (
           <div style={{ color: "black", fontSize: "20px" }}>
               <i className="fa-solid fa-circle-user"></i>
@@ -31,7 +39,7 @@ function Navigation({ isLoaded }){
           <i className="fa-solid fa-bars"></i>
         </div>
     );
-};
+  };
 
 
   function choices(){
@@ -41,10 +49,13 @@ function Navigation({ isLoaded }){
 
         <div>
           <NavLink to="/signup">Sign up</NavLink>
+          {signupModal && <SignupModal closeModal={setSignupModal} />}
         </div>
 
         <div>
-          <NavLink to="/login">Log in</NavLink>
+          {/* <NavLink to="/login">Log in</NavLink> */}
+          <button className='LoginButton' onClick={()=>setLoginModal(true)}> Log In</button>
+          {loginModal && <LoginModal closeModal={setLoginModal} />}
         </div>
 
       </div>
@@ -101,7 +112,7 @@ function Navigation({ isLoaded }){
           <img src={'https://images.pexels.com/photos/442188/pexels-photo-442188.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'} alt={'Home'} width="50" height="50"/>
         </NavLink>
         <div className='roseWord'>
-          earthbnb
+          Earth BnB
         </div>
 
       </div>

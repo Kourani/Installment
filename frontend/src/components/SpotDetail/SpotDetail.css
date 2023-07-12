@@ -1,90 +1,94 @@
 
-.spotTileButton{
-  cursor: pointer;
-}
 
+
+/* styles the post a review button */
 .postReviewButton{
   cursor: pointer;
+  border: 2px solid black;
+  box-shadow: 3px 3px 1px black;
+  background-color: gray;
+  color:white;
 }
 
+/* styles the delete button ... button tag */
 .deleteButton{
   cursor: pointer;
+  border: 2px solid black;
+  box-shadow: 3px 3px 1px black;
+  background-color: gray;
+  color:white;
 
 }
-.Reviews{
+
+/* styles the reserve button ... button tag */
+.submitButton{
+  cursor: pointer;
+  color: white;
+  background-color: orangered;
+  border: 2px solid black;
+  box-shadow: 1px 1px black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+  width:90%;
+  /* height:50px; */
+  padding:2% 0;
+}
+
+/* styles the reserve box with all the info inside ... div tag */
+.callOutInformationBox{
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border:3px solid black;
+  border-radius: 5%;
+  margin: 10px;
 }
 
-.date{
-  color: darkgrey;
-}
-.hostedBy{
-  display: inline;
-  width:50%;
-  overflow-x: wrap;
+/* styles the stuff conatined to the left side of the reserve box */
+.ratingBox{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap:8px;
 }
 
-.hostedBy p{
-  display: inline-block;
+/* styles the first line inside the reserve box ... div tag */
+.information{
+  display:flex;
+  flex-direction: row;
+  margin: 10px;
+  justify-content: space-between;
 }
+
+/* styles the entire container with the description and the reserve box ... div tag */
 .solidLine{
   width:100%;
   display:flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 2px solid black;
-
 }
 
-.callOutInformationBox{
-  border:3px solid black;
-  border-radius: 5%;
-  /* margin-right:auto; */
-  /* position: absolute; */
-  right:0%;
-  top:50%;
+/* styles the date in the review */
+.date{
+  color: darkgrey;
+}
 
+
+.Reviews{
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap:8px;
 }
 
 
 
-.ratingBox{
-  display: flex;
-  gap:8px;
-}
-
-/* .outerCallOutInfo{
-  display: flex;
-  width:100%;
-  height:100%;
-} */
-
-.submitButton{
-  color: white;
-  background-color: orangered;
-  border: 2px solid black;
-  box-shadow: 1px 1px black;
-  cursor: pointer;
-
-  width:100%;
-  height:100%;
-}
 
 
 
-.information{
-  display:flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap:20%;
-}
 
 
 
@@ -141,4 +145,11 @@
     display: flex;
     flex-direction: row;
     gap:4px;
+}
+
+
+.priceBox{
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

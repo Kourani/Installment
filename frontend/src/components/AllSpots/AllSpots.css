@@ -1,12 +1,39 @@
 
 
 
+.landingPage{
+  margin-top: 10px;
+}
+/*styles the layout of the entire spot tiles 'one div'*/
+.spotGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
+}
 
+
+/*styles the tile itself where the image is contained*/
 .spotTileButton{
-  width:fit-content;
   background-color: white;
-  border-color: white;
+  border: 0px solid white;
 
+}
+
+/*styles all the images*/
+.spotTileButton img{
+  width:100%;
+  height:20vw;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+}
+
+.tileInformation{
+  display: flex;
+  flex-direction: column;
 }
 
 .line1{
@@ -14,26 +41,16 @@
   justify-content: space-between;
 }
 
-
-.tileInformation{
+.rightHalf1{
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
-.starter{
+.price{
   display: flex;
+  gap:3px;
 }
 
-.spotGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 20px;
-  align-items: center;
-}
-
-
-
-.imageContainer img {
-  width: 100%;
-  height: 100%;
+.priceBold{
+  font-weight: bold;
 }

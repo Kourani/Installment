@@ -47,33 +47,41 @@ function AllSpots(){
 
 
             return(
-                <>
-                    <div className='one'>
+
+                    <div className='landingPage'>
+
                         <button className='spotTileButton' key='spotTile' onClick={()=>onClicked()}>
-                                <div className="imageContainer">
-                                    <img className='imageTile' src={element.previewImage} alt='Spot Preview' />
-                                </div>
+                            <img src={element.previewImage} alt='Spot Preview' />
                         </button>
 
                         <div className='tileInformation'>
 
                             <div className='line1'>
-                                <div className='elementCity'>{element.city}, {element.state}</div>
 
-                                <div className='starter'>
+                                <div className='leftHalf1'>
+                                    {element.city}, {element.state}
+                                    {/* <div className='city'>{element.city},</div>
+                                    <div className='state'>{element.state}</div> */}
+                                </div>
+
+                                <div className='rightHalf1'>
                                     <div className='starFunction'>{star()}</div>
                                     <div className='averageRating'>{element.avgRating ? checkRating() : 'New'}</div>
                                 </div>
+
                             </div>
 
                             <div className='price'>
-                                ${element.price}night
+                                <div className='priceBold'>
+                                    ${element.price}
+                                </div>
+                                night
                             </div>
 
                         </div>
 
                     </div>
-                </>
+
             )
         })
     }

@@ -1,0 +1,58 @@
+
+
+
+.demoUserLogin{
+  background-color: white;
+  border: none;
+  color: darkcyan;
+  text-decoration: underline;
+  cursor: pointer;
+
+}
+  .modalBackgroundLogin {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #00000088;
+    position: fixed;
+    left:0%;
+    top:0%;
+    width:100vw;
+    height:100vh;
+  }
+
+  .modalContainerLogin{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border-radius: 5%;
+    gap:15px;
+  }
+
+  .modalContainerLogin .titleLogin {
+    display: inline-block;
+    text-align: center;
+    margin-top: 10px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 100%;
+  }
+
+.formValuesLogin{
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    margin-right:10px;
+    gap:10px;
+}
+
+.loginModalButton {
+    cursor: pointer;
+    border: none;
+    color: gray;
+    border: 3px solid gray;
+    box-shadow: 3px 3px 0px gray;
+    font-size: 20px;
+    margin-bottom: 10px;;
+  }
