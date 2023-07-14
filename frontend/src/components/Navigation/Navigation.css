@@ -1,5 +1,11 @@
 
 
+.manageSpotsButton a{
+    text-decoration: none;
+    color: black;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
 .signupLoginButtons{
     background-color: white;
     border: none;
