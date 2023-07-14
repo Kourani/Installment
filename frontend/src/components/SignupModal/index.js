@@ -25,8 +25,17 @@ function SignupModal({closeModal}){
 
     const handleSubmit = (e) =>{
         e.preventDefault()
+        const error={}
+
+        //reset form values
+        setFirstName("")
+        setLastName("")
+        setEmail("")
+        setUsername("")
+        setPassword("")
+        setConfirmPassword("")
+
         if(password === confirmPassword){
-            setErrors({})
             return dispatch(
                 sessionActions.signup({
                     email,
@@ -37,8 +46,13 @@ function SignupModal({closeModal}){
                 })
                 ).catch(async (res)=>{
                     const data = await res.json()
+                    console.log(data)
+                    console.log(data.errors)
                     if(data && data.errors){
-                        setErrors(data.errors)
+                        if(!password) error['password']='Password is required'
+                        if(password.length<6)error['password']='Password must be 6 characters or more'
+                        if(data.errors.includes('Invalid email.'))error['email']='Invalid Email'
+                        setErrors(error)
                     }
                 })
         }
@@ -52,6 +66,11 @@ function SignupModal({closeModal}){
     return (
         <div className="modalBackgroundSignup">
             <div className="modalContainerSignup">
+
+                <div className='titleCloseBtn'>
+                    <button onClick={()=>closeModal(false)}> X </button>
+                </div>
+                
                 <div className="titleSignup">Sign Up</div>
 
                 <form className="formValuesSignup" onSubmit={handleSubmit}>
@@ -65,7 +84,7 @@ function SignupModal({closeModal}){
                     onChange={(e)=>setFirstName(e.target.value)}
                     required/>
 
-                    {errors.firstName && <p>{errors.firstName}</p>}
+                    {errors.firstName && <div className="error">{errors.firstName}</div>}
 
                     <input className='inputBold'
                     type="text"
@@ -74,7 +93,7 @@ function SignupModal({closeModal}){
                     onChange={(e)=>setLastName(e.target.value)}
                     required/>
 
-                    {errors.lastName && <p>{errors.lastName}</p>}
+                    {errors.lastName && <div className="error">{errors.lastName}</div>}
 
                     <input className='inputBold'
                     type="text"
@@ -83,7 +102,7 @@ function SignupModal({closeModal}){
                     onChange={(e)=>setEmail(e.target.value)}
                     required />
 
-                    {errors.email && <p>{errors.email}</p>}
+                    {errors.email && <div className="error">{errors.email}</div>}
 
 
                     <input className='inputBold'
@@ -93,7 +112,7 @@ function SignupModal({closeModal}){
                     onChange={(e)=>setUsername(e.target.value)}
                     required/>
 
-                    {errors.username && <p>{errors.username}</p>}
+                    {errors.username && <div className="error">{errors.username}</div>}
 
 
 
@@ -104,7 +123,7 @@ function SignupModal({closeModal}){
                     onChange={(e)=>setPassword(e.target.value)}
                     required/>
 
-                    {errors.password && <p>{errors.password}</p>}
+                    {errors.password && <div className="error">{errors.password}</div>}
 
                         <input
                         className='inputBold'
@@ -114,7 +133,7 @@ function SignupModal({closeModal}){
                         onChange={(e)=>setConfirmPassword(e.target.value)}
                         required/>
 
-                    {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+                        {errors.confirmPassword && <div className="error">{errors.confirmPassword}</div>}
 
                     <button className="signupModalButton" type="submit">Sign Up</button>
                 </form>

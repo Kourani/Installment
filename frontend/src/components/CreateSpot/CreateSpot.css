@@ -37,7 +37,12 @@
 .createButton{
     cursor: pointer;
     color: white;
-    background-color: darkorange;
+    background-color: orange;
+}
+
+.createButton:disabled{
+    cursor:default;
+    background-color: grey;
 }
 
 .input{

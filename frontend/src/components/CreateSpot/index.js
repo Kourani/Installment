@@ -55,7 +55,10 @@ function CreateSpot(){
             lng
         }
 
+        console.log(payload)
+
         try {
+
             const created = await dispatch(spotActions.createSpot(payload));
             console.log('TRY BLOCK....CREATED',created)
 
@@ -71,7 +74,7 @@ function CreateSpot(){
             if(information.statusCode===400){
                 console.log('error IF')
                 const errors = {}
-                if(!price) errors['price']='Price per night is required'
+                if(!price || typeof price !== Number) errors['price']='Price per night is required'
                 if(!country) errors['country']='Country is required'
                 if(!city) errors['city']='City is required'
                 if(!state) errors['state']='State is required'
@@ -97,7 +100,7 @@ function CreateSpot(){
         setImage('')
     }
 
-    
+
     return(
         <>
             <form className='createForm' onSubmit={handleSubmit}>
@@ -239,3 +242,5 @@ function CreateSpot(){
 }
 
 export default CreateSpot
+
+

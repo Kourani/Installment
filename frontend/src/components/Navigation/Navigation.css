@@ -1,7 +1,12 @@
 
 
-
-
+.signupLoginButtons{
+    background-color: white;
+    border: none;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    cursor: pointer;
+    margin: 2px;
+}
 
 /*styles the button that opens the drop down menu*/
 .mainButton{
@@ -19,10 +24,8 @@
     border: 2px solid black;
     display: flex;
     flex-direction: column;
-    gap:10px;
-    width: 100%;
-    /* align-items: center; */
     justify-content: center;
+    width: 100px;
     margin: 5%;
 }
 

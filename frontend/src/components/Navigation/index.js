@@ -48,13 +48,13 @@ function Navigation({ isLoaded }){
       <div className='choices'>
 
         <div>
-          <NavLink to="/signup">Sign up</NavLink>
+          <button className='signupLoginButtons' onClick={()=>setSignupModal(true)}>Sign up</button>
           {signupModal && <SignupModal closeModal={setSignupModal} />}
         </div>
 
         <div>
           {/* <NavLink to="/login">Log in</NavLink> */}
-          <button className='LoginButton' onClick={()=>setLoginModal(true)}> Log In</button>
+          <button className='signupLoginButtons' onClick={()=>setLoginModal(true)}> Log In</button>
           {loginModal && <LoginModal closeModal={setLoginModal} />}
         </div>
 

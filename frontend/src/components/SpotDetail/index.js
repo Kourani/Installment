@@ -35,6 +35,8 @@ function SpotDetail(){
         dispatch(reviewActions.getSpotReviews(spotId))
       },[dispatch, spotId, postModal, deleteModal])
 
+
+
     const star = () => {
         return (
           <div style={{ color: "black", fontSize: "20px" }}>
@@ -55,24 +57,7 @@ function SpotDetail(){
         return window.alert('Feature coming soon')
     }
 
-    const monthNames = [
-      'Janurary',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'Novemeber',
-      'December'
-    ]
 
-
-    console.log('HERE',typeof spotState?.matched?.avgStarRating)
-    console.log('toFixed', spotState?.matched?.avgStarRating?.toFixed(1))
 
 
     function avgRating(){
@@ -80,11 +65,43 @@ function SpotDetail(){
     }
 
 
-    console.log('SPOTDETAIL...RATING',avgRating())
+    const monthNames = [
+        'Janurary',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'Novemeber',
+        'December'
+      ]
+
+    
+    function descendingOrder(){
+
+        const ordered = reviewState?.Reviews?.sort(function(a,b){
+            let keyA = new Date(a.createdAt)
+            let keyB = new Date(b.createdAt)
+
+            if(keyA < keyB) return 1
+            if(keyA > keyB) return -1
+            return 0
+         })
+
+         return ordered
+
+    }
+
+    console.log('SPOT DETAIL ... SORTED',descendingOrder()?.length)
 
     //to obtain the actual reviews
     function reviewSpot(){
-        if(reviewState?.Reviews?.length > 0){
+
+        if(descendingOrder()?.length > 0){
             console.log('inside the first if!')
             return reviewState?.Reviews.map(element=>{
 
@@ -140,11 +157,15 @@ function SpotDetail(){
                 }
             }
 
+
+
             console.log('SPOTDETAIL...reviewBySpot',reviewBySpot())
 
             return(
                 <>
-                {reviewBySpot()}
+                <div>
+                    {reviewBySpot()}
+                </div>
                 </>
             )
 
@@ -152,17 +173,15 @@ function SpotDetail(){
 
         }
 
-        if(spotState?.matched?.ownerId !== userState?.user?.id && userState?.user !== null && reviewState?.Reviews?.length===0){
-            console.log('INSIDE THE ELSE !! BE THE FIRST')
-            return(
 
-                    <div>Be the first to post a review!</div>
-
-            )
-        }
     }
 
-    console.log('SPOTDETAIL...reviewSpot', reviewSpot())
+    console.log('SPOT DETAIL...REVIEW SPOT',reviewSpot())
+
+
+
+
+    console.log('SPOTDETAIL...reviewSpot', beTheFirst())
 
     //to obtain the number of reviews
     function numberOfReviews(){
@@ -224,9 +243,25 @@ function SpotDetail(){
 
     console.log('SPOTDETAIL....CHECKREVIEW', checkReview())
 
+    //when the user DOES not own the spot IS logged and there are NO reviews
+    function beTheFirst(){
+        console.log('SPOT DETAIL...OWNER ID',spotState?.matched?.ownerId)
+        console.log('SPOT DETAIL .. USER ID', userState?.user?.id)
+        console.log('SPOT DETAIL... # OF REVIEWS', reviewState?.Reviews?.length)
+
+        if(userState?.user !== null && spotState?.matched?.ownerId !== userState?.user?.id && !reviewState?.Reviews?.length){
+            console.log('INSIDE THE ELSE !! BE THE FIRST')
+            return "Be the first to post a review!"
+        }
+
+        return null
+    }
+
+
+
     function postButton(){
 
-        if(checkReview() === 'No Review'){
+        if(checkReview() === 'No Review' && spotState?.matched?.ownerId !== userState?.user?.id ){
             return(
                 <>
                     <button className = "postReviewButton" onClick={()=>{setPostModal(true)}}>Post a Review</button>
@@ -235,7 +270,7 @@ function SpotDetail(){
             )
         }
     }
-  
+
     return(
         <>
 
@@ -287,7 +322,7 @@ function SpotDetail(){
                                     :
                                     <>
                                         <div className='star'>{star()}</div>
-                                        <label>{spotState?.matched?.avgStarRating?.toFixed(1)}</label>
+                                        <label>{'New'}</label>
                                     </>
                                 }
                             </div>
@@ -324,7 +359,7 @@ function SpotDetail(){
             <p></p>
 
             <div>
-                {reviewSpot()}
+                {reviewSpot() ? reviewSpot() : beTheFirst()}
             </div>
 
        </>

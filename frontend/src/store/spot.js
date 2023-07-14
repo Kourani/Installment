@@ -88,13 +88,13 @@ export const createSpot = (payload) => async (dispatch) =>{
 
     if(response.ok){
         const matchedSpot = await response.json()
-        dispatch(newSpot(matchedSpot))
-
         console.log('Inside createSpot Thunk',matchedSpot)
+        dispatch(newSpot(matchedSpot))
         return matchedSpot
     }
 
-    return response.json()
+    console.log('INSIDE THUNNK', response)
+    return await response.json()
 }
 
 export const deleteSpot = (spotId) => async (dispatch) => {

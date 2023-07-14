@@ -92,9 +92,9 @@ function ReviewModal({closeModal}){
             <div className='modalBackgroundPost'>
                 <div className='modalContainerPost'>
 
-                    {/* <div className='titleCloseBtnPost'>
+                    <div className='titleCloseBtnPost'>
                         <button onClick={()=>closeModal(false)}>X</button>
-                    </div> */}
+                    </div>
 
                     <div className='titlePost'>
                         How was your Stay?

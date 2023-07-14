@@ -31,26 +31,21 @@ function AllSpots(){
         );
     };
 
+
     function spotTiles(){
+
+        function onClicked(element){
+            history.push(`/spots/${element.id}`)
+            dispatch(reviewActions.getSpotReviews(element.id))
+            return
+        }
+
         return spotValues.map(element =>{
-            function onClicked(){
-                history.push(`/spots/${element.id}`)
-                dispatch(reviewActions.getSpotReviews(element.id))
-                return
-            }
-
-            function checkRating(){
-                if(element.avgRating%1===0){
-                    return `${element.avgRating}.0`
-                }
-            }
-
-
             return(
 
                     <div className='landingPage'>
 
-                        <button className='spotTileButton' key='spotTile' onClick={()=>onClicked()}>
+                        <button className='spotTileButton' key='spotTile' onClick={()=>onClicked(element)}>
                             <img src={element.previewImage} alt='Spot Preview' />
                         </button>
 
@@ -66,7 +61,7 @@ function AllSpots(){
 
                                 <div className='rightHalf1'>
                                     <div className='starFunction'>{star()}</div>
-                                    <div className='averageRating'>{element.avgRating ? checkRating() : 'New'}</div>
+                                    <div className='averageRating'>{element.avgRating ? element?.avgRating?.toFixed(1) : 'New'}</div>
                                 </div>
 
                             </div>
