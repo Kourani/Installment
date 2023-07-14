@@ -1,13 +1,9 @@
 
-
-
-
-
   .loginModalButton:disabled{
     cursor: default;
     border: none;
     color: white;
-    background-color: lightgray;
+    background-color: lightgrey;
     border: 3px solid gray;
     box-shadow: 3px 3px 0px gray;
     font-size: 20px;

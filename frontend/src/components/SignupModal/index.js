@@ -5,7 +5,7 @@ import "./SignupModal.css"
 import * as sessionActions from "../../store/session"
 
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 
@@ -22,9 +22,12 @@ function SignupModal({closeModal}){
     const [errors, setErrors] = useState({})
     const [buttonOff, setButtonOff] = useState(true)
 
-    if(email && username && firstName && lastName && password && confirmPassword){
-        return setButtonOff(false)
-    }
+
+    useEffect(()=>{
+        if(email && username && firstName && lastName && password && confirmPassword){
+            return setButtonOff(false)
+        }
+    },[dispatch,email,username,firstName,lastName,password,confirmPassword])
 
     console.log('SIGN UP MODAL ... BUTTON OFF',buttonOff)
 

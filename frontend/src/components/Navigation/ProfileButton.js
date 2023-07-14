@@ -6,11 +6,13 @@ import * as sessionActions from '../../store/session';
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from 'react-redux';
 import { NavLink } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 
 
 function ProfileButton({ user }) {
 
   const dispatch = useDispatch();
+  const history = useHistory()
   const ulRef = useRef();
   const [showMenu, setShowMenu] = useState(true);
   const [profileClick, setProfileClick] = useState(false)
@@ -58,6 +60,12 @@ return (
 );
 };
 
+function logOutOnClick(){
+  return (logout,
+  history.push('/')
+  )
+}
+
 function listChoices(){
   return(
     <div className='listChoicesBox'>
@@ -66,7 +74,7 @@ function listChoices(){
     <div className='manageSpotsButton'>
       <NavLink to='/manageSpots'>Manage Spots</NavLink>
     </div>
-    <button className='logoutButton' onClick={logout}>Log Out</button>
+    <button className='logoutButton' onClick={()=>logOutOnClick()}>Log Out</button>
   </div>
   )
 }
@@ -90,7 +98,7 @@ function openBox(){
           {person()}
 
         </button>
-        
+
           {openBox()}
 
       </div>

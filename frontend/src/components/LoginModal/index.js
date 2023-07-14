@@ -20,8 +20,11 @@ function LoginModal({closeModal}){
 
 
     useEffect(()=>{
-        setButtonOff(false)
+        if(credential && password){
+            setButtonOff(false)
+        }
     },[dispatch,credential,password])
+
 
 
     if(sessionUser) return <Redirect to="/"/>

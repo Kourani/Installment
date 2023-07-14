@@ -1,4 +1,24 @@
 
+.signupModalButton:disabled {
+  cursor: default;
+  border: none;
+  color: gray;
+  border: 3px solid gray;
+  box-shadow: 3px 3px 0px gray;
+  background-color: lightgrey;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.signupModalButton {
+    cursor: pointer;
+    background-color: orangered;
+    color: white;
+    border: 3px solid black;
+    box-shadow: 3px 3px 0px black;
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
 
 .inputBold{
   border: 2px solid black;
@@ -44,13 +64,3 @@
     margin-right:10px;
     gap:10px;
 }
-
-.signupModalButton {
-    cursor: pointer;
-    border: none;
-    color: gray;
-    border: 3px solid gray;
-    box-shadow: 3px 3px 0px gray;
-    font-size: 20px;
-    margin-bottom: 10px;;
-  }
