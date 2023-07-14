@@ -20,6 +20,13 @@ function SignupModal({closeModal}){
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     const [errors, setErrors] = useState({})
+    const [buttonOff, setButtonOff] = useState(true)
+
+    if(email && username && firstName && lastName && password && confirmPassword){
+        return setButtonOff(false)
+    }
+
+    console.log('SIGN UP MODAL ... BUTTON OFF',buttonOff)
 
     if(sessionUser) return <Redirect to="/"/>
 
@@ -60,8 +67,9 @@ function SignupModal({closeModal}){
         return setErrors({
             confirmPassword:"Confirm Password field must be the same as the Password field"
         })
-    }
 
+
+    }
 
     return (
         <div className="modalBackgroundSignup">
@@ -70,7 +78,7 @@ function SignupModal({closeModal}){
                 <div className='titleCloseBtn'>
                     <button onClick={()=>closeModal(false)}> X </button>
                 </div>
-                
+
                 <div className="titleSignup">Sign Up</div>
 
                 <form className="formValuesSignup" onSubmit={handleSubmit}>
@@ -135,7 +143,7 @@ function SignupModal({closeModal}){
 
                         {errors.confirmPassword && <div className="error">{errors.confirmPassword}</div>}
 
-                    <button className="signupModalButton" type="submit">Sign Up</button>
+                    <button className="signupModalButton" type="submit" disabled={buttonOff}>Sign Up</button>
                 </form>
 
             </div>
