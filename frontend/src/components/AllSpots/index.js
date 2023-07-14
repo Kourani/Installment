@@ -43,9 +43,9 @@ function AllSpots(){
         return spotValues.map(element =>{
             return(
 
-                    <div className='landingPage'>
+                    <div className='landingPage' onClick={()=>onClicked(element)}>
 
-                        <button className='spotTileButton' key='spotTile' onClick={()=>onClicked(element)}>
+                        <button className='spotTileButton' key='spotTile' >
                             <img src={element.previewImage} alt='Spot Preview' />
                         </button>
 

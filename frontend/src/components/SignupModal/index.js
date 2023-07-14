@@ -8,11 +8,13 @@ import * as sessionActions from "../../store/session"
 import React, {useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 function SignupModal({closeModal}){
 
     const dispatch = useDispatch()
-    const sessionUser = useSelector((state)=>state.session.user)
+    const history = useHistory()
+
     const [email, setEmail] = useState("")
     const [username, setUsername] = useState("")
     const [firstName, setFirstName] = useState("")
@@ -22,9 +24,14 @@ function SignupModal({closeModal}){
     const [errors, setErrors] = useState({})
     const [buttonOff, setButtonOff] = useState(true)
 
+    const sessionUser = useSelector((state)=>state.session.user)
+    console.log('SIGN UP...SESSIONUSER',sessionUser)
 
     useEffect(()=>{
         if(email && username && firstName && lastName && password && confirmPassword){
+            if(username.length<4 || password.length<6){
+                return setButtonOff(true)
+            }
             return setButtonOff(false)
         }
     },[dispatch,email,username,firstName,lastName,password,confirmPassword])
@@ -44,6 +51,7 @@ function SignupModal({closeModal}){
         setUsername("")
         setPassword("")
         setConfirmPassword("")
+        setButtonOff(true)
 
         if(password === confirmPassword){
             return dispatch(
@@ -56,15 +64,20 @@ function SignupModal({closeModal}){
                 })
                 ).catch(async (res)=>{
                     const data = await res.json()
-                    console.log(data)
+                    console.log('SIGN UP ... CATCH BLOCK DATA',data)
                     console.log(data.errors)
+
                     if(data && data.errors){
                         if(!password) error['password']='Password is required'
                         if(password.length<6)error['password']='Password must be 6 characters or more'
-                        if(data.errors.includes('Invalid email.'))error['email']='Invalid Email'
+                        if(username===email) error['username']='Username cannot be an email'
+                        if(data.errors.includes( "User with that username already exists"))error['username']="Username must be unique"
+                        if(data.errors.includes('Invalid email.'))error['email']="The provided email is invalid"
                         setErrors(error)
                     }
                 })
+
+
         }
 
         return setErrors({
@@ -85,8 +98,6 @@ function SignupModal({closeModal}){
                 <div className="titleSignup">Sign Up</div>
 
                 <form className="formValuesSignup" onSubmit={handleSubmit}>
-
-
 
                     <input className='inputBold'
                     type="text"

@@ -29,18 +29,15 @@ function LoginModal({closeModal}){
 
     if(sessionUser) return <Redirect to="/"/>
 
-    const handleSubmit = (e) =>{
+    const handleSubmit = async (e) =>{
         e.preventDefault()
 
         const error = {}
 
-        //reset form values
-        setCredential("")
-        setPassword("")
 
-        setButtonOff(true)
 
-        return dispatch(sessionActions.login({credential,password})).catch(
+
+        await dispatch(sessionActions.login({credential,password})).catch(
             async(res)=>{
                 const data = await res.json()
                 console.log(data)
@@ -49,8 +46,20 @@ function LoginModal({closeModal}){
                     error['credential']=data.message
                 }
                 setErrors(error)
+                return
             }
         )
+
+
+
+               //reset form values
+               setCredential("")
+               setPassword("")
+
+               setButtonOff(true)
+
+               closeModal(false)
+
 
 
     }

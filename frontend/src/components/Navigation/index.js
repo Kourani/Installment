@@ -19,7 +19,7 @@ function Navigation({ isLoaded }){
   const sessionUser = useSelector(state => state.session.user);
 
   const [clickState, setClickState]=useState(false)
-  console.log('NAVIGATION....CLICKSTATE',clickState)
+
 
   const [loginModal, setLoginModal]=useState(false)
   const [signupModal, setSignupModal]=useState(false)
@@ -63,6 +63,7 @@ function Navigation({ isLoaded }){
   }
 
   function clicked(){
+    console.log('NAVIGATION....CLICKSTATE',clickState)
     if(clickState){
       return choices()
     }

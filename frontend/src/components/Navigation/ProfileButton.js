@@ -14,7 +14,7 @@ function ProfileButton({ user }) {
   const dispatch = useDispatch();
   const history = useHistory()
   const ulRef = useRef();
-  const [showMenu, setShowMenu] = useState(true);
+  // const [showMenu, setShowMenu] = useState(true);
   const [profileClick, setProfileClick] = useState(false)
 
 
@@ -60,10 +60,12 @@ return (
 );
 };
 
-function logOutOnClick(){
-  return (logout,
+function logOutOnClick(e){
+  e.stopPropagation()
+  logout(e)
+  // dispatch(sessionActions.logout())
   history.push('/')
-  )
+
 }
 
 function listChoices(){
@@ -74,16 +76,18 @@ function listChoices(){
     <div className='manageSpotsButton'>
       <NavLink to='/manageSpots'>Manage Spots</NavLink>
     </div>
-    <button className='logoutButton' onClick={()=>logOutOnClick()}>Log Out</button>
+    <button className='logoutButton' onClick={logOutOnClick}>Log Out</button>
   </div>
   )
 }
 
 function openBox(){
   if(profileClick){
+    console.log('PROFILE BUTTON',profileClick)
     return listChoices()
   }
 }
+
 
   return (
     <>

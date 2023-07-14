@@ -7,11 +7,13 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useHistory } from 'react-router-dom';
 
 
 
 function ReviewModal({closeModal}){
     const dispatch = useDispatch()
+    const history = useHistory()
     const {spotId} = useParams()
     console.log(spotId)
 
@@ -28,6 +30,18 @@ function ReviewModal({closeModal}){
     const [review, setReview] = useState('')
     const [stars,setStars]=useState()
     const [validationErrors, setValidationErrors]=useState({})
+    const [buttonOff, setButtonOff]=useState(true)
+
+    useEffect(()=>{
+
+        if(review && stars){
+            if(review.length<10){
+                setButtonOff(true)
+            }
+            setButtonOff(false)
+        }
+
+    },[dispatch,review,stars])
 
 
     const star = () => {
@@ -46,6 +60,7 @@ function ReviewModal({closeModal}){
 
     console.log('PAYLOAD',payload)
 
+    console.log('ONSUBMIT',onSubmit)
     async function onSubmit(){
         console.log('inside the onSubmit')
 
@@ -53,6 +68,8 @@ function ReviewModal({closeModal}){
         try{
             const created = await dispatch(reviewActions.postReview(spotId, payload))
             console.log('REVIEWMODAL...INSIDE TRY',created)
+            // history.push(`/spots/${spotId}`)
+            closeModal(false)
             return created
         }
         catch(created){
@@ -77,11 +94,11 @@ function ReviewModal({closeModal}){
                 setValidationErrors(errors)
             }
         }
-
-        closeModal(false)
     }
 
     console.log('validationErrors',validationErrors)
+
+    console.log('REVIEW MODAL ... BUTTON OFF', buttonOff)
 
 
 
@@ -151,7 +168,7 @@ function ReviewModal({closeModal}){
 
 
                     <div className='footerPost'>
-                        <button className='submitReviewButton' id='modalSubmit' onClick={()=>onSubmit()}>Submit your Review</button>
+                        <button className='submitReviewButton' id='modalSubmit' onClick={()=>onSubmit()} disabled={buttonOff}>Submit your Review</button>
                     </div>
                 </div>
             </div>
