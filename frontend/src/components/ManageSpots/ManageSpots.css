@@ -1,5 +1,9 @@
 
 
+.manageTilesSpots{
+    cursor: pointer;
+}
+
 /* styles all the spots on a the page the entire spot div */
 .spots{
     display: grid;

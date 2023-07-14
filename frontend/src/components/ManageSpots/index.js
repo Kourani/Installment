@@ -41,17 +41,17 @@ function ManageSpots(){
     };
 
 
+    function states(element){
+        return(
+
+        setDeleteId(element?.id),
+
+        setModal(true)
+        )
+
+    }
+
     function userSpots(){
-
-        function states(element){
-            return(
-
-            setDeleteId(element?.id),
-
-            setModal(true)
-            )
-
-        }
 
         return spotStateValues.map(element=>{
 
@@ -70,12 +70,14 @@ function ManageSpots(){
                     <>
                         <div>
 
-                            <button className='manageTileButton' onClick={()=>{history.push(`/spots/${element.id}`)}}>
+                            <div className='manageTilesSpots' onClick={()=>{history.push(`/spots/${element.id}`)}}>
 
-                                    <img src={element.previewImage} alt='Spot Preview' />
-                            </button>
+                                <button className='manageTileButton'>
 
-                            <div className='spotInformation'>
+                                        <img src={element.previewImage} alt='Spot Preview' />
+                                </button>
+
+                                <div className='spotInformation'>
 
                                     <div className='firstLine'>
                                         {element.city}, {element.state}
@@ -87,16 +89,17 @@ function ManageSpots(){
                                     </div>
 
                                     <div className='secondLine'>
-                                        <div className='secondLinePrice'>${element.price}</div>
-                                        night
+                                            <div className='secondLinePrice'>${element.price}</div>
+                                            night
                                     </div>
+                                </div>
+                            </div>
 
-                                    <div className='spotButtons'>
+                            <div className='spotButtons'>
                                         <button className='manageUpdateButton' onClick={()=>{history.push(`/spots/${element.id}/updateSpot`)}}>Update</button>
                                         <button className = "manageDeleteButton" onClick={()=>states(element)}>Delete</button>
-                                    </div>
-
                             </div>
+
                         </div>
                     </>
 
