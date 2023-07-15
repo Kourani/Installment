@@ -6,6 +6,7 @@ import * as reviewActions from '../../store/review'
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { useState } from 'react';
 
 function AllSpots(){
 
@@ -21,6 +22,22 @@ function AllSpots(){
 
     const spotValues = Object.values(spotState)
     console.log('ALLSPOTS...values',spotValues)
+
+    const [hovered, setHovered]=useState(false)
+    console.log(hovered)
+
+    const [hoveredElement, setHoveredElement]=useState(null)
+
+    const handleMouseEnter=(element)=>{
+        console.log(element.name)
+        setHovered(true)
+        setHoveredElement(element)
+    }
+
+    const handleMouseLeave=()=>{
+        setHovered(false)
+        setHoveredElement(null)
+    }
 
     //creates the star icon
     const star = () => {
@@ -43,46 +60,49 @@ function AllSpots(){
         return spotValues.map(element =>{
             return(
 
-                    <div className='landingPage' onClick={()=>onClicked(element)}>
+                <div className='landingPage' onClick={()=>onClicked(element)} onMouseEnter={()=>handleMouseEnter(element)} onMouseLeave={()=>handleMouseLeave()}>
 
-                        <button className='spotTileButton' key='spotTile' >
-                            <img src={element.previewImage} alt='Spot Preview' />
-                        </button>
 
-                        <div className='tileInformation'>
 
-                            <div className='line1'>
+                    <button className='spotTileButton' key='spotTile' >
+                        <img src={element.previewImage} alt='Spot Preview' />
+                    </button>
 
-                                <div className='leftHalf1'>
-                                    {element.city}, {element.state}
-                                    {/* <div className='city'>{element.city},</div>
-                                    <div className='state'>{element.state}</div> */}
-                                </div>
+                    <div className='tileInformation'>
 
-                                <div className='rightHalf1'>
-                                    <div className='starFunction'>{star()}</div>
-                                    <div className='averageRating'>{element.avgRating ? element?.avgRating?.toFixed(1) : 'New'}</div>
-                                </div>
+                        <div className='line1'>
 
+                            <div className='leftHalf1'>
+                                {element.city}, {element.state}
+                                {/* <div className='city'>{element.city},</div>
+                                <div className='state'>{element.state}</div> */}
                             </div>
 
-                            <div className='price'>
-                                <div className='priceBold'>
-                                    ${element.price}
-                                </div>
-                                night
+                            <div className='rightHalf1'>
+                                <div className='starFunction'>{star()}</div>
+                                <div className='averageRating'>{element.avgRating ? element?.avgRating?.toFixed(1) : 'New'}</div>
                             </div>
 
                         </div>
 
+                        <div className='price'>
+                            <div className='priceBold'>
+                                ${element.price}
+                            </div>
+                            night
+                        </div>
+
                     </div>
 
+                </div>
             )
         })
     }
 
     return(
         <div className='spotGrid'>
+             {hovered && <div className={hovered ? 'hoverTrue' : 'hoverFalse'}>{hoveredElement.name}</div>}
+
             {spotTiles()}
         </div>
     )

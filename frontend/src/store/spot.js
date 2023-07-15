@@ -105,6 +105,7 @@ export const deleteSpot = (spotId) => async (dispatch) => {
 
     if(response.ok){
         const retrivedData = await response.json()
+        console.log('SPOT STORE ... DELETE THUNK',retrivedData)
         dispatch(deleteSpotData(retrivedData))
         return retrivedData
     }
@@ -173,6 +174,8 @@ const spotReducer = (state=initialState, action) =>{
 
         case DELETE_SPOT:
             const deletedSpot = {...action.thunkData}
+            const oldState = {...state}
+
             return{
                 ...deletedSpot,
                 ...state

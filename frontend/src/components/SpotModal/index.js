@@ -21,6 +21,10 @@ function SpotModal({closeModal, toDelete} ){
 
     console.log('SPOTMODAL...PROP',toDelete)
 
+    useEffect(()=>{
+        dispatch(spotActions.getSpots())
+    },[dispatch])
+
 
     function obtainSpot(){
         let foundSpot
@@ -45,6 +49,12 @@ function SpotModal({closeModal, toDelete} ){
         {dispatch(spotActions.deleteSpot(obtainSpot()))}
         return
     }
+
+    // console.log('SPOT MODAL ... OBTAIN SPOT' , onButtonClick())
+
+
+
+    console.log('SPOT MODAL ... CLOSE MODAL',closeModal)
 
     return (
         <div className='modalBackground'>

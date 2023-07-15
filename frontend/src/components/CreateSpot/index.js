@@ -21,6 +21,11 @@ function CreateSpot(){
     const [name, setName] = useState('')
     const [image, setImage]= useState('')
 
+    const [image1, setImage1]= useState('')
+    const [image2, setImage2]= useState('')
+    const [image3, setImage3]= useState('')
+    const [image4, setImage4]= useState('')
+
     const [lat, setLatitude] = useState('')
     const [lng, setLongitude] = useState('')
 
@@ -71,20 +76,31 @@ function CreateSpot(){
             const information = await created.json()
             console.log('CATCH BLOCK....CATCHME',information)
 
-            if(information.statusCode===400){
-                console.log('error IF')
+            // if(information.statusCode===400){
+            //     console.log('error IF')
                 const errors = {}
-                if(!price || typeof price !== Number) errors['price']='Price per night is required'
+                if(!price) errors['price']='Price per night is required'
+                if(information.errors.includes("Price must be a number")) errors['price']=`"${price}" is not valid`
                 if(!country) errors['country']='Country is required'
                 if(!city) errors['city']='City is required'
                 if(!state) errors['state']='State is required'
                 if(!address) errors['streetAddress']='Street Address is required'
                 if(!image) errors['image']='Preview Image URL is required'
-                if(!description || (description && description.length<30)) errors['description']='Description needs 30 or more characters'
+                if(information.errors.includes('Image URL is not valid')) errors['image']='Image URL is not valid'
+                if(!description) errors['description']='Description is required'
+                if(description && description.length<30) errors['description']='Description needs 30 or more characters'
                 if(!name) errors['name'] ='Spot name must be less than 50 characters'
+                if(information.errors.includes('Lat must be a number')) errors['lat']=`"${lat}" is not valid`
+                if(information.errors.includes('Lng must be a number')) errors['lng']=`"${lng}" is not valid`
+
+                if( !image1.includes('.png') || !image1.includes('.jpg') || !image1.includes('.jpeg')) errors['image1']='Image URL must end in .png .jpg or .jpeg'
+                if( !image2.includes('.png') || !image2.includes('.jpg') || !image2.includes('.jpeg')) errors['image2']='Image URL must end in .png .jpg or .jpeg'
+                if( !image3.includes('.png') || !image3.includes('.jpg') || !image3.includes('.jpeg')) errors['image3']='Image URL must end in .png .jpg or .jpeg'
+                if( !image4.includes('.png') || !image4.includes('.jpg') || !image4.includes('.jpeg')) errors['image4']='Image URL must end in .png .jpg or .jpeg'
+
                 setValidationErrors(errors)
 
-            }
+            // }
         }
 
 
@@ -98,6 +114,11 @@ function CreateSpot(){
         setDescription('')
         setName('')
         setImage('')
+        setPrice('')
+        setImage1('')
+        setImage2('')
+        setImage3('')
+        setImage4('')
     }
 
 
@@ -108,7 +129,7 @@ function CreateSpot(){
 
                 <div className='section'>
 
-                <h2 className='pageTitle'>Create a New Spot</h2>
+                    <h2 className='pageTitle'>Create a New Spot</h2>
 
                     <div className='titles'>Where's your place located?</div>
                     <div>Guests will only get your exact address once they booked a reservation</div>
@@ -121,8 +142,14 @@ function CreateSpot(){
                             </div>
 
                         </label>
-                        <input className='input' type='text' value={country} onChange={(e)=>setCountry(e.target.value)}/>
 
+                        <input
+                            className='input'
+                            type='text'
+                            placeholder='Country'
+                            value={country}
+                            onChange={(e)=>setCountry(e.target.value)}
+                        />
 
                     </div>
 
@@ -133,50 +160,82 @@ function CreateSpot(){
                         </div>
 
                         </label>
-                        <input className='input' type='Address' value={address} onChange={(e)=>setStreetAddress(e.target.value)}/>
+                        <input
+                        className='input'
+                        type='Address'
+                        placeholder='Address'
+                        value={address}
+                        onChange={(e)=>setStreetAddress(e.target.value)}/>
 
 
                     </div>
 
-                    <div className='country'>
-                        <label>City
-                            <input className='input' type='city' value={city} onChange={(e)=>setCity(e.target.value)}/>
-                        </label>
+                    <div className='cityAndState'>
+                        <div className='country'>
+                            <label className='sweet'>City
+                            <div className='error'>
+                                {submitted && validationErrors.city}
+                            </div>
 
-                        <div className='error'>
-                            {submitted && validationErrors.city}
+                            </label>
+
+                            <div className='comma'>
+                                <input
+                                className='inputCity'
+                                type='city'
+                                placeholder='City'
+                                value={city}
+                                onChange={(e)=>setCity(e.target.value)}/> ,
+                            </div>
+                        </div>
+
+
+                        <div className='country'>
+                            <label className='sweet'>State
+                                <div className='error'>
+                                    {submitted && validationErrors.state}
+                                </div>
+                            </label>
+
+                            <input
+                            className='input'
+                            type='state'
+                            placeholder='STATE'
+                            value={state}
+                            onChange={(e)=>setState(e.target.value)}/>
                         </div>
                     </div>
 
-
-                    <div className='country'>
-                        <label>State
-                            <input className='input' type='state' value={state} onChange={(e)=>setState(e.target.value)}/>
-                        </label>
-
-                        <div className='error'>
-                            {submitted && validationErrors.state}
+                    <div className='latAndLng'>
+                        <div className='country'>
+                            <label className='sweet'>Latitude
+                            <div className='error'>
+                                {submitted && validationErrors.lat}
+                            </div>
+                            </label>
+                            <div className='comma'>
+                            <input
+                            className='input'
+                            type='latitude'
+                            placeholder='Latitude'
+                            value={lat}
+                            onChange={(e)=>setLatitude(e.target.value)}/>,
+                            </div>
                         </div>
-                    </div>
 
+                        <div className='country'>
+                            <label className='sweet'>Longitude
+                                <div className='error'>
+                                    {submitted && validationErrors.lng}
+                                </div>
+                            </label>
 
-                    <div className='country'>
-                        <label>Latitude
-                            <input className='input' type='latitude' value={lat} onChange={(e)=>setLatitude(e.target.value)}/>
-                        </label>
-
-                        <div className='error'>
-                            {submitted && validationErrors.lat}
-                        </div>
-                    </div>
-
-                    <div className='country'>
-                        <label>Longitude
-                            <input className='input' type='longitude' value={lng} onChange={(e)=>setLongitude(e.target.value)}/>
-                        </label>
-
-                        <div className='error'>
-                            {submitted && validationErrors.lng}
+                            <input
+                            className='input'
+                            type='longitude'
+                            placeholder='Longitude'
+                            value={lng}
+                            onChange={(e)=>setLongitude(e.target.value)}/>
                         </div>
                     </div>
 
@@ -188,7 +247,7 @@ function CreateSpot(){
                     <div className='titles'>Describe your place to your guests</div>
 
                     <div className='subs'>Mention the best features of your space and any special amentities like fast wifi or parking, and what you love about the neighborhood</div>
-                    <textarea value={description} onChange={(e)=>setDescription(e.target.value)} placeholder="Please write at least 30 characters"></textarea>
+                    <textarea className='textAreaCreateSpot' value={description} onChange={(e)=>setDescription(e.target.value)} placeholder="Please write at least 30 characters"></textarea>
 
                     <div className='error'>
                         {submitted && validationErrors.description}
@@ -209,7 +268,9 @@ function CreateSpot(){
                 <div className='section'>
                     <div className='titles'>Set a base price for your spot</div>
                     <div className='subs'>Competitive pricing can help your listing stand out and rank higher in search results</div>
-                    <input className='input' value={price} onChange={(e)=>setPrice(e.target.value)} placeholder="Price per night (USD)"/>
+                    <div className='createNewSpotPrice'>
+                        $<input className='input' value={price} onChange={(e)=>setPrice(e.target.value)} placeholder="Price per night (USD)"/>
+                    </div>
 
                     <div className='error'>
                         {submitted && validationErrors.price}
@@ -225,14 +286,30 @@ function CreateSpot(){
                         {submitted && validationErrors.image}
                     </div>
 
-                    <input className='input' placeholder="Image URL"/>
-                    <input className='input' placeholder="Image URL"/>
-                    <input className='input' placeholder="Image URL"/>
-                    <input className='input' placeholder="Image URL"/>
+                    <input className='input' value={image1} onChange={(e)=>setImage1(e.target.value)} placeholder="Image URL"/>
+                    <div className='error'>
+                        {submitted && validationErrors.image1}
+                    </div>
+
+                    <input className='input' value={image2} onChange={(e)=>setImage2(e.target.value)} placeholder="Image URL"/>
+                    <div className='error'>
+                        {submitted && validationErrors.image2}
+                    </div>
+
+                    <input className='input' value={image3} onChange={(e)=>setImage3(e.target.value)} placeholder="Image URL"/>
+                    <div className='error'>
+                        {submitted && validationErrors.image3}
+                    </div>
+
+                    <input className='input' value={image4} onChange={(e)=>setImage4(e.target.value)} placeholder="Image URL"/>
+                    <div className='error'>
+                        {submitted && validationErrors.image4}
+                    </div>
+
                 </div>
 
 
-                <button className='createButton' type='newSpot' disabled={buttonOff} >
+                <button className='createButton' type='newSpot' disabled={false} >
                     Create Spot
                 </button>
             </form>
@@ -242,5 +319,3 @@ function CreateSpot(){
 }
 
 export default CreateSpot
-
-

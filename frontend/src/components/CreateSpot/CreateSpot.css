@@ -1,5 +1,21 @@
 
 
+.comma{
+    display: flex;
+}
+.cityAndState{
+    display: flex;
+    justify-content: space-between;
+}
+
+.latAndLng{
+    display: flex;
+    justify-content: space-between;
+}
+
+.createNewSpotPrice{
+    display: flex;
+}
 .sweet{
     display: flex;
 }
@@ -21,6 +37,7 @@
 
 .section{
     border-bottom: 2px solid black;
+    width: 300px;
 }
 
 .titles{
@@ -37,12 +54,18 @@
 .createButton{
     cursor: pointer;
     color: white;
-    background-color: orange;
+    background-color: orangered;
+    border: 2px solid black;
+    box-shadow: 2px 2px 0 black;
+    margin: 10px;
 }
 
 .createButton:disabled{
     cursor:default;
+    color: white;
     background-color: grey;
+    border: 2px solid black;
+    box-shadow: 2px 2px 0 black;
 }
 
 .input{
@@ -50,4 +73,15 @@
     align-items: center;
     justify-content: center;
     width: 100%;
+}
+
+.inputCity{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.textAreaCreateSpot{
+    width: 100%;
+
 }

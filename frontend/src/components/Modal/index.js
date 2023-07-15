@@ -17,15 +17,17 @@ function Modal({closeModal}){
     const {spotId} = useParams()
     console.log('MODEL...SPOTID',spotId)
 
-    const reviewState = useSelector(state=>state.review)
-    console.log('MODEL...REVIEWSTATE',reviewState)
-
     const userState = useSelector(state=>state.session)
     console.log('MODAL...USERSTATE',userState)
 
     const spotState = useSelector(state=>state.spot)
     console.log('MODAL...SPOTSTATE', spotState)
     const spotStateValues = Object.values(spotState)
+
+    const reviewState = useSelector(state=>state.review)
+    console.log('MODEL...REVIEWSTATE',reviewState)
+
+
 
     useEffect(()=>{
         dispatch(reviewActions.getSpotReviews(spotId))

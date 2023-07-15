@@ -17,15 +17,15 @@ function ReviewModal({closeModal}){
     const {spotId} = useParams()
     console.log(spotId)
 
-    const reviewState = useSelector(state=>state.review)
-    console.log('REVIEWSTATE',reviewState)
-
     const userState = useSelector(state=>state.session)
     console.log('USERSTATE',userState)
 
     const spotState = useSelector(state=>state.spot)
     console.log('SPOTSTATE', spotState)
     const spotStateValues = Object.values(spotState)
+
+    const reviewState = useSelector(state=>state.review)
+    console.log('REVIEWSTATE',reviewState)
 
     const [review, setReview] = useState('')
     const [stars,setStars]=useState()

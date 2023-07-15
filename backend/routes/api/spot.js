@@ -45,14 +45,17 @@ const validateSpot = [
       // .exists({ checkFalsy: true })
       // .isNumeric()
       // .notEmpty()
-      .optional(),
-      // .withMessage("Latitude is not valid"),
+      .optional()
+      .if((_, { req }) => req.body.lng !== undefined && req.body.lng !== null && req.body.lng !== '')
+      .isNumeric().withMessage('Lat must be a number'),
 
     check('lng')
       // .exists({ checkFalsy: true })
       // .isNumeric()
       // .notEmpty()
-      .optional(),
+      .optional()
+      .if((_, { req }) => req.body.lng !== undefined && req.body.lng !== null && req.body.lng !== '')
+      .isNumeric().withMessage('Lng must be a number'),
       // .withMessage("Longitude is not valid"),
 
     check('name')
@@ -68,34 +71,20 @@ const validateSpot = [
       .exists({ checkFalsy: true })
       .isAlpha('en-US',{ignore: ' '})
       .notEmpty()
+      .isLength({min:30, max:undefined})
       .withMessage("Description is required"),
+
+
 
     check('price')
       .exists({ checkFalsy: true })
-      .isDecimal()
+      .isDecimal().withMessage('Price must be a number')
       .notEmpty()
       .withMessage( "Price per day is required"),
 
     // check('previewImage')
-    // .isURL({
-    //   require_protocol: true,
-    //   require_host: true,
-    //   require_tld: true,
-    //   require_valid_protocol: true,
-    //   protocols: ['http', 'https', 'ftp'],
-    //   require_port: false,
-    //   allow_underscores: false,
-    //   host_whitelist: false,
-    //   host_blacklist: false,
-    //   allow_trailing_dot: false,
-    //   allow_protocol_relative_urls: false,
-    //   allow_fragments: true,
-    //   allow_query_components: true,
-    //   disallow_auth: false,
-    //   validate_length: true
-    // })
-    // .withMessage('Image URL is not valid'),
-
+    // .isURL()
+    // .withMessage('Lng must be a valid URL'),
 
     handleValidationErrors
   ];
@@ -689,6 +678,8 @@ router.post('/', requireAuth,  validateSpot, async(req,res) =>{
         price,
 
     })
+
+
 
     res.status(201).json(newSpot)
 
