@@ -35,12 +35,10 @@ function ReviewModal({closeModal}){
     useEffect(()=>{
 
         if(review && stars){
-            if(review.length<10){
-                setButtonOff(true)
+            if(review.length>9){
+                setButtonOff(false)
             }
-            setButtonOff(false)
         }
-
     },[dispatch,review,stars])
 
 
@@ -162,7 +160,7 @@ function ReviewModal({closeModal}){
                                 <i className="fa-regular fa-star" ></i>
                             </button>
 
-                        
+
                             Stars
 
                         </div>
