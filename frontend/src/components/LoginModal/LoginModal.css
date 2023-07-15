@@ -22,10 +22,14 @@
     }
 
 
+.inputModalLogin{
+  background-color: #E8F0FE;
+  border: 2px solid black;
+}
 .demoUserLogin{
   background-color: white;
   border: none;
-  color: darkcyan;
+  color: #00525E;
   text-decoration: underline;
   cursor: pointer;
 

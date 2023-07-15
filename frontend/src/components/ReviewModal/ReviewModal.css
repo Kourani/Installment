@@ -1,18 +1,28 @@
 
 
 
+.toBeFilled{
+  background-color: white;
+  border: none;
+  margin-left: 10px;
+  cursor: pointer;
+  /* border: 2px solid black; */
 
+}
 
+.fa-regular.fa-star{
+  font-size: 25px;
+}
 
 .submitReviewButton:disabled{
   width: 300px;
   height: 50px;
   margin: 10px;
   border: none;
-  color: gray;
+  color: white;
   border: 3px solid gray;
   box-shadow: 3px 3px 0px gray;
-  background-color: orangered;
+  background-color: gray;
   font-size: 20px;
   cursor: default;
 }
@@ -27,12 +37,12 @@
   box-shadow: 3px 3px 0px black;
   font-size: 20px;
   cursor: pointer;
-  background-color: white;
+  background-color: orangered;
 }
 
 
 .reviewInput{
-    background-color: lightblue;
+    background-color: #E8F0FE;
     border: 3px solid black;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     width:100%;

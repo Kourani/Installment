@@ -29,10 +29,9 @@ function SignupModal({closeModal}){
 
     useEffect(()=>{
         if(email && username && firstName && lastName && password && confirmPassword){
-            if(username.length<4 || password.length<6){
-                return setButtonOff(true)
+            if(username.length>3 || password.length>5){
+                return setButtonOff(false)
             }
-            return setButtonOff(false)
         }
     },[dispatch,email,username,firstName,lastName,password,confirmPassword])
 
@@ -43,6 +42,13 @@ function SignupModal({closeModal}){
     const handleSubmit = (e) =>{
         e.preventDefault()
         const error={}
+
+        console.log('SIGN UP MODAL ... ERRORS', errors)
+        console.log('SIGN UP MODAL ... ERROR',error)
+        if(!Object.keys(errors).length){
+            console.log('inside the successMove if')
+            history.push('/')
+        }
 
         //reset form values
         setFirstName("")
@@ -83,8 +89,6 @@ function SignupModal({closeModal}){
         return setErrors({
             confirmPassword:"Confirm Password field must be the same as the Password field"
         })
-
-
     }
 
     return (

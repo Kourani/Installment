@@ -80,7 +80,8 @@ function UpdateSpot(){
                 if(!address) errors['address']='Address is required'
                 if(!city) errors['city']='City is required'
                 if(!state) errors['state']='State is required'
-                if(!description || description.length<30) errors['description']='Description must be 30 or more characters'
+                if(!description || description.length<30) errors['description']='Description needs a minimum of 30 characters'
+
                 if(!name) errors['name']='Name is required'
                 if(name.length>50) errors['name']='Name must be less than 50 characters'
                 if(!price) errors['price']='Price is required'
@@ -250,11 +251,13 @@ function UpdateSpot(){
                     <div className='titles'>Create a title for your spot</div>
                     <div className='subs'> Catch guests' attention with a spot title that highlights what makes your place special</div>
                     <input className='input' value={name} onChange={(e)=>setName(e.target.value)} placeholder="Name of your spot"/>
+
+                    <div className='error'>
+                        {submitted && validationErrors.name}
+                    </div>
                 </div>
 
-                <div className='error'>
-                        {submitted && validationErrors.name}
-                </div>
+
 
                 <div className='section'>
                     <div className='titles'>Set a base price for your spot</div>
@@ -271,7 +274,7 @@ function UpdateSpot(){
                 <div className='section'>
                     <div className='titles'>Liven up your spot with photos</div>
                     <div className='subs'>Submit a link to at lest one photo to publish your spot</div>
-                    <input className='input' value={image} onChange={(e)=>setImage(e.target.value)} placeholder="Preview of Image URL"/>
+                    <input className='input' value={image} onChange={(e)=>setImage(e.target.value)} placeholder="Preview Image URL"/>
 
                     <div className='error'>
                         {submitted && validationErrors.image}

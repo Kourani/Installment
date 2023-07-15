@@ -35,7 +35,7 @@ function ManageSpots(){
     const star = () => {
         return (
             <div style={{ color: "black", fontSize: "20px" }}>
-                <i className="fa-regular fa-star"></i>
+                <i className="fa fa-star"></i>
             </div>
         );
     };

@@ -40,7 +40,7 @@ function SpotDetail(){
     const star = () => {
         return (
           <div style={{ color: "black", fontSize: "20px" }}>
-            <i className="fa-regular fa-star"></i>
+            <i className="fa fa-star"></i>
           </div>
         );
     };
@@ -80,7 +80,7 @@ function SpotDetail(){
         'December'
       ]
 
-    
+
     function descendingOrder(){
 
         const ordered = reviewState?.Reviews?.sort(function(a,b){
@@ -286,7 +286,7 @@ function SpotDetail(){
             <div className='solidLine'>
 
                 <div className='hostedBy'>
-                    <text className='host'>Hosted By {spotState?.matched?.Owner?.firstName} {spotState?.matched?.Owner?.lastName}</text>
+                    <text className='host'>Hosted by {spotState?.matched?.Owner?.firstName} {spotState?.matched?.Owner?.lastName}</text>
                     <p>{spotState?.matched?.description}</p>
                 </div>
 

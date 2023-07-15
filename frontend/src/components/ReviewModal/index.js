@@ -140,25 +140,29 @@ function ReviewModal({closeModal}){
 
                         <div className='starDirection'>
 
-                            <div className="filled" >
-                                <i className="fa fa-star"></i>
-                            </div>
+                            <button className="toBeFilled" onClick={()=>setStars(1)}>
+                                <div className='starStyle'>
+                                    <i className="fa-regular fa-star"></i>
+                                </div>
+                            </button>
 
-                            <div className="empty" >
-                                <i className="fa fa-star"></i>
-                            </div>
+                            <button className="toBeFilled" onClick={()=>setStars(2)} >
+                                <i className="fa-regular fa-star" ></i>
+                            </button>
 
-                            <div className="filled" >
-                                <i className="fa fa-star"></i>
-                            </div>
+                            <button className="toBeFilled" onClick={()=>setStars(3)}>
+                                <i className="fa-regular fa-star" ></i>
+                            </button>
 
-                            <div className="filled" >
-                                <i className="fa fa-star"></i>
-                            </div>
+                            <button className="toBeFilled" onClick={()=>setStars(4)}>
+                                <i className="fa-regular fa-star" ></i>
+                            </button>
 
-                            <div className="filled" >
-                                <i className="fa fa-star"></i>
-                            </div>
+                            <button className="toBeFilled" onClick={()=>setStars(5)}>
+                                <i className="fa-regular fa-star" ></i>
+                            </button>
+
+                        
                             Stars
 
                         </div>

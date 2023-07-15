@@ -84,12 +84,14 @@ function CreateSpot(){
                 if(!country) errors['country']='Country is required'
                 if(!city) errors['city']='City is required'
                 if(!state) errors['state']='State is required'
-                if(!address) errors['streetAddress']='Street Address is required'
+                if(!address) errors['streetAddress']='Address is required'
                 if(!image) errors['image']='Preview Image URL is required'
                 if(information.errors.includes('Image URL is not valid')) errors['image']='Image URL is not valid'
-                if(!description) errors['description']='Description is required'
-                if(description && description.length<30) errors['description']='Description needs 30 or more characters'
-                if(!name) errors['name'] ='Spot name must be less than 50 characters'
+
+                if(!description  || description.length<30) errors['description']='Description needs a minimum of 30 characters'
+                if(!name) errors['name'] ='Name is required'
+                if(name.length>50) errors['name']='Name must be less than 50 characters'
+
                 if(information.errors.includes('Lat must be a number')) errors['lat']=`"${lat}" is not valid`
                 if(information.errors.includes('Lng must be a number')) errors['lng']=`"${lng}" is not valid`
 
@@ -259,11 +261,13 @@ function CreateSpot(){
                     <div className='titles'>Create a title for your spot</div>
                     <div className='subs'> Catch guests' attention with a spot title that highlights what makes your place special</div>
                     <input className='input' value={name} onChange={(e)=>setName(e.target.value)} placeholder="Name of your spot"/>
+
+                    <div className='error'>
+                        {submitted && validationErrors.name}
+                    </div>
                 </div>
 
-                <div className='error'>
-                        {submitted && validationErrors.name}
-                </div>
+
 
                 <div className='section'>
                     <div className='titles'>Set a base price for your spot</div>
@@ -280,7 +284,7 @@ function CreateSpot(){
                 <div className='section'>
                     <div className='titles'>Liven up your spot with photos</div>
                     <div className='subs'>Submit a link to at lest one photo to publish your spot</div>
-                    <input className='input' value={image} onChange={(e)=>setImage(e.target.value)} placeholder="Preview of Image URL"/>
+                    <input className='input' value={image} onChange={(e)=>setImage(e.target.value)} placeholder="Preview Image URL"/>
 
                     <div className='error'>
                         {submitted && validationErrors.image}
