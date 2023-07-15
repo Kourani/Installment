@@ -53,13 +53,18 @@
   background-color: orangered;
 }
 
+.homeReviewInput{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 
 .reviewInput{
     background-color: #E8F0FE;
     border: 3px solid black;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    width:100%;
-    height: 100%;
 }
   .modalBackgroundPost {
     display:flex;
@@ -83,11 +88,7 @@
     gap:15px;
   }
 
-  .inputPost{
-    display: flex;
-    flex-direction: column;
-    gap:15px;
-  }
+
 
   .modalContainerPost .titlePost {
     display: inline-block;
@@ -114,6 +115,12 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
+}
+
+.starsWord{
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
 }
 
   .modalContainerPost .footerPost {

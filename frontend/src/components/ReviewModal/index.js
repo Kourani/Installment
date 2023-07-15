@@ -183,14 +183,10 @@ function ReviewModal({closeModal}){
                             {validationErrors.three}
                         </div>
 
-                        <div className='inputPost'>
+                        <div className='homeReviewInput'>
                             <textarea className='reviewInput' value={review} onChange={(e)=>setReview(e.target.value)} placeholder="Leave your review here..."></textarea>
 
-                            <input className='Rating' value={stars} onChange={(e)=>setStars(e.target.value)} placeholder='star Rating'/>
-                        </div>
-
-                        <div className='starDirection'>
-
+                            <div className='starDirection'>
 
                         <button className="toBeFilled" onClick={()=>setStars(1)} >
                             <div className='starStyle' onMouseEnter={()=>setStars(1)} onMouseLeave={()=>setStars('')}>
@@ -224,9 +220,17 @@ function ReviewModal({closeModal}){
                                 </div>
                             </button>
 
+                            <div className='starsWord'>
                             Stars
+                            </div>
 
                         </div>
+
+                        </div>
+
+
+
+
 
 
                     </div>
