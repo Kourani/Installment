@@ -23,19 +23,19 @@ function AllSpots(){
     const spotValues = Object.values(spotState)
     console.log('ALLSPOTS...values',spotValues)
 
-    const [hovered, setHovered]=useState(false)
+    const [hovered, setHovered]=useState('')
     console.log(hovered)
 
     const [hoveredElement, setHoveredElement]=useState(null)
 
     const handleMouseEnter=(element)=>{
         console.log(element.name)
-        setHovered(true)
+        setHovered(element.name)
         setHoveredElement(element)
     }
 
     const handleMouseLeave=()=>{
-        setHovered(false)
+        setHovered('')
         setHoveredElement(null)
     }
 
@@ -63,6 +63,7 @@ function AllSpots(){
                 <div className='landingPage' onClick={()=>onClicked(element)} onMouseEnter={()=>handleMouseEnter(element)} onMouseLeave={()=>handleMouseLeave()}>
 
 
+                    {hovered===element.name && <div className={hovered ? 'hoverTrue' : 'hoverFalse'}>{hoveredElement.name}</div>}
 
                     <button className='spotTileButton' key='spotTile' >
                         <img src={element.previewImage} alt='Spot Preview' />
@@ -101,8 +102,6 @@ function AllSpots(){
 
     return(
         <div className='spotGrid'>
-             {hovered && <div className={hovered ? 'hoverTrue' : 'hoverFalse'}>{hoveredElement.name}</div>}
-
             {spotTiles()}
         </div>
     )

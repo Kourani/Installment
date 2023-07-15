@@ -6,7 +6,7 @@ import LoginModal from './../LoginModal'
 import SignupModal from './../SignupModal'
 import * as sessionActions from '../../store/session';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import ProfileButton from './ProfileButton';
@@ -25,6 +25,17 @@ function Navigation({ isLoaded }){
   const [signupModal, setSignupModal]=useState(false)
 
 
+  // useEffect(()=>{
+  //   clickStateManagement()
+  // },[loginModal, signupModal])
+
+
+  function clickStateManagement(e){
+    e.stopPropagation()
+    setClickState(!clickState)
+    return
+  }
+
   const person = () => {
       return (
           <div style={{ color: "black", fontSize: "20px" }}>
@@ -41,6 +52,17 @@ function Navigation({ isLoaded }){
     );
   };
 
+  function signButton(e){
+    clickStateManagement(e)
+    setSignupModal(true)
+    return
+  }
+
+  function logButton(e){
+    clickStateManagement(e)
+    setLoginModal(true)
+    return
+  }
 
   function choices(){
     return (
@@ -48,14 +70,14 @@ function Navigation({ isLoaded }){
       <div className='choices'>
 
         <div>
-          <button className='signupLoginButtons' onClick={()=>setSignupModal(true)}>Sign up</button>
-          {signupModal && <SignupModal closeModal={setSignupModal} />}
+          <button className='signupLoginButtons' onClick={signButton}>Sign up</button>
+
         </div>
 
         <div>
           {/* <NavLink to="/login">Log in</NavLink> */}
-          <button className='signupLoginButtons' onClick={()=>setLoginModal(true)}> Log In</button>
-          {loginModal && <LoginModal closeModal={setLoginModal} />}
+          <button className='signupLoginButtons' onClick={(e)=>logButton(e)}> Log In</button>
+
         </div>
 
       </div>
@@ -92,7 +114,7 @@ function Navigation({ isLoaded }){
       <>
 
         <div className='leftSide'>
-          <button className='mainButton' onClick={()=>setClickState(!clickState)}>
+          <button className='mainButton' onClick={(e)=>clickStateManagement(e)}>
               {bars()}
               {person()}
           </button>
@@ -119,6 +141,8 @@ function Navigation({ isLoaded }){
       </div>
 
       {isLoaded && sessionLinks}
+      {signupModal && <SignupModal closeModal={()=>setSignupModal()} />}
+      {loginModal && <LoginModal closeModal={setLoginModal} />}
     </div>
   );
 }

@@ -39,12 +39,45 @@ function SignupModal({closeModal}){
 
     if(sessionUser) return <Redirect to="/"/>
 
-    const handleSubmit = (e) =>{
+    const handleSubmit = async (e) =>{
         e.preventDefault()
         const error={}
 
         console.log('SIGN UP MODAL ... ERRORS', errors)
         console.log('SIGN UP MODAL ... ERROR',error)
+
+
+        if(password === confirmPassword){
+
+            let res = await dispatch(
+                sessionActions.signup({
+                    email,
+                    username,
+                    firstName,
+                    lastName,
+                    password
+                }))
+
+                if(res.ok){
+                    closeModal(false)
+                    history.push('/')
+                    return null
+                }
+
+                const data = await res.json()
+
+                if(data && data.errors){
+                    if(!password) error['password']='Password is required'
+                    if(password.length<6)error['password']='Password must be 6 characters or more'
+                    if(username===email) error['username']='Username cannot be an email'
+                    if(data.errors.includes( "User with that username already exists"))error['username']="Username must be unique"
+                    if(data.errors.includes('Invalid email.'))error['email']="The provided email is invalid"
+                    setErrors(error)
+                }
+            }
+
+
+
         if(!Object.keys(errors).length){
             console.log('inside the successMove if')
             history.push('/')
@@ -58,33 +91,6 @@ function SignupModal({closeModal}){
         setPassword("")
         setConfirmPassword("")
         setButtonOff(true)
-
-        if(password === confirmPassword){
-            return dispatch(
-                sessionActions.signup({
-                    email,
-                    username,
-                    firstName,
-                    lastName,
-                    password
-                })
-                ).catch(async (res)=>{
-                    const data = await res.json()
-                    console.log('SIGN UP ... CATCH BLOCK DATA',data)
-                    console.log(data.errors)
-
-                    if(data && data.errors){
-                        if(!password) error['password']='Password is required'
-                        if(password.length<6)error['password']='Password must be 6 characters or more'
-                        if(username===email) error['username']='Username cannot be an email'
-                        if(data.errors.includes( "User with that username already exists"))error['username']="Username must be unique"
-                        if(data.errors.includes('Invalid email.'))error['email']="The provided email is invalid"
-                        setErrors(error)
-                    }
-                })
-
-
-        }
 
         return setErrors({
             confirmPassword:"Confirm Password field must be the same as the Password field"

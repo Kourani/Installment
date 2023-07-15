@@ -62,6 +62,7 @@ return (
 
 function logOutOnClick(e){
   e.stopPropagation()
+  setProfileClick(true)
   logout(e)
   // dispatch(sessionActions.logout())
   history.push('/')

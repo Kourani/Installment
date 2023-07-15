@@ -26,7 +26,6 @@ function LoginModal({closeModal}){
             if(credential.length>3  && password.length>5){
                 setButtonOff(false)
             }
-
         }
     },[dispatch,credential,password,errors])
 
@@ -40,46 +39,37 @@ function LoginModal({closeModal}){
         console.log('LOGIN MODAL ... ERROR',error)
 
 
-
-        dispatch(sessionActions.login({credential,password})).catch(
-            async(res)=>{
-                console.log('LOGIN MODAL ... CATCH RES',res)
-                const data = await res.json()
-                console.log('LOGIN MODAL...CATCH BLOCK',data)
-                console.log('LOGIN MODAL ... CATCH BLOCK MESAGE',data.message)
-
-                if(data && data.message){
-
-                    error['credential']=data.message
-                }
-                setErrors(error)
-                return
-            }
-        )
-
-
-        if(!Object.keys(errors).length){
-            console.log('inside the successMove if')
+        let res = await dispatch(sessionActions.login({credential,password}))
+        if(res.ok){
+            closeModal(false)
             history.push('/')
+            return null
         }
-               //reset form values
-               setCredential("")
-               setPassword("")
 
-               setButtonOff(true)
+        const data = await res.json()
 
-            //    closeModal(false)
+        if(data && data.message){
+
+            error['credential']=data.message
+        }
+
+        setErrors(error)
+
+        //reset form values
+        setCredential("")
+        setPassword("")
+
+        setButtonOff(true)
+
+        return null
     }
-
-    // function successMove(){
-
-    // }
 
 
     function demoUser(){
-
         dispatch(sessionActions.login({credential:'demo@user.io', password:'password'}))
+        closeModal(false)
         history.push('/')
+        return
     }
 
     return (

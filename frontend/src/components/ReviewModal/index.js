@@ -10,7 +10,6 @@ import { useSelector } from "react-redux";
 import { useHistory } from 'react-router-dom';
 
 
-
 function ReviewModal({closeModal}){
     const dispatch = useDispatch()
     const history = useHistory()
@@ -32,6 +31,13 @@ function ReviewModal({closeModal}){
     const [validationErrors, setValidationErrors]=useState({})
     const [buttonOff, setButtonOff]=useState(true)
 
+
+    const [hovered, setHovered]=useState(false)
+    console.log(hovered)
+
+    const [hoveredElement, setHoveredElement]=useState(null)
+
+
     useEffect(()=>{
 
         if(review && stars){
@@ -42,13 +48,7 @@ function ReviewModal({closeModal}){
     },[dispatch,review,stars])
 
 
-    const star = () => {
-        return (
-          <div style={{ color: "black", fontSize: "20px" }}>
-            <i className="fa-regular fa-star"></i>
-          </div>
-        );
-    };
+
 
 
     const payload={
@@ -99,6 +99,59 @@ function ReviewModal({closeModal}){
     console.log('REVIEW MODAL ... BUTTON OFF', buttonOff)
 
 
+    function starMount(){
+        const star1 = () => {
+            return (
+              <div style={{ color: "black", fontSize: "20px" }}>
+                <i className="fa-regular fa-star"></i>
+              </div>
+            );
+        };
+
+        const star2 = () => {
+            return (
+              <div style={{ color: "black", fontSize: "20px" }}>
+                <i className="fa-regular fa-star"></i>
+              </div>
+            );
+        };
+
+        const star3 = () => {
+            return (
+              <div style={{ color: "black", fontSize: "20px" }}>
+                <i className="fa-regular fa-star"></i>
+              </div>
+            );
+        };
+
+        const star4 = () => {
+            return (
+              <div style={{ color: "black", fontSize: "20px" }}>
+                <i className="fa-regular fa-star"></i>
+              </div>
+            );
+        };
+
+        const star5 = () => {
+            return (
+              <div style={{ color: "black", fontSize: "20px" }}>
+                <i className="fa-regular fa-star"></i>
+              </div>
+            );
+        };
+
+    }
+
+    console.log('HERE',stars)
+
+    function doStars(){
+        if(stars === 1){
+            <i className="fa-solid fa-star" ></i>
+            return
+        }
+    }
+
+
 
     return(
 
@@ -138,28 +191,38 @@ function ReviewModal({closeModal}){
 
                         <div className='starDirection'>
 
-                            <button className="toBeFilled" onClick={()=>setStars(1)}>
-                                <div className='starStyle'>
-                                    <i className="fa-regular fa-star"></i>
+
+                        <button className="toBeFilled" onClick={()=>setStars(1)} >
+                            <div className='starStyle' onMouseEnter={()=>setStars(1)} onMouseLeave={()=>setStars('')}>
+                                { stars >= 1 ? <i className="fa-solid fa-star" ></i> :  <i className="fa-regular fa-star"></i> }
+
+                            </div>
+                        </button>
+
+                            <button className="toBeFilled" onClick={()=>setStars(2)}>
+                                <div  onMouseEnter={()=>setStars(2)} onMouseLeave={()=>setStars('')}>
+                                    { stars >= 2 ? <i className="fa-solid fa-star"></i> :  <i className="fa-regular fa-star"></i> }
                                 </div>
                             </button>
 
-                            <button className="toBeFilled" onClick={()=>setStars(2)} >
-                                <i className="fa-regular fa-star" ></i>
+                            <button className="toBeFilled" onClick={()=>setStars(3)} >
+                                <div onMouseEnter={()=>setStars(3)} onMouseLeave={()=>setStars('')}>
+                                    { stars >= 3 ? <i className="fa-solid fa-star"></i> :  <i className="fa-regular fa-star"></i> }
+                                </div>
                             </button>
 
-                            <button className="toBeFilled" onClick={()=>setStars(3)}>
-                                <i className="fa-regular fa-star" ></i>
+                            <button className="toBeFilled" onClick={()=>setStars(4)} >
+                                <div onMouseEnter={()=>setStars(4)} onMouseLeave={()=>setStars('')}>
+                                    { stars >= 4 ? <i className="fa-solid fa-star"></i> :  <i className="fa-regular fa-star"></i> }
+                                </div>
                             </button>
 
-                            <button className="toBeFilled" onClick={()=>setStars(4)}>
-                                <i className="fa-regular fa-star" ></i>
-                            </button>
 
-                            <button className="toBeFilled" onClick={()=>setStars(5)}>
-                                <i className="fa-regular fa-star" ></i>
+                            <button className="toBeFilled" onClick={()=>setStars(5)} >
+                                <div onMouseEnter={()=>setStars(5)} onMouseLeave={()=>setStars('')}>
+                                    { stars >= 5 ? <i className="fa-solid fa-star"></i> :  <i className="fa-regular fa-star"></i> }
+                                </div>
                             </button>
-
 
                             Stars
 
@@ -177,11 +240,6 @@ function ReviewModal({closeModal}){
         </>
 
     )
-
-
-
-
-
 
 }
 

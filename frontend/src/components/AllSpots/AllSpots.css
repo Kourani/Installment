@@ -1,33 +1,28 @@
 
 
-.containerHover {
-  position: relative;
+.hoverTrue{
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.hoverTrue{
   background-color: black;
   color:white;
   position:absolute;
-  /* z-index: 1; */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 10px;
+
 }
-
-
 
 .landingPage{
   margin-top: 10px;
   /* min-width: 200px; */
   cursor: pointer;
 }
+
+
+
 /*styles the layout of the entire spot tiles 'one div'*/
 .spotGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 2fr);
   grid-gap: 10px;
 }
 
@@ -36,6 +31,8 @@
 .spotTileButton{
   background-color: white;
   border: 0px solid white;
+  width: 100%;
+  padding:0;
 
 }
 
