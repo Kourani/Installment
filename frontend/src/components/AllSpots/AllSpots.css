@@ -24,6 +24,12 @@
   display: grid;
   grid-template-columns: repeat(4, 2fr);
   grid-gap: 10px;
+}@media screen and (
+  max-width:600px
+){
+  .spotGrid{
+    grid-template-columns: repeat(2, 2fr);
+  }
 }
 
 

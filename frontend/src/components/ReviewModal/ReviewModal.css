@@ -58,6 +58,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  /* width:100% */
 }
 
 
@@ -65,6 +66,7 @@
     background-color: #E8F0FE;
     border: 3px solid black;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+   
 }
   .modalBackgroundPost {
     display:flex;

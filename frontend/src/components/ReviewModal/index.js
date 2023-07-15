@@ -28,15 +28,9 @@ function ReviewModal({closeModal}){
 
     const [review, setReview] = useState('')
     const [stars,setStars]=useState()
+    const [tempStars, setTempStars]=useState()
     const [validationErrors, setValidationErrors]=useState({})
     const [buttonOff, setButtonOff]=useState(true)
-
-
-    const [hovered, setHovered]=useState(false)
-    console.log(hovered)
-
-    const [hoveredElement, setHoveredElement]=useState(null)
-
 
     useEffect(()=>{
 
@@ -184,41 +178,34 @@ function ReviewModal({closeModal}){
                         </div>
 
                         <div className='homeReviewInput'>
-                            <textarea className='reviewInput' value={review} onChange={(e)=>setReview(e.target.value)} placeholder="Leave your review here..."></textarea>
+                            <textarea className='reviewInput' cols='50' rows='4' value={review} onChange={(e)=>setReview(e.target.value)} placeholder="Leave your review here..."></textarea>
 
                             <div className='starDirection'>
 
-                        <button className="toBeFilled" onClick={()=>setStars(1)} >
-                            <div className='starStyle' onMouseEnter={()=>setStars(1)} onMouseLeave={()=>setStars('')}>
-                                { stars >= 1 ? <i className="fa-solid fa-star" ></i> :  <i className="fa-regular fa-star"></i> }
-
-                            </div>
-                        </button>
-
-                            <button className="toBeFilled" onClick={()=>setStars(2)}>
-                                <div  onMouseEnter={()=>setStars(2)} onMouseLeave={()=>setStars('')}>
-                                    { stars >= 2 ? <i className="fa-solid fa-star"></i> :  <i className="fa-regular fa-star"></i> }
-                                </div>
-                            </button>
-
-                            <button className="toBeFilled" onClick={()=>setStars(3)} >
-                                <div onMouseEnter={()=>setStars(3)} onMouseLeave={()=>setStars('')}>
-                                    { stars >= 3 ? <i className="fa-solid fa-star"></i> :  <i className="fa-regular fa-star"></i> }
-                                </div>
-                            </button>
-
-                            <button className="toBeFilled" onClick={()=>setStars(4)} >
-                                <div onMouseEnter={()=>setStars(4)} onMouseLeave={()=>setStars('')}>
-                                    { stars >= 4 ? <i className="fa-solid fa-star"></i> :  <i className="fa-regular fa-star"></i> }
+                            <button className="toBeFilled"  >
+                                <div className='starStyle' onClick={()=>setStars(1)} onMouseEnter={()=>setTempStars(1)} onMouseLeave={()=>setTempStars('')}>
+                                    { tempStars >= 1 ||stars>=1 ? <i className="fa-solid fa-star" ></i> :  <i className="fa-regular fa-star"></i> }
                                 </div>
                             </button>
 
 
-                            <button className="toBeFilled" onClick={()=>setStars(5)} >
-                                <div onMouseEnter={()=>setStars(5)} onMouseLeave={()=>setStars('')}>
-                                    { stars >= 5 ? <i className="fa-solid fa-star"></i> :  <i className="fa-regular fa-star"></i> }
+                                <div  onClick={()=>setStars(2)} onMouseEnter={()=>setTempStars(2)} onMouseLeave={()=>setTempStars('')}>
+                                    { tempStars >= 2 || stars>=2 ? <i className="fa-solid fa-star"></i> :  <i className="fa-regular fa-star"></i> }
                                 </div>
-                            </button>
+
+
+                            <div  onClick={()=>setStars(3)} onMouseEnter={()=>setTempStars(3)} onMouseLeave={()=>setTempStars('')}>
+                                    { tempStars >= 3 || stars>=3 ? <i className="fa-solid fa-star"></i> :  <i className="fa-regular fa-star"></i> }
+                                </div>
+
+                                <div  onClick={()=>setStars(4)} onMouseEnter={()=>setTempStars(4)} onMouseLeave={()=>setTempStars('')}>
+                                    { tempStars >= 4 || stars>=4 ? <i className="fa-solid fa-star"></i> :  <i className="fa-regular fa-star"></i> }
+                                </div>
+
+
+                                <div  onClick={()=>setStars(5)} onMouseEnter={()=>setTempStars(5)} onMouseLeave={()=>setTempStars('')}>
+                                    { tempStars >= 5 || stars>=5 ? <i className="fa-solid fa-star"></i> :  <i className="fa-regular fa-star"></i> }
+                                </div>
 
                             <div className='starsWord'>
                             Stars

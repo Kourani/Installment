@@ -187,7 +187,8 @@ function CreateSpot(){
                                 type='city'
                                 placeholder='City'
                                 value={city}
-                                onChange={(e)=>setCity(e.target.value)}/> ,
+                                onChange={(e)=>setCity(e.target.value)}/>
+                                <span className='commaSpan'>,</span>
                             </div>
                         </div>
 
@@ -221,7 +222,8 @@ function CreateSpot(){
                             type='latitude'
                             placeholder='Latitude'
                             value={lat}
-                            onChange={(e)=>setLatitude(e.target.value)}/>,
+                            onChange={(e)=>setLatitude(e.target.value)}/>
+                            <span className='commaSpan'>,</span>
                             </div>
                         </div>
 
@@ -273,7 +275,7 @@ function CreateSpot(){
                     <div className='titles'>Set a base price for your spot</div>
                     <div className='subs'>Competitive pricing can help your listing stand out and rank higher in search results</div>
                     <div className='createNewSpotPrice'>
-                        $<input className='input' value={price} onChange={(e)=>setPrice(e.target.value)} placeholder="Price per night (USD)"/>
+                        $<input className='inputFixedPrice' value={price} onChange={(e)=>setPrice(e.target.value)} placeholder="Price per night (USD)"/>
                     </div>
 
                     <div className='error'>

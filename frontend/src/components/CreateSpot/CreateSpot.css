@@ -3,19 +3,23 @@
 .comma{
     display: flex;
 }
+
 .cityAndState{
     display: flex;
     justify-content: space-between;
+    width:100%
 }
 
 .latAndLng{
     display: flex;
     justify-content: space-between;
     margin-bottom: 5px;
+    width:100%
 }
 
 .createNewSpotPrice{
     display: flex;
+    width: 100%;
 }
 .sweet{
     display: flex;
@@ -34,11 +38,16 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width:100%;
 }
 
 .section{
     border-bottom: 2px solid black;
-    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
 }
 
 .titles{
@@ -91,5 +100,25 @@
     background-color: #E8F0FE;
     border: 2px solid black;
     margin-bottom: 5px;
+
+}
+
+.commaSpan{
+    margin-right: 5px;
+}
+
+.country{
+    width: 100%;
+}
+
+.inputFixedPrice{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #E8F0FE;
+    border: 2px solid black;
+    margin: 5px;
+    width: 100%;
+
 
 }

@@ -24,16 +24,19 @@ function SpotDetail(){
     const userState = useSelector(state=>state.session)
     console.log('SPOTREVIEWS...USERSTATE', userState)
 
-    const spotState = useSelector((state)=>state.spot)
-    console.log('SPOTDETAIL...spotState', spotState)
 
     const reviewState = useSelector(state=>state.review)
     console.log('SPOTDETAIL...reviewState',reviewState)
 
     useEffect(()=>{
+        dispatch(spotActions.getSpots())
         dispatch(spotActions.spotDetails(spotId))
         dispatch(reviewActions.getSpotReviews(spotId))
       },[dispatch, spotId, postModal, deleteModal])
+
+
+      const spotState = useSelector((state)=>state.spot)
+      console.log('SPOTDETAIL...spotState', spotState)
 
 
 
@@ -56,9 +59,6 @@ function SpotDetail(){
     function submitButton(){
         return window.alert('Feature coming soon')
     }
-
-
-
 
     function avgRating(){
         return ( spotState?.matched?.avgStarRating ? (spotState?.matched?.avgStarRating)?.toFixed(1) : 'New')
