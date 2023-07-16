@@ -333,7 +333,7 @@ function UpdateSpot(){
 
 
                 <button className='createButton' type='newSpot' disabled={false} >
-                    Create Spot
+                    Update your Spot
                 </button>
             </form>
         </>
