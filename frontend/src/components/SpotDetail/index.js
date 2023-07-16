@@ -32,7 +32,7 @@ function SpotDetail(){
 
     useEffect(()=>{
 
-        setImageTracker(true)
+        if(!imageTracker)setImageTracker(true)
         dispatch(spotActions.getSpots())
         dispatch(spotActions.spotDetails(spotId))
         dispatch(reviewActions.getSpotReviews(spotId))
@@ -42,6 +42,11 @@ function SpotDetail(){
 
       const spotState = useSelector((state)=>state.spot)
       console.log('SPOTDETAIL...spotState', spotState)
+
+      if(!spotState?.matched?.name)
+      {
+        return <div> Loading Spot Data</div>
+      }
 
     const star = () => {
         return (
