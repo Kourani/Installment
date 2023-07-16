@@ -45,7 +45,7 @@ const validateSpot = [
       // .exists({ checkFalsy: true })
       // .isNumeric()
       // .notEmpty()
-      .optional()
+      .optional({values: 'undefined' | 'null' | 'falsy'})
       .if((_, { req }) => req.body.lng !== undefined && req.body.lng !== null && req.body.lng !== '')
       .isNumeric().withMessage('Lat must be a number'),
 
@@ -53,7 +53,7 @@ const validateSpot = [
       // .exists({ checkFalsy: true })
       // .isNumeric()
       // .notEmpty()
-      .optional()
+      .optional({values: 'undefined' | 'null' | 'falsy'})
       .if((_, { req }) => req.body.lng !== undefined && req.body.lng !== null && req.body.lng !== '')
       .isNumeric().withMessage('Lng must be a number'),
       // .withMessage("Longitude is not valid"),

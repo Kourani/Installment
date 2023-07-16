@@ -247,7 +247,7 @@ function CreateSpot(){
                             type='latitude'
                             placeholder='Latitude'
                             value={lat}
-                            onChange={(e)=>setLatitude(e.target.value)}/>
+                            onChange={(e)=>setLatitude(+e.target.value)}/>
                             <span className='commaSpan'>,</span>
                             </div>
                         </div>
@@ -264,7 +264,7 @@ function CreateSpot(){
                             type='longitude'
                             placeholder='Longitude'
                             value={lng}
-                            onChange={(e)=>setLongitude(e.target.value)}/>
+                            onChange={(e)=>setLongitude(+e.target.value)}/>
                         </div>
                     </div>
 
