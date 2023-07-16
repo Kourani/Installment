@@ -86,7 +86,7 @@ const validateSpot = [
   ];
 
 const validateImage = [
-  check('url').custom((value, { req }) => {
+  check('url').custom((value)=> {
     const imageExtensions = ['.jpg', '.jpeg', '.png'];
     const urlLowercase = value.toLowerCase();
     if (!imageExtensions.some(ext => urlLowercase.endsWith(ext))) {
