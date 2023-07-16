@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
 
       Spot.belongsTo(
         models.User,
-        {foreignKey:'ownerId'} //spot deletion should NOT delete user 
+        {foreignKey:'ownerId'} //spot deletion should NOT delete user
       ),
 
       Spot.hasMany(
@@ -81,12 +81,12 @@ module.exports = (sequelize, DataTypes) => {
 
     lat:{
       type:DataTypes.DECIMAL,
-      allowNull:false
+      allowNull:true
     },
 
     lng:{
       type:DataTypes.DECIMAL,
-      allowNull:false,
+      allowNull:true,
       // validate:{
       //   isNumeric:true
       // }
