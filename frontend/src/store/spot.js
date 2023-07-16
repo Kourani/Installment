@@ -180,8 +180,9 @@ const spotReducer = (state=initialState, action) =>{
             const foundSpot = {...action.spotData}
 
             return {
-                matched: foundSpot,
-                ...state
+
+                ...state,
+                matched: foundSpot
             }
 
         case GET_SPOTS:
@@ -211,15 +212,17 @@ const spotReducer = (state=initialState, action) =>{
         case UPDATE_SPOT:
             const fixedSpot = {...action.updateSpotThunkData}
             return{
-                updatedSpot:fixedSpot,
-                state
+                ...state,
+                updatedSpot:fixedSpot
+
             }
 
         case CREATE_IMAGE:
             const addedImage = {...action.createImageThunkData}
             return{
+                ...state,
                 images:addedImage,
-                state
+
             }
 
         default:

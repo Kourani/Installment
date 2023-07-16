@@ -55,7 +55,7 @@ export const reviewDelete = (reviewId) => async(dispatch) =>{
 
     if(response.ok){
         const retrivedData = await response.json()
-        dispatch (deleteReview(retrivedData))
+        dispatch (deleteReview(reviewId))
         console.log('INSIDE REVIEW DELETE THUNK', retrivedData)
         return retrivedData
     }
@@ -106,16 +106,17 @@ export const reviewReducer = (state={},action)=>{
             }
 
         case DELETE_REVIEW:
-            const ReviewState={...action.thunkData}
-            return{
-                ...ReviewState,
-                ...state
-            }
+            const newReview={...state}
+            delete newReview[action.thunkData]
+            return newReview
+
         case POST_REVIEW:
             const reviewCreated={...action.thunkData}
             return{
-                newReview:reviewCreated,
-                ...state
+
+                ...state,
+                newReview:reviewCreated
+
             }
 
         default:

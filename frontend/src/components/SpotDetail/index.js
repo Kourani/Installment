@@ -30,18 +30,26 @@ function SpotDetail(){
     const reviewState = useSelector(state=>state.review)
     console.log('SPOTDETAIL...reviewState',reviewState)
 
-    useEffect(()=>{
 
-        if(!imageTracker)setImageTracker(true)
-        dispatch(spotActions.getSpots())
-        dispatch(spotActions.spotDetails(spotId))
-        dispatch(reviewActions.getSpotReviews(spotId))
-      },[dispatch, spotId, postModal, deleteModal, imageTracker])
+
+
 
       console.log('IMAGE TRACKER',imageTracker)
 
       const spotState = useSelector((state)=>state.spot)
       console.log('SPOTDETAIL...spotState', spotState)
+
+      const [averageReviews, setAverageReviews]=useState(()=>{
+        return spotState?.matched?.avgRating ? spotState?.matched?.avgRating : null
+      })
+
+      useEffect(()=>{
+
+        if(!imageTracker)setImageTracker(true)
+        // dispatch(spotActions.getSpots())
+        dispatch(spotActions.spotDetails(spotId))
+        dispatch(reviewActions.getSpotReviews(spotId))
+      },[dispatch, spotId, postModal, deleteModal, imageTracker, averageReviews])
 
       if(!spotState?.matched?.name)
       {
@@ -347,6 +355,7 @@ function SpotDetail(){
                         <>
                         {star()}
                         {avgRating()}
+                        {/* {averageReviews} */}
                         {dot()}
                         {numberOfReviews()}
                         </>

@@ -101,7 +101,7 @@ function CreateSpot(){
                 //     console.log('error IF')
                     const errors = {}
                     if(!price) errors['price']='Price per night is required'
-                    if(information.errors.includes("Price must be a number")) errors['price']=`"${price}" is not valid`
+                    // if(information.errors.includes("Price must be a number")) errors['price']=`"${price}" is not valid`
                     if(!country) errors['country']='Country is required'
                     if(!city) errors['city']='City is required'
                     if(!state) errors['state']='State is required'
@@ -111,15 +111,15 @@ function CreateSpot(){
                     if(!name) errors['name'] ='Name is required'
                     if(name.length>50) errors['name']='Name must be less than 50 characters'
 
-                    if(information.errors.includes('Lat must be a number')) errors['lat']=`"${lat}" is not valid`
-                    if(information.errors.includes('Lng must be a number')) errors['lng']=`"${lng}" is not valid`
+                    // if(information.errors.includes('Lat must be a number')) errors['lat']=`"${lat}" is not valid`
+                    // if(information.errors.includes('Lng must be a number')) errors['lng']=`"${lng}" is not valid`
 
-                    if(information.errors.includes('Image URL is not valid')) errors['image']='Image URL is not valid'
+                    // if(information.errors.includes('Image URL is not valid')) errors['image']='Image URL is not valid'
                     if(!url) errors['image']='Preview Image URL is required'
-                    if( !image1.includes('.png') || !image1.includes('.jpg') || !image1.includes('.jpeg')) errors['image1']='Image URL must end in .png .jpg or .jpeg'
-                    if( !image2.includes('.png') || !image2.includes('.jpg') || !image2.includes('.jpeg')) errors['image2']='Image URL must end in .png .jpg or .jpeg'
-                    if( !image3.includes('.png') || !image3.includes('.jpg') || !image3.includes('.jpeg')) errors['image3']='Image URL must end in .png .jpg or .jpeg'
-                    if( !image4.includes('.png') || !image4.includes('.jpg') || !image4.includes('.jpeg')) errors['image4']='Image URL must end in .png .jpg or .jpeg'
+                    // if( !image1.includes('.png') || !image1.includes('.jpg') || !image1.includes('.jpeg')) errors['image1']='Image URL must end in .png .jpg or .jpeg'
+                    // if( !image2.includes('.png') || !image2.includes('.jpg') || !image2.includes('.jpeg')) errors['image2']='Image URL must end in .png .jpg or .jpeg'
+                    // if( !image3.includes('.png') || !image3.includes('.jpg') || !image3.includes('.jpeg')) errors['image3']='Image URL must end in .png .jpg or .jpeg'
+                    // if( !image4.includes('.png') || !image4.includes('.jpg') || !image4.includes('.jpeg')) errors['image4']='Image URL must end in .png .jpg or .jpeg'
 
                     setValidationErrors(errors)
 
