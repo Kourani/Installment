@@ -137,8 +137,8 @@ function CreateSpot(){
         setDescription('')
         setName('')
         setPrice('')
-        setLatitude('')
-        setLongitude('')
+        setLatitude(undefined)
+        setLongitude(undefined)
 
         setImage('')
         setImage1('')
