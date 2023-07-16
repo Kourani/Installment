@@ -1,6 +1,7 @@
 
 import './UpdateSpot.css'
 import * as spotActions from '../../store/spot'
+import * as imageActions from '../../store/image'
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux'
@@ -14,11 +15,9 @@ function UpdateSpot(){
     const {spotId} = useParams()
 
     const spotState = useSelector(state=>state.spot)
-    // console.log('UPDATE...SPOTSTATE', spotState)
 
-    useEffect(()=>{
-        dispatch(spotActions.getSpots())
-    },[dispatch])
+    const imageState = useSelector(state=>state.image)
+    console.log(' UPDATE SPOT ... IMAGE STATE',imageState)
 
     const [country, setCountry] = useState(spotState[spotId]?.country)
     const [address, setStreetAddress] = useState(spotState[spotId]?.address)
@@ -27,16 +26,17 @@ function UpdateSpot(){
     const [price, setPrice] = useState(spotState[spotId]?.price)
     const [description, setDescription]=useState(spotState[spotId]?.description)
     const [name, setName] = useState(spotState[spotId]?.name)
-    const [image, setImage]= useState(spotState[spotId]?.previewImage)
-
-    const [image1, setImage1]= useState('')
-    const [image2, setImage2]= useState('')
-    const [image3, setImage3]= useState('')
-    const [image4, setImage4]= useState('')
-
     const [lat, setLatitude] = useState('')
     const [lng, setLongitude] = useState('')
 
+
+    const [url, setImage] = useState(spotState[spotId]?.previewImage)
+    const [image1, setImage1]= useState(spotState?.matched?.SpotImages[1]?.url ? spotState?.matched?.SpotImages[1]?.url :'https://t4.ftcdn.net/jpg/04/99/93/31/360_F_499933117_ZAUBfv3P1HEOsZDrnkbNCt4jc3AodArl.jpg' )
+    const [image2, setImage2]= useState(spotState?.matched?.SpotImages[2]?.url ? spotState?.matched?.SpotImages[2]?.url :'https://t4.ftcdn.net/jpg/04/99/93/31/360_F_499933117_ZAUBfv3P1HEOsZDrnkbNCt4jc3AodArl.jpg')
+    const [image3, setImage3]= useState(spotState?.matched?.SpotImages[3]?.url ? spotState?.matched?.SpotImages[3]?.url :'https://t4.ftcdn.net/jpg/04/99/93/31/360_F_499933117_ZAUBfv3P1HEOsZDrnkbNCt4jc3AodArl.jpg')
+    const [image4, setImage4]= useState(spotState?.matched?.SpotImages[4]?.url ? spotState?.matched?.SpotImages[4]?.url :'https://t4.ftcdn.net/jpg/04/99/93/31/360_F_499933117_ZAUBfv3P1HEOsZDrnkbNCt4jc3AodArl.jpg')
+
+    const [preview, setPreview]=useState(true)
 
     const [validationErrors, setValidationErrors] = useState({})
     const [buttonOff, setButtonOff] = useState(false)
@@ -46,28 +46,57 @@ function UpdateSpot(){
 
 
 
+
+    let imageId
+    for(let i=0; i<spotState?.matched?.SpotImages?.length; i++){
+
+        console.log('inside the for')
+        console.log('HEREEEEEEEEEEEEEEE',spotState?.matched?.SpotImages[i])
+        console.log('CURRENT URL',url)
+        if(spotState?.matched?.SpotImages[0]?.url === url){
+            imageId = spotState?.matched?.SpotImages[0]?.id
+        }
+    }
+
+    console.log('IMAGE ID', imageId)
+
+    useEffect(()=>{
+        dispatch(spotActions.getSpots())
+        dispatch(spotActions.spotDetails(spotId))
+    },[dispatch, url])
+
+
     async function handleSubmit (e){
         e.preventDefault()
         setSubmitted(true)
 
+
+        const payload ={
+            country,
+            address,
+            city,
+            state,
+            description,
+            name,
+            price,
+        }
+
+        const imagePayload ={
+            url,
+            preview
+        }
+
+
+
         try{
-            const payload ={
-                country,
-                address,
-                city,
-                state,
-                description,
-                name,
-                price,
-                image
-            }
-
-
-    console.log('UPDATESPOTS...PAYLOAD',payload)
 
             const created = await dispatch(spotActions.updateSpot(spotId,payload))
             console.log('UPDATE SPOT....INSIDE TRY',created)
             // return created
+
+            const imageCreation=await dispatch(spotActions.createImage(created.id, imagePayload))
+
+            console.log('UPDATE SPOT ... IMAGE CREATION',imageCreation)
         }
         catch(created){
             const information = await created.json()
@@ -85,8 +114,8 @@ function UpdateSpot(){
                 if(!name) errors['name']='Name is required'
                 if(name.length>50) errors['name']='Name must be less than 50 characters'
                 if(!price) errors['price']='Price is required'
-                if(!image) errors['image']='Preview image is required'
 
+                if(!url) errors['image']='Preview image is required'
                 if( !image1.includes('.png') || !image1.includes('.jpg') || !image1.includes('.jpeg')) errors['image1']='Image URL must end in .png .jpg or .jpeg'
                 if( !image2.includes('.png') || !image2.includes('.jpg') || !image2.includes('.jpeg')) errors['image2']='Image URL must end in .png .jpg or .jpeg'
                 if( !image3.includes('.png') || !image3.includes('.jpg') || !image3.includes('.jpeg')) errors['image3']='Image URL must end in .png .jpg or .jpeg'
@@ -100,15 +129,15 @@ function UpdateSpot(){
 
 
         // reset form values
-        // setCountry(country)
-        // setStreetAddress(address)
-        // setCity(city)
-        // setPrice(price)
-        // setName(name)
-        // setImage(image)
+        setCountry(country)
+        setStreetAddress(address)
+        setCity(city)
+        setPrice(price)
+        setName(name)
+        setImage(url)
 
-        // setValidationErrors({})
-        // setButtonOff(true)
+        setValidationErrors({})
+        setButtonOff(true)
 
         history.push(`spots/${spotId}`)
     }
@@ -274,7 +303,7 @@ function UpdateSpot(){
                 <div className='section'>
                     <div className='titles'>Liven up your spot with photos</div>
                     <div className='subs'>Submit a link to at lest one photo to publish your spot</div>
-                    <input className='input' value={image} onChange={(e)=>setImage(e.target.value)} placeholder="Preview Image URL"/>
+                    <input className='input' value={url} onChange={(e)=>setImage(e.target.value)} placeholder="Preview Image URL"/>
 
                     <div className='error'>
                         {submitted && validationErrors.image}

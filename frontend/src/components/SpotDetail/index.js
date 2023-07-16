@@ -42,9 +42,6 @@ function SpotDetail(){
       const spotState = useSelector((state)=>state.spot)
       console.log('SPOTDETAIL...spotState', spotState)
 
-
-
-
     const star = () => {
         return (
           <div style={{ color: "black", fontSize: "20px" }}>
@@ -182,9 +179,6 @@ function SpotDetail(){
     }
 
     console.log('SPOT DETAIL...REVIEW SPOT',reviewSpot())
-
-
-
 
     console.log('SPOTDETAIL...reviewSpot', beTheFirst())
 

@@ -4,6 +4,7 @@ import thunk from 'redux-thunk'
 import sessionReducer from './session'
 import spotReducer from './spot'
 import reviewReducer from './review'
+import imageReducer from './image'
 
 
 
@@ -11,9 +12,8 @@ import reviewReducer from './review'
 const rootReducer = combineReducers({
     session:sessionReducer,
     spot:spotReducer,
-    // booking:bookingReducer,
-    review:reviewReducer
-    // image:imageReducer
+    review:reviewReducer,
+    image:imageReducer
 })
 
 let enhancer
