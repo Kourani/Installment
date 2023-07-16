@@ -71,13 +71,13 @@ function CreateSpot(){
         console.log(payload)
         console.log(imagePayload)
 
-        if( !url.includes('.png') || !url.includes('.jpg') || !url.includes('.jpeg')){
-            const errors={}
-            errors['image']='Image URL must end in .png .jpg or .jpeg'
-            setValidationErrors(errors)
-        }
+        // if( !url.includes('.png') || !url.includes('.jpg') || !url.includes('.jpeg')){
+        //     const errors={}
+        //     errors['image']='Image URL must end in .png .jpg or .jpeg'
+        //     setValidationErrors(errors)
+        // }
 
-        if( url.includes('.png') || url.includes('.jpg') || url.includes('.jpeg')){
+        // if( url.includes('.png') || url.includes('.jpg') || url.includes('.jpeg')){
 
             try {
 
@@ -126,7 +126,7 @@ function CreateSpot(){
                 // }
             }
 
-        }
+        // }
 
 
 

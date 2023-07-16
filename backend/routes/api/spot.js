@@ -82,25 +82,18 @@ const validateSpot = [
       .notEmpty()
       .withMessage( "Price per day is required"),
 
-    // check('previewImage')
-    // .isURL()
-    // .withMessage('Lng must be a valid URL'),
-
     handleValidationErrors
   ];
 
 const validateImage = [
-  check('url')
-  .isURL()
-  .withMessage("URL is not valid")
-  .custom((value, { req }) => {
-    const imageExtensions = ['.jpg', '.jpeg'];
+  check('url').custom((value, { req }) => {
+    const imageExtensions = ['.jpg', '.jpeg', '.png'];
     const urlLowercase = value.toLowerCase();
     if (!imageExtensions.some(ext => urlLowercase.endsWith(ext))) {
       throw new Error('URL does not end with .jpg or .jpeg');
     }
-    return true;
-  }),
+    return true
+}),
 ]
 
 
