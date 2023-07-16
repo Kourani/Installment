@@ -19,15 +19,17 @@ function CreateSpot(){
     const [price, setPrice] = useState('')
     const [description, setDescription]=useState('')
     const [name, setName] = useState('')
-    const [image, setImage]= useState('')
 
+    const [lat, setLatitude] = useState('')
+    const [lng, setLongitude] = useState('')
+
+    const [url, setImage]= useState('')
     const [image1, setImage1]= useState('')
     const [image2, setImage2]= useState('')
     const [image3, setImage3]= useState('')
     const [image4, setImage4]= useState('')
 
-    const [lat, setLatitude] = useState('')
-    const [lng, setLongitude] = useState('')
+    const [preview, setPreview]=useState(true)
 
     const [validationErrors, setValidationErrors] = useState({})
 
@@ -36,10 +38,10 @@ function CreateSpot(){
 
     useEffect(()=>{
         if(country && address && city && state && price && description
-            && name && image){
+            && name && url){
                 setButtonOff(false)
             }
-    },[dispatch, country, address, city, state, price, description, name, image])
+    },[dispatch, country, address, city, state, price, description, name, url])
 
 
     async function handleSubmit (e){
@@ -55,12 +57,18 @@ function CreateSpot(){
             description,
             name,
             price,
-            image,
             lat,
             lng
         }
 
+        const imagePayload ={
+            url,
+            preview
+        }
+
+
         console.log(payload)
+        console.log(imagePayload)
 
         try {
 
@@ -68,8 +76,12 @@ function CreateSpot(){
             console.log('TRY BLOCK....CREATED',created)
 
             history.push(`/spots/${created.id}`)
-            return created
 
+            const imageCreation=await dispatch(spotActions.createImage(created.id, imagePayload))
+
+            console.log(imageCreation)
+
+            return
         }
         catch (created) {
 
@@ -85,7 +97,7 @@ function CreateSpot(){
                 if(!city) errors['city']='City is required'
                 if(!state) errors['state']='State is required'
                 if(!address) errors['streetAddress']='Address is required'
-                if(!image) errors['image']='Preview Image URL is required'
+                if(!url) errors['image']='Preview Image URL is required'
                 if(information.errors.includes('Image URL is not valid')) errors['image']='Image URL is not valid'
 
                 if(!description  || description.length<30) errors['description']='Description needs a minimum of 30 characters'
@@ -111,12 +123,13 @@ function CreateSpot(){
         setStreetAddress('')
         setCity('')
         setState('')
-        setLatitude('')
-        setLongitude('')
         setDescription('')
         setName('')
-        setImage('')
         setPrice('')
+        setLatitude('')
+        setLongitude('')
+
+        setImage('')
         setImage1('')
         setImage2('')
         setImage3('')
@@ -127,7 +140,6 @@ function CreateSpot(){
     return(
         <>
             <form className='createForm' onSubmit={handleSubmit}>
-
 
                 <div className='section'>
 
@@ -286,7 +298,7 @@ function CreateSpot(){
                 <div className='section'>
                     <div className='titles'>Liven up your spot with photos</div>
                     <div className='subs'>Submit a link to at lest one photo to publish your spot</div>
-                    <input className='input' value={image} onChange={(e)=>setImage(e.target.value)} placeholder="Preview Image URL"/>
+                    <input className='input' value={url} onChange={(e)=>setImage(e.target.value)} placeholder="Preview Image URL"/>
 
                     <div className='error'>
                         {submitted && validationErrors.image}

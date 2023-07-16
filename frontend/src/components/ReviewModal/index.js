@@ -7,12 +7,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useHistory } from 'react-router-dom';
 
 
 function ReviewModal({closeModal}){
     const dispatch = useDispatch()
-    const history = useHistory()
     const {spotId} = useParams()
     console.log(spotId)
 
@@ -21,7 +19,6 @@ function ReviewModal({closeModal}){
 
     const spotState = useSelector(state=>state.spot)
     console.log('SPOTSTATE', spotState)
-    const spotStateValues = Object.values(spotState)
 
     const reviewState = useSelector(state=>state.review)
     console.log('REVIEWSTATE',reviewState)
@@ -39,20 +36,16 @@ function ReviewModal({closeModal}){
                 setButtonOff(false)
             }
         }
+        if(!review || !stars){
+            setButtonOff(true)
+        }
     },[dispatch,review,stars])
-
-
-
-
 
     const payload={
         review,
         stars
     }
 
-    console.log('PAYLOAD',payload)
-
-    console.log('ONSUBMIT',onSubmit)
     async function onSubmit(){
         console.log('inside the onSubmit')
 
@@ -85,72 +78,20 @@ function ReviewModal({closeModal}){
                 errors['three']='User already has a review for this spot'
                 setValidationErrors(errors)
             }
+
+            if(information.statusCode===404){
+                errors['four']='Spot not found'
+                setValidationErrors(errors)
+            }
+
+            if(information.statusCode===500){
+                errors['five']='Your review was not created, please try again'
+                setValidationErrors(errors)            }
         }
     }
-
-    console.log('validationErrors',validationErrors)
-
-    console.log('REVIEW MODAL ... BUTTON OFF', buttonOff)
-
-
-    function starMount(){
-        const star1 = () => {
-            return (
-              <div style={{ color: "black", fontSize: "20px" }}>
-                <i className="fa-regular fa-star"></i>
-              </div>
-            );
-        };
-
-        const star2 = () => {
-            return (
-              <div style={{ color: "black", fontSize: "20px" }}>
-                <i className="fa-regular fa-star"></i>
-              </div>
-            );
-        };
-
-        const star3 = () => {
-            return (
-              <div style={{ color: "black", fontSize: "20px" }}>
-                <i className="fa-regular fa-star"></i>
-              </div>
-            );
-        };
-
-        const star4 = () => {
-            return (
-              <div style={{ color: "black", fontSize: "20px" }}>
-                <i className="fa-regular fa-star"></i>
-              </div>
-            );
-        };
-
-        const star5 = () => {
-            return (
-              <div style={{ color: "black", fontSize: "20px" }}>
-                <i className="fa-regular fa-star"></i>
-              </div>
-            );
-        };
-
-    }
-
-    console.log('HERE',stars)
-
-    function doStars(){
-        if(stars === 1){
-            <i className="fa-solid fa-star" ></i>
-            return
-        }
-    }
-
 
 
     return(
-
-        <>
-
             <div className='modalBackgroundPost'>
                 <div className='modalContainerPost'>
 
@@ -177,24 +118,30 @@ function ReviewModal({closeModal}){
                             {validationErrors.three}
                         </div>
 
+
+                        <div className='error'>
+                            {validationErrors.four}
+                        </div>
+
+                        <div className='error'>
+                            {validationErrors.five}
+                        </div>
+
                         <div className='homeReviewInput'>
                             <textarea className='reviewInput' cols='50' rows='4' value={review} onChange={(e)=>setReview(e.target.value)} placeholder="Leave your review here..."></textarea>
 
                             <div className='starDirection'>
 
-                            <button className="toBeFilled"  >
                                 <div className='starStyle' onClick={()=>setStars(1)} onMouseEnter={()=>setTempStars(1)} onMouseLeave={()=>setTempStars('')}>
                                     { tempStars >= 1 ||stars>=1 ? <i className="fa-solid fa-star" ></i> :  <i className="fa-regular fa-star"></i> }
                                 </div>
-                            </button>
-
 
                                 <div  onClick={()=>setStars(2)} onMouseEnter={()=>setTempStars(2)} onMouseLeave={()=>setTempStars('')}>
                                     { tempStars >= 2 || stars>=2 ? <i className="fa-solid fa-star"></i> :  <i className="fa-regular fa-star"></i> }
                                 </div>
 
 
-                            <div  onClick={()=>setStars(3)} onMouseEnter={()=>setTempStars(3)} onMouseLeave={()=>setTempStars('')}>
+                                <div  onClick={()=>setStars(3)} onMouseEnter={()=>setTempStars(3)} onMouseLeave={()=>setTempStars('')}>
                                     { tempStars >= 3 || stars>=3 ? <i className="fa-solid fa-star"></i> :  <i className="fa-regular fa-star"></i> }
                                 </div>
 
@@ -207,18 +154,13 @@ function ReviewModal({closeModal}){
                                     { tempStars >= 5 || stars>=5 ? <i className="fa-solid fa-star"></i> :  <i className="fa-regular fa-star"></i> }
                                 </div>
 
-                            <div className='starsWord'>
-                            Stars
+                                <div className='starsWord'>
+                                Stars
+                                </div>
+
                             </div>
 
                         </div>
-
-                        </div>
-
-
-
-
-
 
                     </div>
 
@@ -228,8 +170,6 @@ function ReviewModal({closeModal}){
                     </div>
                 </div>
             </div>
-        </>
-
     )
 
 }

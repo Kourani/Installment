@@ -10,6 +10,7 @@ const ONE_SPOT = "/spots/SPOT_DETAIL"
 const CREATE_SPOT = "/spots/NEW_SPOT"
 const DELETE_SPOT ="/spots/DELETE_SPOT"
 const UPDATE_SPOT ="/spots/UPDATE_SPOT"
+const CREATE_IMAGE='/spots/spotId/CREATE_IMAGE'
 
 
 //ACTIONS
@@ -48,6 +49,13 @@ function editSpot(updateSpotThunkData){
     return {
         type:UPDATE_SPOT,
         updateSpotThunkData
+    }
+}
+
+function imageCreate(createImageThunkData){
+    return {
+        type:CREATE_IMAGE,
+        createImageThunkData
     }
 }
 
@@ -136,6 +144,27 @@ export const updateSpot = (spotId,payload) => async(dispatch) =>{
 
 
 
+export const createImage = (spotId,payload) => async (dispatch) =>{
+    const response = await csrfFetch(`/api/spots/${spotId}/images`, {
+        method:'POST',
+        headers:{
+            'Content-Type': 'application/json'
+        },
+        body:JSON.stringify(payload)
+    })
+
+    if(response.ok){
+        const pictures = await response.json()
+        console.log('Inside createSpot Thunk',pictures)
+        dispatch(imageCreate(pictures))
+        return pictures
+    }
+
+    console.log('INSIDE THUNNK', response)
+    return await response.json()
+}
+
+
 
 
 
@@ -183,6 +212,13 @@ const spotReducer = (state=initialState, action) =>{
             const fixedSpot = {...action.updateSpotThunkData}
             return{
                 updatedSpot:fixedSpot,
+                state
+            }
+
+        case CREATE_IMAGE:
+            const addedImage = {...action.createImageThunkData}
+            return{
+                images:addedImage,
                 state
             }
 

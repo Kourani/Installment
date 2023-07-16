@@ -30,7 +30,7 @@ function AllSpots(){
 
     const handleMouseEnter=(element)=>{
         console.log(element.name)
-        setHovered(element.name)
+        setHovered(element.id)
         setHoveredElement(element)
     }
 
@@ -63,7 +63,7 @@ function AllSpots(){
                 <div className='landingPage' onClick={()=>onClicked(element)} onMouseEnter={()=>handleMouseEnter(element)} onMouseLeave={()=>handleMouseLeave()}>
 
 
-                    {hovered===element.name && <div className={hovered ? 'hoverTrue' : 'hoverFalse'}>{hoveredElement.name}</div>}
+                    {hovered===element.id && <div className={hovered ? 'hoverTrue' : 'hoverFalse'}>{hoveredElement.name}</div>}
 
                     <button className='spotTileButton' key='spotTile' >
                         <img src={element.previewImage} alt='Spot Preview' />

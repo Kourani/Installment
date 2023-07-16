@@ -20,6 +20,8 @@ function SpotDetail(){
     const [postModal, setPostModal] = useState(false)
     const [deleteModal, setDeleteModal] = useState(false)
 
+    const [imageTracker, setImageTracker]=useState(false)
+
     //to know who is logged in or if no one is logged in
     const userState = useSelector(state=>state.session)
     console.log('SPOTREVIEWS...USERSTATE', userState)
@@ -29,14 +31,17 @@ function SpotDetail(){
     console.log('SPOTDETAIL...reviewState',reviewState)
 
     useEffect(()=>{
+        if(spotState?.matched?.SpotImages[0]?.url) setImageTracker(true)
+
         dispatch(spotActions.getSpots())
         dispatch(spotActions.spotDetails(spotId))
         dispatch(reviewActions.getSpotReviews(spotId))
-      },[dispatch, spotId, postModal, deleteModal])
+      },[dispatch, spotId, postModal, deleteModal, imageTracker])
 
 
       const spotState = useSelector((state)=>state.spot)
       console.log('SPOTDETAIL...spotState', spotState)
+
 
 
 
@@ -197,6 +202,8 @@ function SpotDetail(){
 
     //the first image for that spot
     function spotImage(){
+        console.log('SPOT DETAIL .... IMAGES',spotState?.matched?.SpotImages[0]?.url)
+
         return (
             <div className='imageContainerImage'>
                 <img src={spotState?.matched?.SpotImages[0]?.url} alt='Spot Preview'/>
