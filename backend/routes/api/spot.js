@@ -42,21 +42,17 @@ const validateSpot = [
       .withMessage("Country is required"),
 
     check('lat')
-      // .exists({ checkFalsy: true })
-      // .isNumeric()
-      // .notEmpty()
-      .optional({values: 'undefined' | 'null' | 'falsy'})
+      // .optional({values: 'undefined' | 'null' | 'falsy'})
+      .optional()
       .if((_, { req }) => req.body.lng !== undefined && req.body.lng !== null && req.body.lng !== '')
       .isNumeric().withMessage('Lat must be a number'),
 
     check('lng')
-      // .exists({ checkFalsy: true })
-      // .isNumeric()
-      // .notEmpty()
-      .optional({values: 'undefined' | 'null' | 'falsy'})
+      // .optional({values: 'undefined' | 'null' | 'falsy'})
+      .optional()
       .if((_, { req }) => req.body.lng !== undefined && req.body.lng !== null && req.body.lng !== '')
       .isNumeric().withMessage('Lng must be a number'),
-      // .withMessage("Longitude is not valid"),
+
 
     check('name')
       // .exists({ checkFalsy: true })

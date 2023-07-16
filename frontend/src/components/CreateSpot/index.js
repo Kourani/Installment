@@ -20,8 +20,8 @@ function CreateSpot(){
     const [description, setDescription]=useState('')
     const [name, setName] = useState('')
 
-    const [lat, setLatitude] = useState(null)
-    const [lng, setLongitude] = useState(null)
+    const [lat, setLatitude] = useState(undefined)
+    const [lng, setLongitude] = useState(undefined)
 
     const [url, setImage]= useState('')
     const [image1, setImage1]= useState('')
