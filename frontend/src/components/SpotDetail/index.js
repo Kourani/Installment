@@ -31,13 +31,14 @@ function SpotDetail(){
     console.log('SPOTDETAIL...reviewState',reviewState)
 
     useEffect(()=>{
-        if(spotState?.matched?.SpotImages[0]?.url) setImageTracker(true)
 
+        setImageTracker(true)
         dispatch(spotActions.getSpots())
         dispatch(spotActions.spotDetails(spotId))
         dispatch(reviewActions.getSpotReviews(spotId))
       },[dispatch, spotId, postModal, deleteModal, imageTracker])
 
+      console.log('IMAGE TRACKER',imageTracker)
 
       const spotState = useSelector((state)=>state.spot)
       console.log('SPOTDETAIL...spotState', spotState)
