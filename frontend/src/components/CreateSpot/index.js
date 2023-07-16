@@ -36,6 +36,25 @@ function CreateSpot(){
     const [submitted, setSubmitted] = useState(false)
     const [buttonOff, setButtonOff] = useState(true)
 
+
+
+    const payload ={
+        country,
+        address,
+        city,
+        state,
+        description,
+        name,
+        price,
+        lat,
+        lng
+    }
+
+    const imagePayload ={
+        url,
+        preview
+    }
+    
     useEffect(()=>{
         if(country && address && city && state && price && description
             && name && url){
@@ -49,22 +68,6 @@ function CreateSpot(){
 
         setSubmitted(true)
 
-        const payload ={
-            country,
-            address,
-            city,
-            state,
-            description,
-            name,
-            price,
-            lat,
-            lng
-        }
-
-        const imagePayload ={
-            url,
-            preview
-        }
 
 
         console.log(payload)
@@ -134,6 +137,8 @@ function CreateSpot(){
         setImage2('')
         setImage3('')
         setImage4('')
+
+        setButtonOff(true)
     }
 
 
