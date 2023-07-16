@@ -89,6 +89,20 @@ const validateSpot = [
     handleValidationErrors
   ];
 
+const validateImage = [
+  check('url')
+  .isURL()
+  .withMessage("URL is not valid")
+  .custom((value, { req }) => {
+    const imageExtensions = ['.jpg', '.jpeg'];
+    const urlLowercase = value.toLowerCase();
+    if (!imageExtensions.some(ext => urlLowercase.endsWith(ext))) {
+      throw new Error('URL does not end with .jpg or .jpeg');
+    }
+    return true;
+  }),
+]
+
 
 const validateReview = [
   check('review')
@@ -818,7 +832,7 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async(req,res)=>{
 })
 
 //create an image for a spot
-router.post('/:id/images', requireAuth, async(req,res)=>{
+router.post('/:id/images', requireAuth, validateImage, async(req,res)=>{
 
     const { id, url, preview } = req.body
 
@@ -859,6 +873,8 @@ router.post('/:id/images', requireAuth, async(req,res)=>{
 
     res.json(findCreatedImage[0])
 })
+
+
 
 //get all bookings for a spot by spot Id
 router.get('/:id/bookings' ,requireAuth, async (req,res) =>{
