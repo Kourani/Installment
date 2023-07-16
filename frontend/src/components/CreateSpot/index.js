@@ -20,8 +20,8 @@ function CreateSpot(){
     const [description, setDescription]=useState('')
     const [name, setName] = useState('')
 
-    const [lat, setLatitude] = useState('')
-    const [lng, setLongitude] = useState('')
+    const [lat, setLatitude] = useState()
+    const [lng, setLongitude] = useState()
 
     const [url, setImage]= useState('')
     const [image1, setImage1]= useState('')
@@ -35,8 +35,6 @@ function CreateSpot(){
 
     const [submitted, setSubmitted] = useState(false)
     const [buttonOff, setButtonOff] = useState(true)
-
-
 
     const payload ={
         country,
@@ -54,7 +52,7 @@ function CreateSpot(){
         url,
         preview
     }
-    
+
     useEffect(()=>{
         if(country && address && city && state && price && description
             && name && url){
