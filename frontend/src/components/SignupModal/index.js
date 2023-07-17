@@ -104,12 +104,12 @@ function SignupModal({closeModal}){
 
 
         //reset form values
-        setFirstName("")
-        setLastName("")
-        setEmail("")
-        setUsername("")
-        setPassword("")
-        setConfirmPassword("")
+        // setFirstName("")
+        // setLastName("")
+        // setEmail("")
+        // setUsername("")
+        // setPassword("")
+        // setConfirmPassword("")
         setButtonOff(true)
 
         return
