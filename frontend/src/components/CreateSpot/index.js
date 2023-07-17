@@ -203,21 +203,21 @@ function CreateSpot(){
     }
 
         // reset form values
-        setCountry('')
-        setStreetAddress('')
-        setCity('')
-        setState('')
-        setDescription('')
-        setName('')
-        setPrice('')
+        // setCountry('')
+        // setStreetAddress('')
+        // setCity('')
+        // setState('')
+        // setDescription('')
+        // setName('')
+        // setPrice('')
         setLatitude(undefined)
         setLongitude(undefined)
 
-        setImage('')
-        setImage1('')
-        setImage2('')
-        setImage3('')
-        setImage4('')
+        // setImage('')
+        // setImage1('')
+        // setImage2('')
+        // setImage3('')
+        // setImage4('')
 
         setButtonOff(true)
     }
