@@ -175,7 +175,14 @@ module.exports = {
 
     },
     {
-      url:'https://images.pexels.com/photos/139396/lavender-flowers-blue-flowers-purple-139396.jpeg',
+      url:'https://images.pexels.com/photos/2387965/pexels-photo-2387965.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:8
+
+    },
+    {
+      url:'https://images.pexels.com/photos/2387965/pexels-photo-2387965.jpeg',
       preview:true,
       imagableType:'Spot',
       imagableId:8
