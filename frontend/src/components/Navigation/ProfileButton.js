@@ -51,7 +51,7 @@ function ProfileButton({ user }) {
       if (profileClick &&
         !ulRef.current.contains(e.target) &&
         !e.target.classList.contains("profileClick") &&
-        !e.target.classList.contains("email") && // Add specific element class name here
+        !e.target.classList.contains("email") && 
         !e.target.classList.contains("hello")
         ){
         setProfileClick(false);
