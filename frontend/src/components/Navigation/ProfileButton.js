@@ -47,11 +47,12 @@ function ProfileButton({ user }) {
 
   useEffect(() => {
     const closeProfileClick = (e) => {
-      // Check if the clicked target is not the button with class name "profileClick" or the div with the class name of listChoices 
+      // Check if the clicked target is not the button with class name "profileClick" or the div with the class name of listChoices
       if (profileClick &&
         !ulRef.current.contains(e.target) &&
         !e.target.classList.contains("profileClick") &&
-        !listChoicesBoxRef.current.contains(e.target)
+        !e.target.classList.contains("email") && // Add specific element class name here
+        !e.target.classList.contains("hello")
         ){
         setProfileClick(false);
       }
@@ -106,8 +107,8 @@ function logOutOnClick(e){
 function ListChoices() { // so that it is not affected by the useEffect
   return (
     <div ref={listChoicesBoxRef} className='listChoicesBox'>
-      <div>Hello, {user.firstName}</div>
-      <div>{user.email}</div>
+      <div className='email'>Hello, {user.firstName}</div>
+      <div className='hello'>{user.email}</div>
       <div className='manageSpotsButton'>
         <NavLink to='/manageSpots'>Manage Spots</NavLink>
       </div>
