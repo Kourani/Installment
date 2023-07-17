@@ -172,6 +172,22 @@ function CreateSpot(){
                     if(!url) errors['image']='Preview Image URL is required'
                     if( url && !(url.endsWith('.png') || url.endsWith('.jpg') || url.endsWith('.jpeg') ) ) errors['image']='Preview Image URL must end with jpg or jpeg or png'
 
+                    if(image1!==''){
+                        if( !(image1.endsWith('.png') || image1.endsWith('.jpg') || image1.endsWith('.jpeg') ) ) errors['image1']='Image URL must end in .png .jpg or .jpeg'
+                    }
+
+                    if(image2!==''){
+                        if( !(image2.endsWith('.png') || image2.endsWith('.jpg') || image2.endsWith('.jpeg') ) ) errors['image2']='Image URL must end in .png .jpg or .jpeg'
+                    }
+
+                    if(image3!==''){
+                        if( !(image3.endsWith('.png') || image3.endsWith('.jpg') || image3.endsWith('.jpeg'))) errors['image3']='Image URL must end in .png .jpg or .jpeg'
+                    }
+
+                    if(image4!==''){
+                        if( !(image4.endsWith('.png') || image4.endsWith('.jpg') || image4.endsWith('.jpeg'))) errors['image4']='Image URL must end in .png .jpg or .jpeg'
+                    }
+
                     setValidationErrors(errors)
 
                 }
@@ -184,6 +200,7 @@ function CreateSpot(){
                     if(image2!==''){
                         if( !(image2.endsWith('.png') || image2.endsWith('.jpg') || image2.endsWith('.jpeg') ) ) errors['image2']='Image URL must end in .png .jpg or .jpeg'
                     }
+
 
                     if(image3!==''){
                         if( !(image3.endsWith('.png') || image3.endsWith('.jpg') || image3.endsWith('.jpeg'))) errors['image3']='Image URL must end in .png .jpg or .jpeg'
