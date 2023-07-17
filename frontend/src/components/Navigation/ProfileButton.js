@@ -47,7 +47,7 @@ function ProfileButton({ user }) {
 
   useEffect(() => {
     const closeProfileClick = (e) => {
-      // Check if the clicked target is not the button with class name "profileClick"
+      // Check if the clicked target is not the button with class name "profileClick" or the div with the class name of listChoices 
       if (profileClick &&
         !ulRef.current.contains(e.target) &&
         !e.target.classList.contains("profileClick") &&
@@ -60,7 +60,7 @@ function ProfileButton({ user }) {
     document.addEventListener('click', closeProfileClick);
 
     return () => document.removeEventListener('click', closeProfileClick);
-  }, [profileClick]); // Make sure to include profileClick in the dependency array to update the effect when it changes
+  }, [profileClick]);
 
 
   // const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
@@ -103,7 +103,7 @@ function logOutOnClick(e){
 //   )
 // }
 
-function ListChoices() { // so that it is not affected by the useEffect 
+function ListChoices() { // so that it is not affected by the useEffect
   return (
     <div ref={listChoicesBoxRef} className='listChoicesBox'>
       <div>Hello, {user.firstName}</div>
