@@ -75,6 +75,8 @@ function CreateSpot(){
         preview
     }
 
+
+
     useEffect(()=>{
         if(country && address && city && state && price && description && name && url){
             setButtonOff(false)
@@ -83,6 +85,7 @@ function CreateSpot(){
     },[dispatch, validationErrors, country, address, city, state, price, description, name, url])
 
 
+    // console.log(validationErrors)
 
     function stringOfDigits(price) {
         return /^\d+$/.test(price)
@@ -105,141 +108,81 @@ function CreateSpot(){
 
         setSubmitted(true)
 
-            try {
-                const created = await dispatch(spotActions.createSpot(payload));
-                console.log('TRY BLOCK....CREATED',created)
+        try {
+            const created = await dispatch(spotActions.createSpot(payload));
+            console.log('TRY BLOCK....CREATED',created)
 
-                const imageCreation=await dispatch(spotActions.createImage(created.id, imagePayload))
-                console.log('IMAGE CREATION',imageCreation)
+            const imageCreation=await dispatch(spotActions.createImage(created.id, imagePayload))
 
-
-                if(image1!==''){
-                    const imageCreation=await dispatch(spotActions.createImage(created.id, imagePayload1))
-
-                    console.log('IMAGE CREATION',imageCreation)
-
-                }
-
-                if(image2!==''){
-                    const imageCreation=await dispatch(spotActions.createImage(created.id, imagePayload2))
-
-                    console.log('IMAGE CREATION',imageCreation)
-
-                }
-
-                if(image3!==''){
-                    const imageCreation=await dispatch(spotActions.createImage(created.id, imagePayload3))
-
-                    console.log('IMAGE CREATION',imageCreation)
-
-                }
-
-                if(image4!==''){
-                    const imageCreation=await dispatch(spotActions.createImage(created.id, imagePayload4))
-
-                    console.log('IMAGE CREATION',imageCreation)
-
-                }
-
-                history.push(`/spots/${created.id}`)
-                return
-            }
-            catch (created) {
-                const errors={}
-
-                const information = await created.json()
-                console.log('CATCH BLOCK....CATCHME',information)
-
-                if(information.statusCode===400){
-
-                    if(!country) errors['country']='Country is required'
-
-                    if(!address) errors['streetAddress']='Address is required'
-
-
-                    if(!city) errors['city']='City is required'
-
-                    if(!state) errors['state']='State is required'
-
-                    if(!description  || description.length<30) errors['description']='Description needs a minimum of 30 characters'
-
-                    if(!name) errors['name'] ='Name is required'
-                    if(name.length>50) errors['name']='Name must be less than 50 characters'
-
-                    if(!price) errors['price']='Price per night is required'
-                    if(price && stringOfDigits(price)===false) errors['price']=`price must be a number`
-
-                    if(!url) errors['image']='Preview Image URL is required'
-                    if( url && !(url.endsWith('.png') || url.endsWith('.jpg') || url.endsWith('.jpeg') ) ) errors['image']='Preview Image URL must end with jpg or jpeg or png'
-
-                    if(image1!==''){
-                        if( !(image1.endsWith('.png') || image1.endsWith('.jpg') || image1.endsWith('.jpeg') ) ) errors['image1']='Image URL must end in .png .jpg or .jpeg'
-                    }
-
-                    if(image2!==''){
-                        if( !(image2.endsWith('.png') || image2.endsWith('.jpg') || image2.endsWith('.jpeg') ) ) errors['image2']='Image URL must end in .png .jpg or .jpeg'
-                    }
-
-                    if(image3!==''){
-                        if( !(image3.endsWith('.png') || image3.endsWith('.jpg') || image3.endsWith('.jpeg'))) errors['image3']='Image URL must end in .png .jpg or .jpeg'
-                    }
-
-                    if(image4!==''){
-                        if( !(image4.endsWith('.png') || image4.endsWith('.jpg') || image4.endsWith('.jpeg'))) errors['image4']='Image URL must end in .png .jpg or .jpeg'
-                    }
-
-                    setValidationErrors(errors)
-
-                }
-
-
-                    if(image1!==''){
-                        if( !(image1.endsWith('.png') || image1.endsWith('.jpg') || image1.endsWith('.jpeg') ) ) errors['image1']='Image URL must end in .png .jpg or .jpeg'
-                    }
-
-                    if(image2!==''){
-                        if( !(image2.endsWith('.png') || image2.endsWith('.jpg') || image2.endsWith('.jpeg') ) ) errors['image2']='Image URL must end in .png .jpg or .jpeg'
-                    }
-
-
-                    if(image3!==''){
-                        if( !(image3.endsWith('.png') || image3.endsWith('.jpg') || image3.endsWith('.jpeg'))) errors['image3']='Image URL must end in .png .jpg or .jpeg'
-                    }
-
-                    if(image4!==''){
-                        if( !(image4.endsWith('.png') || image4.endsWith('.jpg') || image4.endsWith('.jpeg'))) errors['image4']='Image URL must end in .png .jpg or .jpeg'
-                    }
-
-                    if(lat!==''){
-                        if(stringOfDigitsLat(lat)) errors['lat']=`${lat} is not a number`
-                    }
-
-                    if(lng!==''){
-                        if(stringOfDigitsLng(lng))errors['lng']=`${lng} is not a number`
-                    }
-
-
+            if(image1!==''){
+                const imageCreation=await dispatch(spotActions.createImage(created.id, imagePayload1))
             }
 
+            if(image2!==''){
+                const imageCreation=await dispatch(spotActions.createImage(created.id, imagePayload2))
+            }
+
+            if(image3!==''){
+                const imageCreation=await dispatch(spotActions.createImage(created.id, imagePayload3))
+            }
+
+            if(image4!==''){
+                const imageCreation=await dispatch(spotActions.createImage(created.id, imagePayload4))
+            }
+
+            history.push(`/spots/${created.id}`)
+            return
+        }
+        catch (created) {
+
+            const errors ={}
+
+            const information = await created.json()
+
+            console.log(information)
+            
+            if(information.statusCode===400){
+
+                if(!country) errors['country']='Country is required'
+                if(!address) errors['streetAddress']='Address is required'
+                if(!city) errors['city']='City is required'
+                if(!state) errors['state']='State is required'
+                if(!description  || description.length<30) errors['description']='Description needs a minimum of 30 characters'
+                if(!name) errors['name'] ='Name is required'
+                if(name.length>50) errors['name']='Name must be less than 50 characters'
+                if(!price) errors['price']='Price per night is required'
+                if(price && stringOfDigits(price)===false) errors['price']=`price must be a number`
+
+                if(!url) errors['image']='Preview Image is required'
+                if(url && !(url.endsWith('.png') || url.endsWith('.jpg') || url.endsWith('.jpeg'))) errors['image']='Preview Image URL must end in .png .jpg or .jpeg'
+
+                if(image1 && !(image1.endsWith('.png') || image1.endsWith('.jpg') || image1.endsWith('.jpeg') ) ) errors['image1']='Image URL must end in .png .jpg or .jpeg'
+                if(image2 && !(image2.endsWith('.png') || image2.endsWith('.jpg') || image2.endsWith('.jpeg') ) ) errors['image2']='Image URL must end in .png .jpg or .jpeg'
+                if(image3 && !(image3.endsWith('.png') || image3.endsWith('.jpg') || image3.endsWith('.jpeg'))) errors['image3']='Image URL must end in .png .jpg or .jpeg'
+                if(image4 && !(image4.endsWith('.png') || image4.endsWith('.jpg') || image4.endsWith('.jpeg'))) errors['image4']='Image URL must end in .png .jpg or .jpeg'
 
 
+
+                setValidationErrors(errors)
+            }
+        }
 
         // reset form values
-        setCountry('')
-        setStreetAddress('')
-        setCity('')
-        setState('')
-        setDescription('')
-        setName('')
-        setPrice('')
-        setLatitude(undefined)
-        setLongitude(undefined)
+        // setCountry('')
+        // setStreetAddress('')
+        // setCity('')
+        // setState('')
+        // setDescription('')
+        // setName('')
+        // setPrice('')
+        // setLatitude('')
+        // setLongitude('')
 
-        setImage('')
-        setImage1('')
-        setImage2('')
-        setImage3('')
-        setImage4('')
+        // setImage('')
+        // setImage1('')
+        // setImage2('')
+        // setImage3('')
+        // setImage4('')
 
         setButtonOff(true)
     }
@@ -435,7 +378,7 @@ function CreateSpot(){
                 </div>
 
 
-                <button className='createButton' type='newSpot' disabled={buttonOff} >
+                <button className='createButton' type='newSpot' disabled={false} >
                     Create Spot
                 </button>
             </form>
