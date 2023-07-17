@@ -26,9 +26,18 @@ function LoginModal({closeModal}){
             if(credential.length>3  && password.length>5){
                 setButtonOff(false)
             }
+            // setButtonOff(true)
         }
 
         if(!credential || !password){
+            setButtonOff(true)
+        }
+
+        if(!credential || credential.length<4){
+            setButtonOff(true)
+        }
+
+        if(!password|| password.length<6){
             setButtonOff(true)
         }
 

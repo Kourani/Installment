@@ -17,7 +17,6 @@ function UpdateSpot(){
     const spotState = useSelector(state=>state.spot)
 
     const imageState = useSelector(state=>state.image)
-    console.log(' UPDATE SPOT ... IMAGE STATE',imageState)
 
     const [country, setCountry] = useState(spotState[spotId]?.country)
     const [address, setStreetAddress] = useState(spotState[spotId]?.address)
@@ -42,6 +41,15 @@ function UpdateSpot(){
     const [buttonOff, setButtonOff] = useState(false)
     const [submitted, setSubmitted] = useState(false)
 
+    useEffect(()=>{
+        dispatch(spotActions.getSpots())
+        dispatch(spotActions.spotDetails(spotId))
+
+        if(country && address && city && state && price && description && name && url){
+            setButtonOff(false)
+        }
+
+    },[dispatch, validationErrors, country, address, city, state, price, description, name, url])
 
     const payload ={
         country,
@@ -78,20 +86,11 @@ function UpdateSpot(){
         preview
     }
 
-    useEffect(()=>{
-        dispatch(spotActions.getSpots())
-        dispatch(spotActions.spotDetails(spotId))
-
-        if(country && address && city && state && price && description && name && url){
-            setButtonOff(false)
-        }
-
-    },[dispatch, validationErrors, country, address, city, state, price, description, name, url])
-
-
     function stringOfDigits(price) {
         return /^\d+$/.test(price)
     }
+
+    console.log(stringOfDigits(price))
 
 
     async function handleSubmit (e){
@@ -189,7 +188,10 @@ function UpdateSpot(){
 
                 const created = await dispatch(spotActions.updateSpot(spotId,payload))
 
-                const imageCreation=await dispatch(spotActions.createImage(created.id, imagePayload))
+                if( (spotState[spotId]?.previewImage !== url)){
+                    const imageCreation=await dispatch(spotActions.createImage(created.id, imagePayload))
+                }
+
 
                 if(image1!==''){
                     const imageCreation=await dispatch(spotActions.createImage(created.id, imagePayload1))
