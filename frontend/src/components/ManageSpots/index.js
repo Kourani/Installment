@@ -120,7 +120,7 @@ function ManageSpots(){
         <>
 
             <div className='wale'>
-            <div className='manageSpotsTitle'>Manage Your Spots</div>
+            <div className='manageSpotsTitle'>Manage Spots</div>
             <button className='manageCreateButton' onClick={()=>history.push(`/newSpot`)}>Create a New Spot</button>
             <div>{userState?.user !=null ? check() : 'You must be logged in to manage your spots'}</div>
             </div>
