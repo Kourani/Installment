@@ -13,6 +13,26 @@ const {User, Spot} = require('../models')
 
 
 const userSpots = [
+
+  {
+    firstName: 'Demo',
+    lastName: 'User',
+
+    spots:[
+      {
+      address:"123 Disney Lane",
+      city:"Tusayan",
+      state:'Arizona',
+      lat: 37.7645358,
+      lng: -122.4730327,
+      country:"United States of America",
+      name:"Peach",
+      description:"Place where web developers are created",
+      price:50}
+  ]
+},
+
+
   {
     firstName: 'Lost',
     lastName: 'Avenger',
@@ -131,22 +151,6 @@ const userSpots = [
   lng:432.22,
   name:'Pineapple',
   description:'Welcome look around and enjoy. The place is full of wonders',
-  price:5121.12}]
-},
-
-{
-  firstName:'Demo',
-  lastName:'User',
-
-  spots:[{
-  address:"123 Disney Lane",
-  city:'tester',
-  state:'Florida',
-  country:"United States of America",
-  lat:564.01,
-  lng:432.22,
-  name:'Peach',
-  description:'Lovely resort, come in at your own risk',
   price:5121.12}]
 },
 ]
