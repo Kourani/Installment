@@ -106,6 +106,31 @@ function CreateSpot(){
 
         setSubmitted(true)
 
+
+        if(!url || (!(url.endsWith('.png') || url.endsWith('.jpg') || url.endsWith('.jpeg') ) ) ) {
+
+                if(!country) errors['country']='Country is required'
+                if(!address) errors['streetAddress']='Address is required'
+                if(!city) errors['city']='City is required'
+                if(!state) errors['state']='State is required'
+                if(!description  || description.length<30) errors['description']='Description needs a minimum of 30 characters'
+                if(!name) errors['name'] ='Name is required'
+                if(name.length>50) errors['name']='Name must be less than 50 characters'
+                if(!price) errors['price']='Price per night is required'
+                if(price && stringOfDigits(price)===false) errors['price']=`price must be a number`
+
+                if(!url) errors['image']='Preview Image is required'
+                if(url && !(url.endsWith('.png') || url.endsWith('.jpg') || url.endsWith('.jpeg'))) errors['image']='Preview Image URL must end in .png .jpg or .jpeg'
+
+
+                if(image1 && !(image1.endsWith('.png') || image1.endsWith('.jpg') || image1.endsWith('.jpeg') ) ) errors['image1']='Image URL must end in .png .jpg or .jpeg'
+                if(image2 && !(image2.endsWith('.png') || image2.endsWith('.jpg') || image2.endsWith('.jpeg') ) ) errors['image2']='Image URL must end in .png .jpg or .jpeg'
+                if(image3 && !(image3.endsWith('.png') || image3.endsWith('.jpg') || image3.endsWith('.jpeg'))) errors['image3']='Image URL must end in .png .jpg or .jpeg'
+                if(image4 && !(image4.endsWith('.png') || image4.endsWith('.jpg') || image4.endsWith('.jpeg'))) errors['image4']='Image URL must end in .png .jpg or .jpeg'
+
+        }
+        
+        if(url && (!(url.endsWith('.png') || url.endsWith('.jpg') || url.endsWith('.jpeg') ) )){
         try {
             const created = await dispatch(spotActions.createSpot(payload));
             console.log('TRY BLOCK....CREATED',created)
@@ -162,6 +187,7 @@ function CreateSpot(){
                 setValidationErrors(errors)
             }
         }
+    }
 
         // reset form values
         setCountry('')
