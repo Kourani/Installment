@@ -1,5 +1,15 @@
 
 
+
+.roseWord{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration:
+
+}
+
+
 .manageSpotsButton a{
     text-decoration: none;
     color: black;
@@ -99,15 +109,16 @@
 }
 
 /* styles the left half of the navigation bar */
-.roseButton{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap:5px;
-    color: red;
+.roseButton a{
+    text-decoration: none;
+    color: darkred;
 }
 
 /*styles the image button on the left half of the navigation bar*/
 .roseButton img{
     border-radius: 50px;
+}
+
+.roseWordWidth{
+    margin-left: 5px;
 }

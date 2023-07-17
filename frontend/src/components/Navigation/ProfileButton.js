@@ -18,6 +18,8 @@ function ProfileButton({ user }) {
   const [profileClick, setProfileClick] = useState(false)
 
 
+
+
   // const openMenu = () => {
   //   if (showMenu) return;
   //   setShowMenu(true);
@@ -41,6 +43,20 @@ function ProfileButton({ user }) {
     e.preventDefault();
     dispatch(sessionActions.logout());
   };
+
+  useEffect(() => {
+    const closeProfileClick = (e) => {
+      // Check if the clicked target is not the button with class name "profileClick"
+      if (profileClick && !ulRef.current.contains(e.target) && !e.target.classList.contains("profileClick")) {
+        setProfileClick(false);
+      }
+    };
+
+    document.addEventListener('click', closeProfileClick);
+
+    return () => document.removeEventListener('click', closeProfileClick);
+  }, [profileClick]); // Make sure to include profileClick in the dependency array to update the effect when it changes
+
 
   // const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 
@@ -97,7 +113,7 @@ function openBox(){
        <NavLink to="/newSpot"><button className='createSpotButtonNav'>Create a New Spot</button></NavLink>
 
       <div>
-        <button className='profileClick' onClick={()=>setProfileClick(!profileClick)}>
+        <button ref={ulRef} className='profileClick' onClick={()=>setProfileClick(!profileClick)}>
 
           {bars()}
           {person()}
