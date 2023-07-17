@@ -42,8 +42,8 @@ const userSpots = [
 },
 
 {
-  firstName: 'Lost1',
-  lastName:'Avenger1',
+  firstName: 'Born',
+  lastName:'Avenger',
 
   spots:[{
   address:"123 Disney Lane",
@@ -58,8 +58,24 @@ const userSpots = [
 },
 
 {
-  firstName:'Lost2',
-  lastName:'Avenger2',
+  firstName:'Avenged',
+  lastName:'Avenger',
+
+  spots:[{
+  address:"123 Disney Lane",
+  city:'Orlando',
+  state:'Florida',
+  country:"United States of America",
+  lat:564.01,
+  lng:432.22,
+  name:'Last',
+  description:'two',
+  price:5121.12}]
+},
+
+{
+  firstName:'Unknown',
+  lastName:'Avenger',
 
   spots:[{
   address:"123 Disney Lane",

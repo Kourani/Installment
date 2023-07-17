@@ -25,25 +25,39 @@ module.exports = {
         email: 'demo@user.io',
         username: 'Demo-lition',
         hashedPassword: bcrypt.hashSync('password'),
+        firstName:'Demo',
+        lastName:'User'
+      },
+
+      {
+        email: 'ice@user.io',
+        username: 'Ice-Nation',
+        hashedPassword: bcrypt.hashSync('password1'),
         firstName:'Lost',
         lastName:'Avenger'
       },
 
       {
-        email: 'user1@user.io',
-        username: 'FakeUser1',
+        email: 'summer@user.io',
+        username: 'Summer-Nation',
         hashedPassword: bcrypt.hashSync('password2'),
-        firstName:'Lost1',
-        lastName:'Avenger1'
+        firstName:'Born',
+        lastName:'Avenger'
       },
-      
       {
-        email: 'user2@user.io',
-        username: 'FakeUser2',
+        email: 'winter@user.io',
+        username: 'Winter-Nation',
         hashedPassword: bcrypt.hashSync('password3'),
-        firstName:'Lost2',
-        lastName:'Avenger2'
-      }
+        firstName:'Avenged',
+        lastName:'Avenger'
+      },
+      {
+        email: 'spring@user.io',
+        username: 'Spring-Nation',
+        hashedPassword: bcrypt.hashSync('password4'),
+        firstName:'Unknown',
+        lastName:'Avenger'
+      },
     ], {});
   },
 
