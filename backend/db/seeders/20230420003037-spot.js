@@ -73,21 +73,21 @@ const userSpots = [
   price:5121.12}]
 },
 
-{
-  firstName:'Unknown',
-  lastName:'Avenger',
+// {
+//   firstName:'Unknown',
+//   lastName:'Avenger',
 
-  spots:[{
-  address:"123 Disney Lane",
-  city:'Orlando',
-  state:'Florida',
-  country:"United States of America",
-  lat:564.01,
-  lng:432.22,
-  name:'Last',
-  description:'two',
-  price:5121.12}]
-},
+//   spots:[{
+//   address:"123 Disney Lane",
+//   city:'Orlando',
+//   state:'Florida',
+//   country:"United States of America",
+//   lat:564.01,
+//   lng:432.22,
+//   name:'Last',
+//   description:'two',
+//   price:5121.12}]
+// },
 
 ]
 module.exports = {
