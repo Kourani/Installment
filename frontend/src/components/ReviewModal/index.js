@@ -86,7 +86,8 @@ function ReviewModal({closeModal}){
 
             if(information.statusCode===500){
                 errors['five']='Your review was not created, please try again'
-                setValidationErrors(errors)            }
+                setValidationErrors(errors)
+            }
         }
     }
 

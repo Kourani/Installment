@@ -194,6 +194,11 @@ function CreateSpot(){
 
                 setValidationErrors(errors)
             }
+
+            if(information.statusCode===500){
+                errors['internal']='Something unexpected has occured. Please Try again'
+                setValidationErrors(errors)
+            }
         }
     }
 
@@ -222,6 +227,10 @@ function CreateSpot(){
     return(
         <>
             <form className='createForm' onSubmit={handleSubmit}>
+
+                <div className='error'>
+                            {submitted && validationErrors.internal}
+                </div>
 
                 <div className='section'>
 
