@@ -145,6 +145,7 @@ export const updateSpot = (spotId,payload) => async(dispatch) =>{
 
 
 export const createImage = (spotId,payload) => async (dispatch) =>{
+
     const response = await csrfFetch(`/api/spots/${spotId}/images`, {
         method:'POST',
         headers:{

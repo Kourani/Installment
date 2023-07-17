@@ -237,6 +237,8 @@ function SpotDetail(){
         })
     }
 
+    console.log('TELL ME WHAT IS GOING ON',spotImages())
+
     function checkReview(){
         if(userState.user !== null){
 
