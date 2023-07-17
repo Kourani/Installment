@@ -14,6 +14,7 @@ function ProfileButton({ user }) {
   const dispatch = useDispatch();
   const history = useHistory()
   const ulRef = useRef();
+  const listChoicesBoxRef = useRef();
   // const [showMenu, setShowMenu] = useState(true);
   const [profileClick, setProfileClick] = useState(false)
 
@@ -47,7 +48,11 @@ function ProfileButton({ user }) {
   useEffect(() => {
     const closeProfileClick = (e) => {
       // Check if the clicked target is not the button with class name "profileClick"
-      if (profileClick && !ulRef.current.contains(e.target) && !e.target.classList.contains("profileClick")) {
+      if (profileClick &&
+        !ulRef.current.contains(e.target) &&
+        !e.target.classList.contains("profileClick") &&
+        !listChoicesBoxRef.current.contains(e.target)
+        ){
         setProfileClick(false);
       }
     };
@@ -85,23 +90,37 @@ function logOutOnClick(e){
 
 }
 
-function listChoices(){
-  return(
-    <div className='listChoicesBox'>
-    <div>Hello, {user.firstName}</div>
-    <div>{user.email}</div>
-    <div className='manageSpotsButton'>
-      <NavLink to='/manageSpots'>Manage Spots</NavLink>
+// function listChoices(){
+//   return(
+//     <div className='listChoicesBox'>
+//     <div>Hello, {user.firstName}</div>
+//     <div>{user.email}</div>
+//     <div className='manageSpotsButton'>
+//       <NavLink to='/manageSpots'>Manage Spots</NavLink>
+//     </div>
+//     <button className='logoutButton' onClick={logOutOnClick}>Log Out</button>
+//   </div>
+//   )
+// }
+
+function ListChoices() { // so that it is not affected by the useEffect 
+  return (
+    <div ref={listChoicesBoxRef} className='listChoicesBox'>
+      <div>Hello, {user.firstName}</div>
+      <div>{user.email}</div>
+      <div className='manageSpotsButton'>
+        <NavLink to='/manageSpots'>Manage Spots</NavLink>
+      </div>
+      <button className='logoutButton' onClick={logOutOnClick}>Log Out</button>
     </div>
-    <button className='logoutButton' onClick={logOutOnClick}>Log Out</button>
-  </div>
-  )
+  );
 }
 
 function openBox(){
   if(profileClick){
     console.log('PROFILE BUTTON',profileClick)
-    return listChoices()
+    return <ListChoices />
+    // return listChoices()
   }
 }
 
@@ -120,7 +139,7 @@ function openBox(){
 
         </button>
 
-          {openBox()}
+        {openBox()}
 
       </div>
 
