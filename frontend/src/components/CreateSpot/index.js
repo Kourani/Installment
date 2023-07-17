@@ -107,7 +107,6 @@ function CreateSpot(){
 
         setSubmitted(true)
 
-
     if(!url || (!(url.endsWith('.png') || url.endsWith('.jpg') || url.endsWith('.jpeg') ) ) ) {
 
         console.log('no URL')

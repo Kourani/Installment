@@ -222,19 +222,40 @@ function SpotDetail(){
     //the other images for that spot
     function spotImages(){
 
-        return spotState?.matched?.SpotImages.map(element=>{
+        // return spotState?.matched?.SpotImages.map(element=>{
 
-            if(element !== spotState?.matched?.SpotImages[0]){
-                return (
-                    <>
-                    <div className='imageContainerImages'>
-                        <img src={element.url} alt='Spot Preview' />
-                    </div>
-                    </>
-                )
-            }
+        //     if(element !== spotState?.matched?.SpotImages[0]){
+        //         return (
+        //             <>
+        //             <div className='imageContainerImages'>
+        //                 <img src={element.url} alt='Spot Preview' />
+        //             </div>
+        //             </>
+        //         )
+        //     }
 
-        })
+        // })
+
+
+        return (
+            <>
+            <div className='imageContainerImage'>
+                <img src={spotState?.matched?.SpotImages[1]?.url} />
+            </div>
+
+            <div className='imageContainerImage'>
+            <img src={spotState?.matched?.SpotImages[2]?.url} />
+            </div>
+
+            <div className='imageContainerImage'>
+            <img src={spotState?.matched?.SpotImages[3]?.url} />
+            </div>
+
+            <div className='imageContainerImage'>
+            <img src={spotState?.matched?.SpotImages[4]?.url} />
+            </div>
+            </>
+        )
     }
 
     console.log('TELL ME WHAT IS GOING ON',spotImages())
