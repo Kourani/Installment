@@ -117,14 +117,14 @@ module.exports = {
     },
 
     {
-      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      url:'https://images.pexels.com/photos/9069564/pexels-photo-9069564.png',
       preview:true,
       imagableType:'Spot',
       imagableId:6
 
     },
     {
-      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      url:'https://images.pexels.com/photos/9069564/pexels-photo-9069564.png',
       preview:true,
       imagableType:'Spot',
       imagableId:6
