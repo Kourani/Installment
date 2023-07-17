@@ -56,6 +56,151 @@ module.exports = {
 
     },
 
+    {
+      url:'https://images.pexels.com/photos/1672813/pexels-photo-1672813.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:2
+
+    },
+
+    {
+      url:'https://images.pexels.com/photos/788434/pexels-photo-788434.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:3
+
+    },
+
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:4
+
+    },
+
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:5
+
+    },
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:5
+
+    },
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:5
+
+    },
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:5
+
+    },
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:5
+
+    },
+
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:6
+
+    },
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:6
+
+    },
+
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:7
+
+    },
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:7
+
+    },
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:7
+
+    },
+
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:8
+
+    },
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:8
+
+    },
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:8
+
+    },
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:8
+
+    },
+
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:9
+
+    },
+
+    {
+      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      preview:true,
+      imagableType:'Spot',
+      imagableId:10
+
+    },
+
+
+
+
 
 
 
@@ -69,31 +214,6 @@ module.exports = {
 
     },
 
-    {
-      url:'https://images.pexels.com/photos/1672813/pexels-photo-1672813.jpeg',
-      preview:true,
-      imagableType:'Spot',
-      imagableId:2
-
-    },
-
-
-
-    {
-      url:'   https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
-      preview:true,
-      imagableType:'Spot',
-      imagableId:4
-
-    },
-
-    {
-      url:'https://images.pexels.com/photos/788434/pexels-photo-788434.jpeg',
-      preview:true,
-      imagableType:'Spot',
-      imagableId:3
-
-    },
   ], {});
   },
 

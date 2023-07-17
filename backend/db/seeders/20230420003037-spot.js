@@ -24,7 +24,7 @@ const userSpots = [
     lat: 37.7645358,
     lng: -122.4730327,
     country:"United States of America",
-    name:"Sour",
+    name:"Lemon",
     description:"Place where web developers are created",
     price:5121.12},
 
@@ -35,7 +35,7 @@ const userSpots = [
       lat: 37.7645358,
       lng: -122.4730327,
       country:"United States of America",
-      name:"Land",
+      name:"Mango",
       description:"Place where web developers are created",
       price:5121.12}
   ]
@@ -52,8 +52,8 @@ const userSpots = [
   country:"United States of America",
   lat:564.65,
   lng:432.45,
-  name:'Sweet',
-  description:'one',
+  name:'Apple',
+  description:'Home this is what this place resembles. And who does not want to go back home?',
   price:5121.1}]
 },
 
@@ -68,28 +68,89 @@ const userSpots = [
   country:"United States of America",
   lat:564.01,
   lng:432.22,
-  name:'Last',
-  description:'two',
+  name:'Orange',
+  description:'This place is not usually booked year round but for the people who give this place a chance They always end up coming back',
+  price:5121.12},
+
+  {
+    address:"123 Disney Lane",
+    city:'TEST1',
+    state:'Florida',
+    country:"United States of America",
+    lat:564.01,
+    lng:432.22,
+    name:'Grape',
+    description:'This place is always booked year round. If your lucky and theres still a spot life take it you will not regret it',
+    price:5121.12},
+
+    {
+      address:"123 Disney Lane",
+      city:'TEST2',
+      state:'Florida',
+      country:"United States of America",
+      lat:564.01,
+      lng:432.22,
+      name:'Cherry',
+      description:'Visit me',
+      price:5121.12},
+
+      {
+        address:"123 Disney Lane",
+        city:'TEST3',
+        state:'Florida',
+        country:"United States of America",
+        lat:564.01,
+        lng:432.22,
+        name:'Banana',
+        description:'Who doesnt enjoy the wide outdoors',
+        price:5121.12},
+
+        {
+          address:"123 Disney Lane",
+          city:'TEST4',
+          state:'Florida',
+          country:"United States of America",
+          lat:564.01,
+          lng:432.22,
+          name:'Apricot',
+          description:'Its the place youve been searching for, Book a trip',
+          price:5121.12}
+
+  ]},
+
+{
+  firstName:'Unknown',
+  lastName:'Avenger',
+
+  spots:[{
+  address:"123 Disney Lane",
+  city:'asd',
+  state:'Florida',
+  country:"United States of America",
+  lat:564.01,
+  lng:432.22,
+  name:'Pineapple',
+  description:'Welcome look around and enjoy. The place is full of wonders',
   price:5121.12}]
 },
 
-// {
-//   firstName:'Unknown',
-//   lastName:'Avenger',
+{
+  firstName:'Demo',
+  lastName:'User',
 
-//   spots:[{
-//   address:"123 Disney Lane",
-//   city:'Orlando',
-//   state:'Florida',
-//   country:"United States of America",
-//   lat:564.01,
-//   lng:432.22,
-//   name:'Last',
-//   description:'two',
-//   price:5121.12}]
-// },
-
+  spots:[{
+  address:"123 Disney Lane",
+  city:'tester',
+  state:'Florida',
+  country:"United States of America",
+  lat:564.01,
+  lng:432.22,
+  name:'Peach',
+  description:'Lovely resort, come in at your own risk',
+  price:5121.12}]
+},
 ]
+
 module.exports = {
   async up (queryInterface, Sequelize) {
 
