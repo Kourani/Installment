@@ -154,7 +154,7 @@ module.exports = {
     },
 
     {
-      url:'https://images.pexels.com/photos/2055389/pexels-photo-2055389.jpeg',
+      url:'https://images.pexels.com/photos/2387965/pexels-photo-2387965.jpeg',
       preview:true,
       imagableType:'Spot',
       imagableId:8
