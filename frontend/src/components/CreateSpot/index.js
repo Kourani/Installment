@@ -75,8 +75,6 @@ function CreateSpot(){
         preview
     }
 
-
-
     useEffect(()=>{
         if(country && address && city && state && price && description && name && url){
             setButtonOff(false)

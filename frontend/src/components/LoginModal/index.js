@@ -27,6 +27,11 @@ function LoginModal({closeModal}){
                 setButtonOff(false)
             }
         }
+
+        if(!credential || !password){
+            setButtonOff(true)
+        }
+
     },[dispatch,credential,password,errors])
 
     if(sessionUser) return <Redirect to="/"/>
@@ -34,26 +39,26 @@ function LoginModal({closeModal}){
     const handleSubmit = async (e) =>{
         e.preventDefault()
 
-        const error = {}
-        console.log('LOGIN MODAL ... ERRORS',errors)
-        console.log('LOGIN MODAL ... ERROR',error)
+        try{
+            const res = await dispatch(sessionActions.login({credential,password}))
+            if(res.ok){
+                closeModal(false)
+                history.push('/')
+                return null
+            }
+        }catch(res){
+            const error ={}
+            const newInformation = await res.json()
+            console.log(newInformation)
 
-
-        let res = await dispatch(sessionActions.login({credential,password}))
-        if(res.ok){
-            closeModal(false)
-            history.push('/')
-            return null
+            if(newInformation.statusCode === 401){
+                error['userPassword']='The provided credentials were invalid'
+                setErrors(error)
+            }
         }
 
-        const data = await res.json()
 
-        if(data && data.message){
 
-            error['credential']=data.message
-        }
-
-        setErrors(error)
 
         //reset form values
         setCredential("")
@@ -85,7 +90,7 @@ function LoginModal({closeModal}){
 
                     <form onSubmit = {handleSubmit} className="formValuesLogin">
 
-                            {errors.credential && <div className="error">{errors.credential}</div>}
+                            {errors.userPassword && <div className="error">{errors.userPassword}</div>}
 
                             <input
                             type="text"

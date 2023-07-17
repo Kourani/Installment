@@ -27,13 +27,29 @@ function SignupModal({closeModal}){
     const sessionUser = useSelector((state)=>state.session.user)
     console.log('SIGN UP...SESSIONUSER',sessionUser)
 
+
+
     useEffect(()=>{
-        if(email && username && firstName && lastName && password && confirmPassword){
-            if(username.length>3 || password.length>5){
-                return setButtonOff(false)
-            }
+
+        if(firstName && lastName && email && username.length>3 && password.length>5 && confirmPassword.length>5){
+            setButtonOff(false)
         }
-    },[dispatch,email,username,firstName,lastName,password,confirmPassword])
+
+        if(!username || username.length<4){
+            setButtonOff(true)
+        }
+
+        if(!password|| password.length<6){
+            setButtonOff(true)
+        }
+
+        if(!confirmPassword || confirmPassword.length<6){
+            setButtonOff(true)
+        }
+
+
+
+    },[dispatch,errors,email,username,firstName,lastName,password,confirmPassword])
 
     console.log('SIGN UP MODAL ... BUTTON OFF',buttonOff)
 
@@ -48,40 +64,44 @@ function SignupModal({closeModal}){
 
 
         if(password === confirmPassword){
+            try {
+                let res = await dispatch(
+                    sessionActions.signup({
+                        email,
+                        username,
+                        firstName,
+                        lastName,
+                        password
+                    }))
 
-            let res = await dispatch(
-                sessionActions.signup({
-                    email,
-                    username,
-                    firstName,
-                    lastName,
-                    password
-                }))
-
-                if(res.ok){
-                    closeModal(false)
-                    history.push('/')
-                    return null
-                }
-
+                closeModal(false)
+                history.push('/')
+                return
+            }
+            catch(res){
                 const data = await res.json()
+                console.log(data)
 
-                if(data && data.errors){
                     if(!password) error['password']='Password is required'
                     if(password.length<6)error['password']='Password must be 6 characters or more'
                     if(username===email) error['username']='Username cannot be an email'
+                    if(!email.includes('@'))error['email']='The provided email is invalid'
                     if(data.errors.includes( "User with that username already exists"))error['username']="Username must be unique"
-                    if(data.errors.includes('Invalid email.'))error['email']="The provided email is invalid"
                     setErrors(error)
-                }
+
             }
-
-
-
-        if(!Object.keys(errors).length){
-            console.log('inside the successMove if')
-            history.push('/')
         }
+
+        if(password !== confirmPassword){
+            const error = {}
+            if(!password) error['password']='Password is required'
+            if(password.length<6)error['password']='Password must be 6 characters or more'
+            if(confirmPassword.length<6)error['confirmPassword']='Passwords do not match'
+            if(username===email) error['username']='Username cannot be an email'
+            if(!email.includes('@'))error['email']='The provided email is invalid'
+            setErrors(error)
+        }
+
 
         //reset form values
         setFirstName("")
@@ -92,9 +112,7 @@ function SignupModal({closeModal}){
         setConfirmPassword("")
         setButtonOff(true)
 
-        return setErrors({
-            confirmPassword:"Confirm Password field must be the same as the Password field"
-        })
+        return
     }
 
     return (
@@ -105,7 +123,13 @@ function SignupModal({closeModal}){
                     <button onClick={()=>closeModal(false)}> X </button>
                 </div>
 
+
+
                 <div className="titleSignup">Sign Up</div>
+
+
+                {errors.confirmPassword && <div className="error">{errors.confirmPassword}</div>}
+
 
                 <form className="formValuesSignup" onSubmit={handleSubmit}>
 
@@ -165,7 +189,7 @@ function SignupModal({closeModal}){
                         onChange={(e)=>setConfirmPassword(e.target.value)}
                         required/>
 
-                        {errors.confirmPassword && <div className="error">{errors.confirmPassword}</div>}
+                        {/* {errors.confirmPassword && <div className="error">{errors.confirmPassword}</div>} */}
 
                     <button className="signupModalButton" type="submit" disabled={buttonOff}>Sign Up</button>
                 </form>
