@@ -81,16 +81,16 @@ const validateSpot = [
     handleValidationErrors
   ];
 
-const validateImage = [
-  check('url').custom((value)=> {
-    const imageExtensions = ['.jpg', '.jpeg', '.png'];
-    const urlLowercase = value.toLowerCase();
-    if (!imageExtensions.some(ext => urlLowercase.endsWith(ext))) {
-      throw new Error('URL does not end with .jpg or .jpeg');
-    }
-    return true
-}),
-]
+// const validateImage = [
+//   check('url').custom((value)=> {
+//     const imageExtensions = ['.jpg', '.jpeg', '.png'];
+//     const urlLowercase = value.toLowerCase();
+//     if (!imageExtensions.some(ext => urlLowercase.endsWith(ext))) {
+//       throw new Error('URL does not end with .jpg or .jpeg');
+//     }
+//     return true
+// }),
+// ]
 
 
 const validateReview = [
@@ -821,7 +821,7 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async(req,res)=>{
 })
 
 //create an image for a spot
-router.post('/:id/images', requireAuth, validateImage, async(req,res)=>{
+router.post('/:id/images', requireAuth, async(req,res)=>{
 
     const { id, url, preview } = req.body
 
