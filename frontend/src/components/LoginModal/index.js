@@ -120,7 +120,7 @@ function LoginModal({closeModal}){
                         <button className="loginModalButton" type="submit" disabled={buttonOff}>Log In</button>
                     </form>
 
-                    <button className='demoUserLogin' onClick={()=>demoUser()}>Demo User</button>
+                    <button className='demoUserLogin' onClick={()=>demoUser()}>Login as Demo User</button>
 
 
             </div>
