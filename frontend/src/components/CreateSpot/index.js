@@ -409,7 +409,7 @@ function CreateSpot(){
                 </div>
 
 
-                <button className='createButton' type='newSpot' disabled={buttonOff} >
+                <button className='createButton' type='newSpot' disabled={false} >
                     Create Spot
                 </button>
             </form>
