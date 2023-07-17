@@ -140,7 +140,7 @@ function CreateSpot(){
             const information = await created.json()
 
             console.log(information)
-            
+
             if(information.statusCode===400){
 
                 if(!country) errors['country']='Country is required'
@@ -161,28 +161,26 @@ function CreateSpot(){
                 if(image3 && !(image3.endsWith('.png') || image3.endsWith('.jpg') || image3.endsWith('.jpeg'))) errors['image3']='Image URL must end in .png .jpg or .jpeg'
                 if(image4 && !(image4.endsWith('.png') || image4.endsWith('.jpg') || image4.endsWith('.jpeg'))) errors['image4']='Image URL must end in .png .jpg or .jpeg'
 
-
-
                 setValidationErrors(errors)
             }
         }
 
         // reset form values
-        // setCountry('')
-        // setStreetAddress('')
-        // setCity('')
-        // setState('')
-        // setDescription('')
-        // setName('')
-        // setPrice('')
-        // setLatitude('')
-        // setLongitude('')
+        setCountry('')
+        setStreetAddress('')
+        setCity('')
+        setState('')
+        setDescription('')
+        setName('')
+        setPrice('')
+        setLatitude('')
+        setLongitude('')
 
-        // setImage('')
-        // setImage1('')
-        // setImage2('')
-        // setImage3('')
-        // setImage4('')
+        setImage('')
+        setImage1('')
+        setImage2('')
+        setImage3('')
+        setImage4('')
 
         setButtonOff(true)
     }
@@ -378,7 +376,7 @@ function CreateSpot(){
                 </div>
 
 
-                <button className='createButton' type='newSpot' disabled={false} >
+                <button className='createButton' type='newSpot' disabled={buttonOff} >
                     Create Spot
                 </button>
             </form>
