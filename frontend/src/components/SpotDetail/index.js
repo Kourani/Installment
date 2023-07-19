@@ -15,7 +15,6 @@ function SpotDetail(){
     const dispatch = useDispatch()
 
     const {spotId} = useParams()
-    console.log('SPOTDETAIL...SPOTID',spotId)
 
     const [postModal, setPostModal] = useState(false)
     const [deleteModal, setDeleteModal] = useState(false)
@@ -157,10 +156,6 @@ function SpotDetail(){
                     )
                 }
             }
-
-
-
-            console.log('SPOTDETAIL...reviewBySpot',reviewBySpot())
 
             return(
                 <>
