@@ -118,7 +118,6 @@ function ListChoices() { // so that it is not affected by the useEffect
 
 function openBox(){
   if(profileClick){
-    console.log('PROFILE BUTTON',profileClick)
     return <ListChoices />
     // return listChoices()
   }

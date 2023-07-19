@@ -64,8 +64,6 @@ function ManageSpots(){
                     return element.avgRating
                 }
 
-                console.log('MANAGESPOT...DELETEID',deleteId)
-
                 return(
                     <>
                         <div>
