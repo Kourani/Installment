@@ -16,8 +16,6 @@ function UpdateSpot(){
 
     const spotState = useSelector(state=>state.spot)
 
-    const imageState = useSelector(state=>state.image)
-
     const [country, setCountry] = useState(spotState[spotId]?.country)
     const [address, setStreetAddress] = useState(spotState[spotId]?.address)
     const [city, setCity] = useState(spotState[spotId]?.city)
@@ -90,9 +88,6 @@ function UpdateSpot(){
         return /^\d+$/.test(price)
     }
 
-    console.log(stringOfDigits(price))
-
-
     async function handleSubmit (e){
         e.preventDefault()
         setSubmitted(true)
@@ -125,8 +120,6 @@ function UpdateSpot(){
             }
             catch(created){
                 const information = await created.json()
-                console.log('UPDATE SPOT...INSIDE CATCH',information)
-
 
                 if(information.statusCode===400){
                     const errors={}

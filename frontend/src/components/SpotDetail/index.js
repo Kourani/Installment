@@ -24,20 +24,10 @@ function SpotDetail(){
 
     //to know who is logged in or if no one is logged in
     const userState = useSelector(state=>state.session)
-    console.log('SPOTREVIEWS...USERSTATE', userState)
-
 
     const reviewState = useSelector(state=>state.review)
-    console.log('SPOTDETAIL...reviewState',reviewState)
-
-
-
-
-
-      console.log('IMAGE TRACKER',imageTracker)
 
       const spotState = useSelector((state)=>state.spot)
-      console.log('SPOTDETAIL...spotState', spotState)
 
       const [averageReviews, setAverageReviews]=useState(()=>{
         return spotState?.matched?.avgRating ? spotState?.matched?.avgRating : null
@@ -112,13 +102,10 @@ function SpotDetail(){
 
     }
 
-    console.log('SPOT DETAIL ... SORTED',descendingOrder()?.length)
-
     //to obtain the actual reviews
     function reviewSpot(){
 
         if(descendingOrder()?.length > 0){
-            console.log('inside the first if!')
             return reviewState?.Reviews.map(element=>{
 
             //sets the current date in the following format example '2023-1-25' with january being 0
@@ -140,8 +127,6 @@ function SpotDetail(){
                     }
                 }
             }
-
-            console.log('SPOTDETAIL...deleteButton', deleteButton())
 
             function reviewBySpot(){
                 if(parseInt(element?.spotId) === parseInt(spotId)){
@@ -192,10 +177,6 @@ function SpotDetail(){
 
     }
 
-    console.log('SPOT DETAIL...REVIEW SPOT',reviewSpot())
-
-    console.log('SPOTDETAIL...reviewSpot', beTheFirst())
-
     //to obtain the number of reviews
     function numberOfReviews(){
           if(reviewState?.Reviews?.length === 1){
@@ -210,8 +191,6 @@ function SpotDetail(){
 
     //the first image for that spot
     function spotImage(){
-        console.log('SPOT DETAIL .... IMAGES',spotState?.matched?.SpotImages[0]?.url)
-
         return (
             <div className='imageContainerImage'>
                 <img src={spotState?.matched?.SpotImages[0]?.url} alt='Spot Preview'/>
@@ -258,8 +237,6 @@ function SpotDetail(){
         )
     }
 
-    console.log('TELL ME WHAT IS GOING ON',spotImages())
-
     function checkReview(){
         if(userState.user !== null){
 
@@ -279,16 +256,10 @@ function SpotDetail(){
 
     }
 
-    console.log('SPOTDETAIL....CHECKREVIEW', checkReview())
-
     //when the user DOES not own the spot IS logged and there are NO reviews
     function beTheFirst(){
-        console.log('SPOT DETAIL...OWNER ID',spotState?.matched?.ownerId)
-        console.log('SPOT DETAIL .. USER ID', userState?.user?.id)
-        console.log('SPOT DETAIL... # OF REVIEWS', reviewState?.Reviews?.length)
 
         if(userState?.user !== null && spotState?.matched?.ownerId !== userState?.user?.id && !reviewState?.Reviews?.length){
-            console.log('INSIDE THE ELSE !! BE THE FIRST')
             return "Be the first to post a review!"
         }
 

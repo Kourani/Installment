@@ -83,9 +83,6 @@ function CreateSpot(){
     },[dispatch, validationErrors, country, address, city, state, price, description, name, url])
 
 
-    console.log('valid',validationErrors)
-    // console.log(validationErrors)
-
     function stringOfDigits(price) {
         return /^\d+$/.test(price)
     }
@@ -108,8 +105,6 @@ function CreateSpot(){
         setSubmitted(true)
 
     if(!url || (!(url.endsWith('.png') || url.endsWith('.jpg') || url.endsWith('.jpeg') ) ) ) {
-
-        console.log('no URL')
 
                 const errors = {}
                 if(!country) errors['country']='Country is required'
@@ -137,11 +132,9 @@ function CreateSpot(){
 
     if(url && ((url.endsWith('.png') || url.endsWith('.jpg') || url.endsWith('.jpeg') ) )){
 
-        console.log('yes url')
 
         try {
             const created = await dispatch(spotActions.createSpot(payload));
-            console.log('TRY BLOCK....CREATED',created)
 
             const imageCreation=await dispatch(spotActions.createImage(created.id, imagePayload))
 
@@ -169,8 +162,6 @@ function CreateSpot(){
             const errors ={}
 
             const information = await created.json()
-
-            console.log(information)
 
             if(information.statusCode===400){
 

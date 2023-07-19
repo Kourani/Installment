@@ -41,7 +41,6 @@ export const getSpotReviews = (spotId) => async (dispatch) => {
     if(response.ok){
         const data = await response.json()
         dispatch(loadSpotReviews(data))
-        console.log('HEEEEEEEEEEEEEEEEEEEEEEEEE',data)
         return data
     }
 
@@ -56,7 +55,6 @@ export const reviewDelete = (reviewId) => async(dispatch) =>{
     if(response.ok){
         const retrivedData = await response.json()
         dispatch (deleteReview(reviewId))
-        console.log('INSIDE REVIEW DELETE THUNK', retrivedData)
         return retrivedData
     }
     return await response.json()
@@ -73,26 +71,13 @@ export const postReview = (spotId, payload) => async (dispatch) => {
 
     if(response.ok){
         const reviewed = await response.json()
-        createReview(reviewed)
-        console.log('INSIDE THE POSTREVIEW THUNK', reviewed)
+        dispatch(createReview(reviewed))
         return reviewed
     }
 
     const errorResponse = await response.json()
-    console.log('THUNK NOT OKAY', errorResponse)
     return  errorResponse
 }
-
-
-// const initialState={
-//     thunkData:[],
-//     types:{}
-// }
-// const sortList =(thunkData)=>{
-//     return thunkData.sort((reviewA,reviewB) =>{
-//         return reviewA.id - reviewB.id
-//     }).map((review)=>review.id)
-// }
 
 //reducer
 export const reviewReducer = (state={},action)=>{

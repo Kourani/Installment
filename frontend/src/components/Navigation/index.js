@@ -26,14 +26,6 @@ function Navigation({ isLoaded }){
   const [loginModal, setLoginModal]=useState(false)
   const [signupModal, setSignupModal]=useState(false)
 
-  console.log('here click',clickState)
-
-  // useEffect(()=>{
-  //   clickStateManagement()
-  // },[loginModal, signupModal])
-
-  console.log('CLICKSATE',clickState)
-
 
   function clickStateManagement(e){
     e.stopPropagation()
@@ -94,7 +86,6 @@ function Navigation({ isLoaded }){
         </div>
 
         <div>
-          {/* <NavLink to="/login">Log in</NavLink> */}
           <button className='signupLoginButtons' onClick={(e)=>logButton(e)}> Log In</button>
 
         </div>
@@ -104,7 +95,6 @@ function Navigation({ isLoaded }){
   }
 
   function clicked(){
-    console.log('NAVIGATION....CLICKSTATE',clickState)
     if(clickState){
       return choices()
     }
@@ -122,8 +112,6 @@ function Navigation({ isLoaded }){
     sessionLinks = (
       <div>
         <ProfileButton user={sessionUser} />
-
-        {/* <button onClick={logout}>Log Out</button> */}
       </div>
     );
 

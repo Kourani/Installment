@@ -15,8 +15,7 @@ function SpotReviews(){
 
     const dispatch = useDispatch()
     const {spotId} = useParams()
-    console.log('SPOTREVIEWS...SPOTID',spotId)
-
+  
     const [modal, setModal] = useState(false)
 
     useEffect(()=>{
@@ -27,15 +26,12 @@ function SpotReviews(){
 
     //to know who is logged in or if no one is logged in
     const userState = useSelector(state=>state.session)
-    console.log('SPOTREVIEWS...USERSTATE', userState)
 
     //to obtain access to the reviews state
     const spotReviews = useSelector((state)=>state.review)
-    console.log('SPOTREVIEWS...SPOTREVIEWS', spotReviews)
 
     //to obtain access to the the spots state
     const spotState = useSelector(state=>state.spot)
-    console.log('SPOTREVIEWS...SPOTSTATE',spotState)
 
     const monthNames = [
         'Janurary',
@@ -61,9 +57,6 @@ function SpotReviews(){
                 averageRating +=element.stars
             })
 
-            console.log('AVERAGE',averageRating)
-            console.log('LENGTH',spotReviews?.Reviews.length)
-
             if(averageRating===0){
                 return averageRating
             }
@@ -81,7 +74,6 @@ function SpotReviews(){
         if(spotReviews?.Reviews?.length > 0){
 
             let theArray = spotReviews?.Reviews
-            console.log('SPOTREVIEWS...THE ARRAY', theArray)
 
             return theArray.map(element=>{
 
@@ -91,12 +83,7 @@ function SpotReviews(){
                 const year = postedDate.getFullYear()
                 postedDate = monthNames[parseInt(month)-1] + '-' + year;
 
-                console.log('SPOTREVIEWS...ELEMENT',element?.User.id)
-                console.log('SPOTREVIWS...USERID',userState?.user.id)
-
                 function reviewBySpot(){
-                    console.log('SPOTREVIEWS...ELEMENT ID',element.spotId)
-                    console.log('SPOTREVIEWS...SPOTID',spotId)
                     if(parseInt(element?.spotId) === parseInt(spotId))
                     {
                         return (
@@ -109,8 +96,6 @@ function SpotReviews(){
 
                                )
                     }}
-
-                console.log('SPOTREVIEWS...REVIEWBYSPOT', reviewBySpot())
 
                 return (
                     <ul>
@@ -134,7 +119,6 @@ function SpotReviews(){
 
         if(spotState?.matched?.ownerId !== userState?.user?.id && userState?.user !== null && spotReviews?.Reviews?.length===0)
         {
-            console.log('INSIDE THE ELSE !! BE THE FIRST')
             return (
             <ul>
                 <li>Be the first to post a review!</li>

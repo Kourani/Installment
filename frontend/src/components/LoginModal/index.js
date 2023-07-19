@@ -58,7 +58,6 @@ function LoginModal({closeModal}){
         }catch(res){
             const error ={}
             const newInformation = await res.json()
-            console.log(newInformation)
 
             if(newInformation.statusCode === 401){
                 error['userPassword']='The provided credentials were invalid'

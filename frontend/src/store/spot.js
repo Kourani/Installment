@@ -15,7 +15,6 @@ const CREATE_IMAGE='/spots/spotId/CREATE_IMAGE'
 
 //ACTIONS
 
-//FOR ALL THE SPOTS
 function loadSpots(spots) {
     return{
         type: GET_SPOTS,
@@ -23,7 +22,6 @@ function loadSpots(spots) {
     }
 }
 
-//FOR ONE SPOT
 function specificSpot(spotData){
     return{
         type: ONE_SPOT,
@@ -96,12 +94,12 @@ export const createSpot = (payload) => async (dispatch) =>{
 
     if(response.ok){
         const matchedSpot = await response.json()
-        console.log('Inside createSpot Thunk',matchedSpot)
+        // console.log('Inside createSpot Thunk',matchedSpot)
         dispatch(newSpot(matchedSpot))
         return matchedSpot
     }
 
-    console.log('INSIDE THUNNK', response)
+    // console.log('INSIDE THUNNK', response)
     return await response.json()
 }
 
@@ -113,7 +111,7 @@ export const deleteSpot = (spotId) => async (dispatch) => {
 
     if(response.ok){
         const retrivedData = await response.json()
-        console.log('SPOT STORE ... DELETE THUNK',retrivedData)
+        // console.log('SPOT STORE ... DELETE THUNK',retrivedData)
         dispatch(deleteSpotData(spotId))
         return retrivedData
     }
@@ -135,7 +133,7 @@ export const updateSpot = (spotId,payload) => async(dispatch) =>{
         const spotUpdate = await response.json()
         dispatch(editSpot(spotUpdate))
 
-        console.log('Inside Update Spot Thunk',spotUpdate)
+        // console.log('Inside Update Spot Thunk',spotUpdate)
         return spotUpdate
     }
 
@@ -156,12 +154,12 @@ export const createImage = (spotId,payload) => async (dispatch) =>{
 
     if(response.ok){
         const pictures = await response.json()
-        console.log('Inside createSpot Thunk',pictures)
+        // console.log('Inside createSpot Thunk',pictures)
         dispatch(imageCreate(pictures))
         return pictures
     }
 
-    console.log('INSIDE THUNNK', response)
+    // console.log('INSIDE THUNNK', response)
     return await response.json()
 }
 

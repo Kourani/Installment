@@ -12,14 +12,9 @@ function SpotModal({closeModal, toDelete} ){
 
     const dispatch = useDispatch()
 
-    const userState = useSelector(state=>state.session)
-    console.log('SPOTMODAL...USERSTATE',userState)
-
     const spotState = useSelector(state=>state.spot)
-    console.log('SPOTMODAL...SPOTSTATE', spotState)
-    const spotStateValues = Object.values(spotState)
 
-    console.log('SPOTMODAL...PROP',toDelete)
+    const spotStateValues = Object.values(spotState)
 
     useEffect(()=>{
         dispatch(spotActions.getSpots())
@@ -34,13 +29,8 @@ function SpotModal({closeModal, toDelete} ){
             }
         })
 
-        console.log('SPOTMODAL...FOUNDSPOT',foundSpot)
-
         return foundSpot
     }
-
-
-    console.log('SPOTMODAL...SPOT',obtainSpot())
 
     function onButtonClick(){
         closeModal(false)
@@ -49,12 +39,6 @@ function SpotModal({closeModal, toDelete} ){
         {dispatch(spotActions.deleteSpot(obtainSpot()))}
         return
     }
-
-    // console.log('SPOT MODAL ... OBTAIN SPOT' , onButtonClick())
-
-
-
-    console.log('SPOT MODAL ... CLOSE MODAL',closeModal)
 
     return (
         <div className='modalBackground'>

@@ -18,18 +18,15 @@ function AllSpots(){
     },[dispatch])
 
     const spotState = useSelector(state=>state.spot)
-    console.log('ALLSPOTS...SPOTSTATE',spotState)
 
     const spotValues = Object.values(spotState)
-    console.log('ALLSPOTS...values',spotValues)
 
     const [hovered, setHovered]=useState('')
-    console.log(hovered)
+
 
     const [hoveredElement, setHoveredElement]=useState(null)
 
     const handleMouseEnter=(element)=>{
-        console.log(element.name)
         setHovered(element.id)
         setHoveredElement(element)
     }
@@ -75,8 +72,6 @@ function AllSpots(){
 
                             <div className='leftHalf1'>
                                 {element.city}, {element.state}
-                                {/* <div className='city'>{element.city},</div>
-                                <div className='state'>{element.state}</div> */}
                             </div>
 
                             <div className='rightHalf1'>

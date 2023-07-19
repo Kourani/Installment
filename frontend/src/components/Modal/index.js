@@ -15,17 +15,10 @@ function Modal({closeModal}){
 
     const dispatch = useDispatch()
     const {spotId} = useParams()
-    console.log('MODEL...SPOTID',spotId)
 
     const userState = useSelector(state=>state.session)
-    console.log('MODAL...USERSTATE',userState)
-
-    const spotState = useSelector(state=>state.spot)
-    console.log('MODAL...SPOTSTATE', spotState)
-    const spotStateValues = Object.values(spotState)
 
     const reviewState = useSelector(state=>state.review)
-    console.log('MODEL...REVIEWSTATE',reviewState)
 
 
 
@@ -45,48 +38,14 @@ function Modal({closeModal}){
                 }
             })
 
-            console.log('ELEMENATL IF', elemental)
             return elemental.id
         }
     }
-
-    // function obtainSpot(){
-    //     if(spotStateValues.length && !spotId){
-
-    //         let foundSpot
-
-    //         spotStateValues.forEach(element=>{
-    //             if(element?.ownerId === userState?.user?.id){
-    //                 foundSpot = element
-    //             }
-    //         })
-
-    //         console.log('FOUNDSPOT',foundSpot.id)
-    //         return foundSpot.id
-    //     }
-    // }
-
-    console.log('MODAL...REVEIW',obtainReview())
-    // console.log('SPOT',obtainSpot())
-
-
-
-    // function location(){
-    //     if(spotId){
-    //         return 'review'
-    //     }
-    //     else {
-    //         return 'spot'
-    //     }
-    // }
 
     function onButtonClick(){
         closeModal(false)
 
        if(obtainReview()!== undefined) {dispatch(reviewActions.reviewDelete(obtainReview()))}
-
-        // if(obtainSpot() !== undefined) {dispatch(spotActions.deleteSpot(obtainSpot()))}
-
         return
     }
 

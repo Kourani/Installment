@@ -25,9 +25,6 @@ function SignupModal({closeModal}){
     const [buttonOff, setButtonOff] = useState(true)
 
     const sessionUser = useSelector((state)=>state.session.user)
-    console.log('SIGN UP...SESSIONUSER',sessionUser)
-
-
 
     useEffect(()=>{
 
@@ -51,17 +48,12 @@ function SignupModal({closeModal}){
 
     },[dispatch,errors,email,username,firstName,lastName,password,confirmPassword])
 
-    console.log('SIGN UP MODAL ... BUTTON OFF',buttonOff)
 
     if(sessionUser) return <Redirect to="/"/>
 
     const handleSubmit = async (e) =>{
         e.preventDefault()
         const error={}
-
-        console.log('SIGN UP MODAL ... ERRORS', errors)
-        console.log('SIGN UP MODAL ... ERROR',error)
-
 
         if(password === confirmPassword){
             try {
@@ -99,6 +91,7 @@ function SignupModal({closeModal}){
             if(confirmPassword.length<6)error['confirmPassword']='Passwords do not match'
             if(username===email) error['username']='Username cannot be an email'
             if(!email.includes('@'))error['email']='The provided email is invalid'
+            if(password!==confirmPassword)error['password']='Password do not match'
             setErrors(error)
         }
 

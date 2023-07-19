@@ -6,22 +6,10 @@ import * as reviewActions from '../../store/review'
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-
 
 function ReviewModal({closeModal}){
     const dispatch = useDispatch()
     const {spotId} = useParams()
-    console.log(spotId)
-
-    const userState = useSelector(state=>state.session)
-    console.log('USERSTATE',userState)
-
-    const spotState = useSelector(state=>state.spot)
-    console.log('SPOTSTATE', spotState)
-
-    const reviewState = useSelector(state=>state.review)
-    console.log('REVIEWSTATE',reviewState)
 
     const [review, setReview] = useState('')
     const [stars,setStars]=useState()
@@ -47,12 +35,8 @@ function ReviewModal({closeModal}){
     }
 
     async function onSubmit(){
-        console.log('inside the onSubmit')
-
-
         try{
             const created = await dispatch(reviewActions.postReview(spotId, payload))
-            console.log('REVIEWMODAL...INSIDE TRY',created)
             // history.push(`/spots/${spotId}`)
             closeModal(false)
             return created
@@ -60,11 +44,8 @@ function ReviewModal({closeModal}){
         catch(created){
             const information = await created.json()
 
-            console.log('REVIEWMODAL....INSIDE CATCH',information)
-
             const errors = {}
             if(information.statusCode===400){
-                console.log('error IF')
 
                 if(!review) errors['review']='Review is required'
                 if(!stars) errors['stars']='Rating is required'
