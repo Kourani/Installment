@@ -144,7 +144,7 @@ function Navigation({ isLoaded }){
             <img src={'https://images.pexels.com/photos/442188/pexels-photo-442188.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'} alt={'Home'} width="50" height="50"/>
 
             <div className='roseWordWidth'>
-              Earth BnB
+              Car BnB
             </div>
           </div>
         </NavLink>
