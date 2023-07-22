@@ -11,7 +11,7 @@ const {Spot, User, Review} = require('../models')
 
 const spotReviews = [
   {
-    name: 'Pineapple',
+    name: 'Maserati Ghibli',
     userId:1,
     reviews:[
       {stars:5, review:'user 1'}
@@ -19,28 +19,28 @@ const spotReviews = [
   },
 
   {
-    name: 'Mango',
+    name: 'Ford Mustang',
     userId:1,
     reviews:[
       {stars:5, review:'user 1'}
     ]
   },
   {
-    name: 'Apricot',
+    name: 'McLaren Artura',
     userId:1,
     reviews:[
       {stars:5, review:'user 1'}
     ]
   },
   {
-    name: 'Pineapple',
+    name: 'Maserati Ghibli',
     userId:2,
     reviews:[
       {stars:5, review:'user 2'}
     ]
   },
   {
-    name: 'Pineapple',
+    name: 'Maserati Ghibli',
     userId:3,
     reviews:[
       {stars:5, review:'user 3'}
