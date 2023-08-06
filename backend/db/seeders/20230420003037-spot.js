@@ -116,7 +116,7 @@ const userSpots = [
 
   {
     address:"123 Disney Lane",
-    city:'TEST1',
+    city:'Miami',
     state:'Florida',
     country:"United States of America",
     lat:564.01,
@@ -127,7 +127,7 @@ const userSpots = [
 
     {
       address:"123 Disney Lane",
-      city:'TEST2',
+      city:'Panama City',
       state:'Florida',
       country:"United States of America",
       lat:564.01,
@@ -138,7 +138,7 @@ const userSpots = [
 
       {
         address:"123 Disney Lane",
-        city:'TEST3',
+        city:'Gainesville',
         state:'Florida',
         country:"United States of America",
         lat:564.01,
@@ -149,7 +149,7 @@ const userSpots = [
 
         {
           address:"123 Disney Lane",
-          city:'TEST4',
+          city:'Gainesville',
           state:'Florida',
           country:"United States of America",
           lat:564.01,
@@ -166,7 +166,7 @@ const userSpots = [
 
   spots:[{
   address:"123 Disney Lane",
-  city:'asd',
+  city:'Crystal River',
   state:'Florida',
   country:"United States of America",
   lat:564.01,
